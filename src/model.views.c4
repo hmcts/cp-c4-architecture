@@ -1,0 +1,198 @@
+views {
+
+  view index {
+    title 'System Landscape'
+    include
+      *
+
+    style boutique {
+      size large
+    }
+  }
+
+  view customer of customer {
+    description '''
+      **Customer** interactions with the system.
+
+    '''
+
+
+    include
+      *,
+      -> boutique.*
+  }
+
+  view boutique of boutique {
+    description '
+      E-commerce app for browsing items, add them to the cart,
+      and purchasing them.
+    '
+    include
+      *,
+      customer with {
+        size sm
+        textSize large
+        color green
+      }
+    exclude
+      frontend -> actionLog,
+      payment-gateway,
+      email-provider
+
+    style db, frontend {
+      multiple true
+    }
+    style boutique {
+      opacity 0%
+    }
+  }
+
+  view frontend of boutique.frontend {
+    #teamA #v1_1 #v2
+    title 'Frontend'
+    link https://github.com/likec4/template 'Repository'
+
+    include
+      *,
+      boutique
+
+    style * {
+      color secondary
+      opacity 10%
+    }
+
+    style frontend._ {
+      color green
+    }
+  }
+
+  view checkout of boutique.checkout {
+    #teamB #v1_1 #v2
+    title 'Checkout Service'
+    description '''
+      Interactions of _Checkout Service_ with _other components_.
+
+      Checkout Service does:
+      - Retrieves user cart
+      - Prepares order
+      - Orchestrates the **payment**, **shipping** and the **email notification**.
+
+    '''
+    link https://github.com/likec4/template 'Repository'
+
+
+    include
+      *,
+      boutique,
+      customer,
+      payment-gateway,
+      email-provider
+
+    style * {
+      color secondary
+    }
+    style boutique, email-provider, payment-gateway {
+      color muted
+      opacity 10%
+    }
+
+    style checkout._ {
+      color green
+    }
+  }
+
+  view cart of boutique.cart {
+    include
+      *,
+      boutique.frontend.* -> cart.*,
+      boutique,
+      customer
+
+    style * {
+      color secondary
+      opacity 0%
+    }
+
+    style cart._ {
+      opacity 100%
+      color green
+    }
+  }
+
+  view payments of boutique.payments {
+    include
+      *,
+      boutique,
+      customer,
+      -> boutique.db.*,
+      boutique.checkout
+
+    style * {
+      color secondary
+    }
+    style boutique {
+      color muted
+      opacity 10%
+    }
+
+    style payments._ {
+      color green
+    }
+  }
+
+  view actionLog of boutique.actionLog {
+    include
+      *
+
+    style * {
+      color secondary
+    }
+    style actionLog {
+      color green
+    }
+  }
+
+  view shipping of boutique.shipping {
+    include
+      *,
+      boutique
+
+    style * {
+      color secondary
+      opacity 0%
+    }
+    style shipping {
+      color green
+    }
+  }
+
+  view database of boutique.db {
+    include
+      *,
+      boutique
+
+    style * {
+      color secondary
+      opacity 0%
+    }
+    style db._ {
+      opacity 20%
+      color green
+    }
+  }
+
+  view catalogue of boutique.catalogue {
+    include
+      *,
+      -> boutique.db.*,
+      boutique
+
+    style * {
+      color secondary
+      opacity 10%
+    }
+    style catalogue {
+      color green
+    }
+  }
+}

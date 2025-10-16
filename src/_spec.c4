@@ -1,0 +1,84 @@
+specification {
+
+  element actor {
+    style {
+      shape person
+      color green
+    }
+  }
+
+  element system {
+    notation "Software System"
+    style {
+      opacity 20%
+    }
+  }
+
+  element external-system {
+    notation "External Software System"
+    style {
+      opacity 20%
+      color muted
+    }
+  }
+
+  element application
+
+  element component {
+    style {
+      opacity 20%
+    }
+  }
+  element service {
+    link https://github.com/likec4/template 'Repository'
+  }
+
+  element webapp {
+    #teamA
+    notation "Web Application"
+    style {
+      shape browser
+    }
+  }
+  element mobile {
+    #teamA
+    notation "Mobile Application"
+    style {
+      shape mobile
+    }
+  }
+  element database {
+    notation "Database"
+    technology "PostgreSQL"
+    style {
+      shape storage
+      icon tech:postgresql
+      opacity 30%
+    }
+  }
+  element db-table {
+    notation "Database Table"
+    style {
+      shape storage
+      icon tech:postgresql
+    }
+  }
+
+  tag deprecated {
+    color rgb(100 100 100)
+  }
+  tag next
+  tag v1
+  tag v1_1
+  tag v2
+  tag teamA
+  tag teamB
+
+  relationship solid {
+    line solid
+  }
+
+  relationship many-to-many {
+    line dotted
+  }
+}

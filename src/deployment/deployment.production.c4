@@ -1,0 +1,42 @@
+views {
+
+  deployment view production-env {
+    #v1 #v1_1
+    title 'Deployments / Environment: Production'
+    description '
+      Overview of the production environment.
+    '
+    link https://github.com/likec4/template 'Documentation'
+
+    include
+      prod,
+      prod.**,
+      internet.*
+
+    exclude
+      boutique.frontend -> boutique.payments,
+      boutique.frontend -> boutique.catalogue,
+    // Shipping service is accessed only from vm1
+      prod.vm2.* -> boutique.shipping,
+    // Exclude any relationships to secondary database
+    // except the primary database
+      * -> prod.dbvm2.db where source.kind is not database
+
+    style boutique.frontend, prod.appvms._ {
+      multiple true
+    }
+    style prod {
+      color muted
+    }
+    style prod.vm1._ {
+      color green
+    }
+    style prod.vm2._ {
+      color indigo
+    }
+    style prod.dbvm1._, prod.dbvm2._, {
+      color amber
+      multiple true
+    }
+  }
+}

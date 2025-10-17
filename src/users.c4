@@ -1,0 +1,11 @@
+model {
+    defendant = actor "Defendant" "Person charged with one or more offences"
+    judge_or_magestrate = actor "Judge or magistrate" "Precides over court hearing"
+    recorder = actor "Recorder" "Person charged with one or more offences"
+    listing_officer = actor "Listing Officer" "Manages the court's daily schedule and ensures cases are heard efficiently" {
+        
+    }
+    court_clerk = actor "Court Clerk" "Person charged with one or more offences"
+    legal_advisor = actor "Legal Advisor" "Person charged with one or more offences"
+    court_admin = actor "Court Administrator" "Person charged with one or more offences"
+}

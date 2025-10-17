@@ -1,0 +1,8 @@
+model {
+    extend cp.court-hearings-subdomain {
+        online-plea = system {
+            title 'Online Plea'
+            description 'Allows defendants to enter an please online for SJP cases'
+        }
+    }
+}

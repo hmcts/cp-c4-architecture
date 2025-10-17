@@ -1,0 +1,68 @@
+model {
+    extend cp.scheduling-and-listing-subdomain {
+        scheduling-and-listing-system = system {
+            title 'Scheduling and Listing System'
+            summary 'Allows management of court schedules, booking of hearings and the publication of listings'
+        
+            listing_officer -> scheduling-and-listing-system "Manages court schedule and allocates hearings using"
+            court_clerk -> scheduling-and-listing-system "Runs court room logistic on hearing day"
+            legal_advisor -> scheduling-and-listing-system "Manage hearings in court and advise magistrates"
+            court_admin -> scheduling-and-listing-system "Maintain and manages court diary using"
+
+            scheduling-and-listing-system -> xhibit "Sends Crown Court lists to"
+            scheduling-and-listing-system -> cath "Publish court lists to"
+            this -> cp.management-information-system 'sends data to'
+            
+
+            listing-ui = webapp {
+                title 'Listing UI'
+                technology 'Angular'
+                summary 'Provides functionality for managing coute listings'
+                this -> listing-service 'makes API calls to'
+
+                
+
+            }
+
+            court-scheduler-ui = webapp {
+                title 'Court Scheduler UI'
+                technology 'Angular'
+                summary 'Provides functionality for managing court schedules'
+                
+                this -> court-scheduler-service 'makes API calls to'
+
+                listing_officer -> cp.court-scheduler-ui 'Manages court schedule using'
+            }
+
+            listing-service = application {
+                title 'Listing Service'
+                technology 'JavaEE + Wildfly'
+                this -> listing-database
+                this -> court-scheduler-service 'books and vacates hearings using'
+            }
+
+            court-scheduler-service = application {
+                title 'Court Scheduler Service'
+                technology 'JavaEE + Wildfly'
+                this -> scsl-database
+                rota -> this "Sends court schedules to"
+            }
+
+            staging-pub-hub-service = application {
+                title 'Staging Pub Hub'
+                technology 'JavaEE + Wildfly'
+                scsl-database -> this
+            }
+
+            listing-database = database {
+                title 'Listing Database'
+                summary 'Stores events and entities'
+            }
+
+            scsl-database = database {
+                title 'SCSL Database'
+                summary 'Stores events and entities'
+            }
+        }
+    }
+}

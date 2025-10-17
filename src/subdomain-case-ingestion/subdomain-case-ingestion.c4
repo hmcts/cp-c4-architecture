@@ -1,0 +1,7 @@
+model {
+    extend cp {
+        case-ingestion-subdomain = subdomain {
+            title 'Case and Material Ingestion'
+        }
+    }
+}

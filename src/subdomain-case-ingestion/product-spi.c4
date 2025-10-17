@@ -1,0 +1,10 @@
+model {
+    extend cp.case-ingestion-subdomain {
+        spi = system {
+            title 'Standard Prosecutor Interface (SPI)'
+            description 'Standard Prosecutor Interface'
+
+            this -> cp.case-management-system 'sends cases to'
+        }
+    }
+}

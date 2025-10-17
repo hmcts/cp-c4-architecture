@@ -1,0 +1,11 @@
+model {
+    extend cp.case-administration-subdomain {
+        case-management-system = system {
+            title 'Case Management System'
+            description 'Manages cases'
+
+            this -> cp.hearing-system 'requests listings for hearings using'
+            this -> cp.management-information-system 'sends data to'
+        }
+    }
+}

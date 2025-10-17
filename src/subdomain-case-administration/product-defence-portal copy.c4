@@ -1,0 +1,9 @@
+model {
+    extend cp.case-administration-subdomain {
+        work-management-system = system {
+            title 'Work Management System'
+            description 'Manages work queues for case activity tasks'
+
+        }
+    }
+}

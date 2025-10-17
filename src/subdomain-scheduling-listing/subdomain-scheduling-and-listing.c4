@@ -1,0 +1,7 @@
+model {
+    extend cp {
+        scheduling-and-listing-subdomain = subdomain {
+            title 'Scheduling and Listing'
+        }
+    }
+}

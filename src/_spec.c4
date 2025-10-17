@@ -7,6 +7,22 @@ specification {
     }
   }
 
+  element platform {
+    notation "Software Platform"
+    technology 'Software Platform'
+    style {
+      opacity 20%
+    }
+  }
+
+  element subdomain {
+    notation "Subdomain"
+    technology 'Subdomain'
+    style {
+      opacity 20%
+    }
+  }
+
   element system {
     notation "Software System"
     style {
@@ -34,19 +50,12 @@ specification {
   }
 
   element webapp {
-    #teamA
     notation "Web Application"
     style {
       shape browser
     }
   }
-  element mobile {
-    #teamA
-    notation "Mobile Application"
-    style {
-      shape mobile
-    }
-  }
+
   element database {
     notation "Database"
     technology "PostgreSQL"
@@ -67,12 +76,6 @@ specification {
   tag deprecated {
     color rgb(100 100 100)
   }
-  tag next
-  tag v1
-  tag v1_1
-  tag v2
-  tag teamA
-  tag teamB
 
   relationship solid {
     line solid

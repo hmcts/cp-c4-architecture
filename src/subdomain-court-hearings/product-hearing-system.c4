@@ -1,0 +1,27 @@
+model {
+    extend cp.court-hearings-subdomain {
+        hearing-system = system {
+            title 'Hearing System'
+            summary 'Manages the lifecycle of hearings and records what happens in them'
+        
+            defendant -> hearing-system "Enters plea using"
+            judge_or_magestrate -> hearing-system "Enters plea using"
+            recorder -> hearing-system "Enters plea using"
+            listing_officer -> hearing-system "Enters plea using"
+            court_clerk -> hearing-system "Enters plea using"
+            legal_advisor -> hearing-system "Enters plea using"
+            court_admin -> hearing-system "Enters plea using"
+
+            hearing-system -> results-distribution-system "distributes results using"
+            hearing-system -> darts "posts hearing events to"
+            hearing-system -> hmpps "posts hearing events to"
+            hearing-system -> laa "posts hearing events to"
+            hearing-system -> cp.scheduling-and-listing-system "hearing deatils changed"
+            hearing-system -> cp.case-management-system "shares case markers and case status changes with, creates hearings using"
+            // hearing-system -> ref_data "hearing deatils changed"
+            hearing-system -> cp.management-information-system "sends data to"
+
+            
+        }
+    }
+}

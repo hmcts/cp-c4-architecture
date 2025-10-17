@@ -1,0 +1,9 @@
+model {
+    extend cp.case-administration-subdomain {
+        defence-portal = system {
+            title 'Defence Potal'
+            description 'Provides access to cases for defence advocates'
+
+        }
+    }
+}

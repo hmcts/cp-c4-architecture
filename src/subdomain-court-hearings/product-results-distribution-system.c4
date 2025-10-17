@@ -1,0 +1,8 @@
+model {
+    extend cp.court-hearings-subdomain {
+        results-distribution-system = system {
+            title 'Results Distribution System'
+            description 'Distributes results'
+        }
+    }
+}

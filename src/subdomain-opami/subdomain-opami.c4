@@ -1,0 +1,7 @@
+model {
+    extend cp {
+        opami-subdomain = subdomain {
+            title 'Operational and Management Information'
+        }
+    }
+}

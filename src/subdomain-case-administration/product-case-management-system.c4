@@ -4,7 +4,7 @@ model {
             title 'Case Management System'
             description 'Manages cases'
 
-            this -> cp.hearing-system 'requests listings for hearings using'
+            this -> cp.scheduling-and-listing-system 'requests listings for hearings using'
             this -> cp.management-information-system 'sends data to'
         }
     }

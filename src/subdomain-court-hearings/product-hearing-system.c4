@@ -21,7 +21,11 @@ model {
             // hearing-system -> ref_data "hearing deatils changed"
             hearing-system -> cp.management-information-system "sends data to"
 
-            
+            staging-darts = application {
+                title 'Staging DARTS'
+                technology 'JavaEE + Wildfly'
+                cp.listing-service -> this 'listens to daily court list published by'
+            }
         }
     }
 }

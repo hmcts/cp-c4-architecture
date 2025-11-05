@@ -20,7 +20,10 @@ model {
                 summary 'Provides functionality for managing coute listings'
                 this -> listing-service 'makes API calls to'
 
-                
+                listing_officer -> this 'Allocates hearings using'
+                legal_advisor -> this 'Manages hearings in court and advises magistrates'
+                court_admin -> this 'Maintains and manages court diary using'
+                court_clerk -> this 'Runs court room logistics on hearing day using'
 
             }
 
@@ -31,7 +34,8 @@ model {
                 
                 this -> court-scheduler-service 'makes API calls to'
 
-                listing_officer -> cp.court-scheduler-ui 'Manages court schedule using'
+                listing_officer -> this 'Manages court schedule using'
+
             }
 
             listing-service = application {
@@ -39,6 +43,8 @@ model {
                 technology 'JavaEE + Wildfly'
                 this -> listing-database
                 this -> court-scheduler-service 'books and vacates hearings using'
+
+                this -> xhibit 'Sends Crown Court lists to'
             }
 
             court-scheduler-service = application {
@@ -52,6 +58,7 @@ model {
                 title 'Staging Pub Hub'
                 technology 'JavaEE + Wildfly'
                 scsl-database -> this
+                this -> cath 'Publishes court lists to'
             }
 
             listing-database = database {

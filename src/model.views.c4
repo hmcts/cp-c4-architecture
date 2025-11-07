@@ -81,4 +81,10 @@ views {
       include cp.court-hearings-subdomain.hearing-system.staging-darts.*
       // include * <-> cp.scheduling-and-listing-subdomain.scheduling-and-listing-system.*
     }
+
+    view court-scheduler-service-component-context of cp.scheduling-and-listing-system.court-scheduler-service {
+      title '[Component Context] Court Scheduler Service'
+      include
+        *
+    }
 }

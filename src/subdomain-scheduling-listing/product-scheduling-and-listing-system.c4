@@ -32,7 +32,9 @@ model {
                 technology 'Angular'
                 summary 'Provides functionality for managing court schedules'
                 
-                this -> court-scheduler-service 'makes API calls to'
+                this -> api 'makes API calls to' {
+                    technology 'JSON/HTTPS'
+                }
 
                 listing_officer -> this 'Manages court schedule using'
 
@@ -42,16 +44,55 @@ model {
                 title 'Listing Service'
                 technology 'JavaEE + Wildfly'
                 this -> listing-database
-                this -> court-scheduler-service 'books and vacates hearings using'
+                
 
                 this -> xhibit 'Sends Crown Court lists to'
+
+                listing-service-command-api = component {
+                    title 'Command API'
+
+                    this -> court-scheduler-service.api 'books and vacates hearings using'
+                }
             }
 
             court-scheduler-service = application {
                 title 'Court Scheduler Service'
                 technology 'JavaEE + Wildfly'
                 this -> scsl-database
-                rota -> this "Sends court schedules to"
+                
+                api = component {
+                    title 'Court Scheduler API'
+                    technology 'Java Component'
+                    summary 'REST API for other services in the system'
+
+                    this -> rota-file-processor
+                    this -> common-service
+                }
+
+                rota-file-processor = component {
+                    title 'Rota File Processor'
+                    technology 'Java Component'
+                    summary 'API for Rota file processing'
+
+                    rota -> this "Sends court schedules to"
+                    this -> common-service
+                }
+
+                common-service = component {
+                    title 'Common Service'
+                    technology 'Java Component'
+                    summary 'Business logic'
+
+                    this -> view-store-persistance-service
+                }
+
+                view-store-persistance-service = component {
+                    title 'View Store Persistance Service'
+                    technology 'Java Component'
+                    summary 'CRUD Repository'
+
+                    this -> scsl-database
+                }
             }
 
             staging-pub-hub-service = application {

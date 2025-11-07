@@ -73,8 +73,8 @@ views {
 	}
 	
 
-    view scheduling-and-listing-system-container-context of cp.scheduling-and-listing-system {
-      title '[Container Context] Scheduling and Listing System'
+    view scheduling-and-listing-system-container-view of cp.scheduling-and-listing-system {
+      title '[Container View] Scheduling and Listing System'
       include
         *
       // include cp.court-hearings-subdomain.hearing-system
@@ -82,8 +82,8 @@ views {
       // include * <-> cp.scheduling-and-listing-subdomain.scheduling-and-listing-system.*
     }
 
-    view court-scheduler-service-component-context of cp.scheduling-and-listing-system.court-scheduler-service {
-      title '[Component Context] Court Scheduler Service'
+    view court-scheduler-service-component-view of cp.scheduling-and-listing-system.court-scheduler-service {
+      title '[Component View] Court Scheduler Service'
       include
         *
     }

@@ -1,0 +1,76 @@
+model {
+    extend cp.shared-components-subdomain {
+        notification-notify = application {
+                title 'Notification Notify'
+                technology 'JavaEE + Wildfly'
+                summary 'Acts an an intermediary between common platform services and GOV.UK Notify and Office 365 services for sending emails and letters'
+        }
+        system-id-mapper = application {
+                title 'System Id Mapper'
+                technology 'JavaEE + Wildfly'
+        }
+
+        system-scheduling = application {
+            title 'System Scheduling'
+            technology 'JavaEE + Wildfly'
+        }	
+        notification-service = application {
+            title 'Notification Service'
+            technology 'JavaEE + Wildfly'
+        }		
+
+        document-generator = application {
+            title 'Document Generator'
+            technology 'JavaEE + Wildfly'
+        }
+
+        users-and-groups-system = system {
+            title 'Users and Groups Systems'
+            summary 'Manages users, groups, organisations, roles and permissions'
+        
+            users-and-groups = application {
+                title 'Users and Groups'
+                technology 'JavaEE + Wildfly'
+                summary 'Stores users, groups, organisations, roles and permissions'
+            }
+
+            idam-events-consumer = application {
+                title 'IDAM Events Consumer'
+                technology ' Java + Dropwizard'
+                summary 'Passes events from IDAM to the Staging service'
+            }
+
+            staging = application {
+                title 'Staging'
+                technology 'JavaEE + Wildfly'
+                summary 'Receives IDAM events via the IDAM Events Consumer and updates the Users and Groups service
+'
+            }
+        }
+
+        support = application {
+            title 'Support'
+            technology 'JavaEE + Wildfly'
+        }
+
+        system-announcement = application {
+            title 'System Announcement'
+            technology 'JavaEE + Wildfly'
+        }
+
+        reference-data-system = system {
+            reference-data = application {
+                title 'Reference Data'
+                technology 'JavaEE + Wildfly'                
+            }
+            reference-data-offences = application {
+                title 'Reference Data Offences'
+                technology 'JavaEE + Wildfly'                
+            }
+            pnld-offences = application {
+                title 'PNLD Offences'
+                technology 'JavaEE + Wildfly'     
+            }
+        }
+    }
+}

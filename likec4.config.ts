@@ -1,8 +1,8 @@
 import { defineConfig } from 'likec4/config'
 
 export default defineConfig({
-  name: 'likec4-template',
-  title: 'LikeC4 Template',
+  name: 'common-platform',
+  title: 'Common Platform',
   exclude: [
     'node_modules/**'
   ],

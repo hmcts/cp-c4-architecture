@@ -11,13 +11,18 @@ views {
   }
 
   view common-platform of cp {
+    title 'Common Platform'
     include
       cp,
       cp.court-hearings-subdomain.*,
+      cp.scheduling-and-listing-subdomain,
       cp.scheduling-and-listing-subdomain.*,
       cp.case-administration-subdomain.*,
+      cp.opami-subdomain,
       cp.opami-subdomain.*,
-      cp.case-ingestion-subdomain.*
+      cp.case-ingestion-subdomain.*,
+      cp.shared-components-subdomain
+    exclude * <-> *
 
     style cp {
       opacity 0%
@@ -33,10 +38,11 @@ views {
       include cp.scheduling-and-listing-subdomain._
       include cp.case-administration-subdomain._
       include cp.opami-subdomain._
+      include cp.case-ingestion-subdomain._
       exclude * -> *
       include * <-> cp.hearing-system
 
-      style cp.case-administration-subdomain.*, cp.scheduling-and-listing-subdomain.*, cp.opami-subdomain.* {
+      style cp.case-administration-subdomain.*, cp.scheduling-and-listing-subdomain.*, cp.opami-subdomain.*, cp.case-ingestion-subdomain.* {
         color secondary
       }
     }

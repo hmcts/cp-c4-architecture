@@ -1,0 +1,7 @@
+model {
+    extend cp {
+        shared-components-subdomain = subdomain {
+            title 'Shared Components'
+        }
+    }
+}

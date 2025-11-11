@@ -1,6 +1,5 @@
 model {
 
-
   cp = system 'Common Platform' {
 
     description '

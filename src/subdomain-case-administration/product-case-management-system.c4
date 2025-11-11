@@ -6,6 +6,10 @@ model {
 
             this -> cp.scheduling-and-listing-system 'requests listings for hearings using'
             this -> cp.management-information-system 'sends data to'
+
+            prosecution-case-file-service = application {
+                title 'Prosectution Case File Service'
+            }
         }
     }
 }

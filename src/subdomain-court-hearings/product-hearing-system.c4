@@ -26,6 +26,16 @@ model {
                 technology 'JavaEE + Wildfly'
                 cp.listing-service -> this 'listens to daily court list published by'
             }
+
+            hearing-service = application {
+                title 'Hearing Service'
+                technology 'JavaEE + Wildfly'
+            }
+
+            results-service = application {
+                title 'Results Service'
+                technology 'JavaEE + Wildfly'         
+            }
         }
     }
 }

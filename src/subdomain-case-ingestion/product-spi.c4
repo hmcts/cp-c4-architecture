@@ -3,8 +3,48 @@ model {
         spi = system {
             title 'Standard Prosecutor Interface (SPI)'
             description 'Standard Prosecutor Interface'
+            summary 'Implements the SPI interface to receive police cases'
 
-            this -> cp.case-management-system 'sends cases to'
+            error-queue-ui = webapp {
+                title 'Error Queue UI'
+                technology 'Angular'
+                summary 'Enables resolution of API case validation errors'
+                this -> cp.case-management-system.prosecution-case-file-service 'makes API calls to'
+
+                court_admin -> this 'resolves case validation errors using'
+
+            }
+
+            case-filter = application {
+                title 'Case Filter'
+                technology 'Azure Functions'
+                summary 'Case interceptor that routes to the appropriate magistrate case management system (Libra or Common Platform) based on routing rules'
+                this -> libra 'forwards cases to'
+                this -> staging-spi-service 'forwards cases to'
+                cjse -> this 'sends police cases to'
+                this -> filter-routing-configuiration
+            }
+
+            staging-spi-service = application {
+                title 'Staging SPI'
+                technology 'JavaEE + Wildfly'
+                summary 'Implements the SPI interface to enable receiving police cases and sending case results to police'
+
+                this -> cp.case-management-system.prosecution-case-file-service 'sends cases to'
+                this -> staging-spi-database
+                cp.hearing-system.results-service -> this 'sends results'
+                this -> cjse 'sends case results'
+            }
+
+            staging-spi-database = database {
+                title 'Staging SPI Database'
+                summary 'Stores events and entities'
+            }
+
+            filter-routing-configuiration = database {
+                title 'Filter Routing Configuration'
+                summary 'Stores filter criteria configuration'
+            }
         }
     }
 }

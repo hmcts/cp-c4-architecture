@@ -48,8 +48,9 @@ model {
 
                 this -> xhibit 'Sends Crown Court lists to'
 
-                listing-service-command-api = component {
+                command-api = component {
                     title 'Command API'
+                    technology 'Java'
 
                     this -> court-scheduler-service.api 'books and vacates hearings using'
                 }

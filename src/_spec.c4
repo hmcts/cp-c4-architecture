@@ -1,101 +1,101 @@
 specification {
 
-  element actor {
-    style {
-      shape person
-      color green
+    element actor {
+        style {
+            shape person
+            color green
+        }
     }
-  }
 
-  element platform {
-    notation "Software Platform"
-    technology 'Software Platform'
-    style {
-      opacity 20%
+    element platform {
+          notation "Software Platform"
+          technology 'Software Platform'
+          style {
+            opacity 20%
+          }
     }
-  }
 
-  element subdomain {
-    notation "Subdomain"
-    technology 'Subdomain'
-    style {
-      opacity 20%
+    element subdomain {
+        notation "Subdomain"
+        technology 'Subdomain'
+        style {
+            opacity 20%
+        }
     }
-  }
 
-  element shared-component {
-    notation "Shared Component"
-    style {
-      opacity 20%
+    element shared-component {
+        notation "Shared Component"
+        style {
+            opacity 20%
+        }
     }
-  }
 
-  element system {
-    notation "Software System"
-    style {
-      opacity 20%
+    element system {
+        notation "Software System"
+        style {
+            opacity 20%
+        }
     }
-  }
 
-  element external-system {
-    notation "External Software System"
-    style {
-      opacity 20%
-      color muted
+    element external-system {
+        notation "External Software System"
+        style {
+            opacity 20%
+            color muted
+        }
     }
-  }
 
-  element application
+    element application
 
-  element component {
-    style {
-      opacity 20%
+    element component {
+        style {
+            opacity 20%
+        }
     }
-  }
-  element service {
-    link https://github.com/likec4/template 'Repository'
-  }
-
-  element webapp {
-    notation "Web Application"
-    style {
-      shape browser
+    element service {
+        link https://github.com/likec4/template 'Repository'
     }
-  }
 
-  element database {
-    notation "Database"
-    technology "PostgreSQL"
-    style {
-      shape storage
-      icon tech:postgresql
-      opacity 30%
+    element webapp {
+        notation "Web Application"
+        style {
+            shape browser
+        }
     }
-  }
-  element db-table {
-    notation "Database Table"
-    style {
-      shape storage
-      icon tech:postgresql
+
+    element database {
+        notation "Database"
+        technology "PostgreSQL"
+        style {
+            shape storage
+            icon tech:postgresql
+            opacity 30%
+        }
     }
-  }
+    element db-table {
+        notation "Database Table"
+        style {
+            shape storage
+            icon tech:postgresql
+        }
+    }
 
-  tag deprecated {
-    color rgb(100 100 100)
-  }
+    tag deprecated {
+        color rgb(100 100 100)
+    }
 
-  relationship solid {
-    line solid
-  }
+    relationship solid {
+        line solid
+    }
 
-  relationship many-to-many {
-    line dotted
-  }
+    relationship many-to-many {
+        line dotted
+    }
 
-  color pale-blue #a4c1f4
-  color pale-yellow #ffe699
-  color pale-green #b6d7a8
-  color pale-purple #d5a6bd
-  color pale-red #ea9999
-  color pale-grey #999999
+    color pale-blue #a4c1f4
+    color pale-yellow #ffe699
+    color pale-green #b6d7a8
+    color pale-purple #d5a6bd
+    color pale-red #ea9999
+    color pale-grey #999999
 }

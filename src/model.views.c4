@@ -1,163 +1,50 @@
 views {
 
-  view index {
-    title '[System Landscape] Common Platform'
-    include
-      *
+    view index {
+        title '[System Landscape] Common Platform'
+        include *
 
-    style cp {
-      size large
-    }
-  }
-
-  view common-platform-subdomains of cp {
-    title '[System Landscape] Common Platform Subdomains and Products'
-    include
-      cp,
-      cp.court-hearings-subdomain.*,
-      cp.scheduling-and-listing-subdomain,
-      cp.scheduling-and-listing-subdomain.*,
-      cp.case-administration-subdomain.*,
-      cp.opami-subdomain,
-      cp.opami-subdomain.*,
-      cp.case-ingestion-subdomain.*,
-      cp.shared-components-subdomain
-    exclude * <-> *
-
-    style cp {
-      opacity 0%
-    }
-  }
-
-  view common-platform of cp {
-    title '[System Landscape] Common Platform Products and Components'
-    include
-      cp,
-      cp.court-hearings-subdomain.*,
-      cp.scheduling-and-listing-subdomain,
-      cp.scheduling-and-listing-subdomain.*,
-      cp.case-administration-subdomain.*,
-      cp.opami-subdomain,
-      cp.opami-subdomain.*,
-      cp.case-ingestion-subdomain.*,
-      cp.shared-components-subdomain,
-      cp.shared-components-subdomain.*
-    exclude * <-> *
-
-    style cp {
-      opacity 0%
-    }
-  }
-
-    view hearing-system-context of cp.hearing-system {
-      title '[System Context] Hearing System'
-      include *
-        where
-          not (kind is application or kind is database or kind is webapp)
-      include cp.court-hearings-subdomain._
-      include cp.scheduling-and-listing-subdomain._
-      include cp.case-administration-subdomain._
-      include cp.opami-subdomain._
-      include cp.case-ingestion-subdomain._
-      exclude * -> *
-      include * <-> cp.hearing-system
-
-      style cp.case-administration-subdomain.*, cp.scheduling-and-listing-subdomain.*, cp.opami-subdomain.*, cp.case-ingestion-subdomain.* {
-        color secondary
-      }
+        style cp {
+            size large
+        }
     }
 
-    view results-distribution-system-context of cp.results-distribution-system {
-      title '[System Context] Results Distribution System'
-      include *
+    view common-platform-subdomains of cp {
+        title '[System Landscape] Common Platform Subdomains and Products'
+        include
+            cp,
+            cp.court-hearings-subdomain.*,
+            cp.scheduling-and-listing-subdomain,
+            cp.scheduling-and-listing-subdomain.*,
+            cp.case-administration-subdomain.*,
+            cp.opami-subdomain,
+            cp.opami-subdomain.*,
+            cp.case-ingestion-subdomain.*,
+            cp.shared-components-subdomain
+        exclude * <-> *
+
+        style cp {
+            opacity 0%
+        }
     }
 
-     /**
-      * @likec4-generated(v1)
-      * iKRoYXNo2ShkMTY1M2FmMmI5NjA1ZmE4ZmE1NmM5ZmJjNzU3Y2JiMDUxNTUxMjYwqmF1dG9MYXlvdXSBqWRpcmVjdGlvbqJUQqF4zQEPoXnlpXdpZHRozQenpmhlaWdodM0EpqVub2Rlc4+kcm90YYKhYpTNA0nNAvLNAUDMtKFjwq9saXN0aW5nX29mZmljZXKCoWKUzQFR5c0BQMy0oWPCq2NvdXJ0X2NsZXJrgqFilM0DUeXNAULMtKFjwq1sZWdhbF9hZHZpc29ygqFilM0FU+XNAULMtKFjwqtjb3VydF9hZG1pboKhYpTNB1XlzQFCzLShY8LZIGNwLmNhc2UtYWRtaW5pc3RyYXRpb24tc3ViZG9tYWlugqFilM0BHc0CwM0BkM0BDqFjw9kjY3Auc2NoZWR1bGluZy1hbmQtbGlzdGluZy1zdWJkb21haW6CoWKUzQQQzQFWzQG5zQEOoWPDpnhoaWJpdIKhYpTNBU3NAvLN
-      * AUvMtKFjwqRjYXRogqFilM0HXM0C8s0BQMy0oWPCu2NwLmNvdXJ0LWhlYXJpbmdzLXN1YmRvbWFpboKhYpTNAQ/NAVbNAarNAQ6hY8OyY3Aub3BhbWktc3ViZG9tYWlugqFilM0HIM0BVs0Bls0BDqFjw9k3Y3AuY2FzZS1hZG1pbmlzdHJhdGlvbi1zdWJkb21haW4uY2FzZS1tYW5hZ2VtZW50LXN5c3RlbYKhYpTNAUXNAvLNAUDMtKFjwtlBY3Auc2NoZWR1bGluZy1hbmQtbGlzdGluZy1zdWJkb21haW4uc2NoZWR1bGluZy1hbmQtbGlzdGluZy1zeXN0ZW2CoWKUzQQ4zQGIzQFpzLShY8LZKmNwLmNvdXJ0LWhlYXJpbmdzLXN1YmRvbWFpbi5oZWFyaW5nLXN5c3RlbYKhYpTNATfNAYjNAVrMtKFjwtkwY3Aub3BhbWktc3ViZG9tYWluLm1hbmFnZW1lbnQtaW5mb3Jt
-      * YXRpb24tc3lzdGVtgqFilM0HSM0BiM0BRsy0oWPCpWVkZ2Vzi6cxdjByaW02g6JjcJGCoXjLQJVUnvl+cbehectAg5TMzMzMzaFshKF4zQVvoXnNApeld2lkdGjMqqZoZWlnaHQSoXCUks0FFc0CRpLNBRXNAm+SzQUVzQKhks0FFc0CzKZ6MTlla22DomNwkYKheMtAmJeZmZmZmqF5y0CDlmZmZmZmoWyEoXjNBn6hec0CnKV3aWR0aMyBpmhlaWdodBKhcJSSzQWNzQJGks0Fx80CcZLNBg3NAqSSzQZIzQLQpzE1czAxYmaDomNwkYKheM0C+qF5zQIUoWyEoXjNA2Shec0CDqV3aWR0aMzmpmhlaWdodBKhcJSSy0CTsgAAAAAAzQHikstAkA4zMzMzM80B4pLLQIZnmZmZmZrNAeKSzQHkzQHipmp0bzV3aYOiY3CRgqF4y0CYf5mZmZmaoXnNAeKhbISheM0GdaF5zQHipXdp
-      * ZHRoWKZoZWlnaHQSoXCUks0EnM0CRpLNBGHNAnGSzQQbzQKkks0D380C0KZpbTlhcjSDomNwkYKheMtAkUKgY5I+zKF5y0CF2zMzMzMzoWyEoXjNBGuhec0Cl6V3aWR0aMyhpmhlaWdodBKhcJeSzQMDzPGSzQMyzQETks0Dac0BOJLNA5/NAVWSzQPZzQF0ks0EGs0BkZLNBFfNAainMWtocmtmcoOiY3CRgqF4y0CIps5EL2l0oXnLQGvlQgUp4PShbISheM0DaqF5zQEOpXdpZHRozPOmaGVpZ2h0I6Fwl5LNBErM8ZLNBFHNARKSzQRdzQE3ks0Eb80BVZLNBHvNAWiSzQSKzQF6ks0Ems0Bi6Vsam51M4OiY3CRgqF4y0CRSrDRMvSjoXnLQGwWZmZmZmahbISheM0Eb6F5zQERpXdpZHRozPumaGVpZ2h0EqFwl5LNBbnM8ZLNBabNARGSzQWQzQE1ks0Fe80BVZLNBXDNAWaS
-      * zQVkzQF4ks0FWM0BiqZjOTFzZW+DomNwkYKheMtAljk91L4i86F5y0BsFmZmZmZmoWyEoXjNBXChec0BEaV3aWR0aMzqpmhlaWdodCOhcJeSzQc5zPGSzQcPzQETks0G280BOZLNBqnNAVWSzQZmzQF6ks0GGc0BmZLNBdTNAbGnMXlsNnFsM4OiY3CRgqF4y0CbOJsQ/DZBoXnLQGvN6c7O+R6hbISheM0Gd6F5zQEOpXdpZHRozPymaGVpZ2h0EqFwmpLNCLLM8ZLNCJ7M/JLNCIrNAQeSzQh2zQERks0IOM0BMZLNCCvNAT+SzQfpzQFVks0HOc0BkJLNBmjNAbmSzQXUzQHQpm05bW1jcoOiY3CRgqF4zQMPoXnNAZ+hbISheM0DZKF5zQGlpXdpZHRozJmmaGVpZ2h0EqFwl5LNAXLM8ZLNAYnM/ZLNAaLNAQiSzQG5zQERks0Cl80BapLNA6XNAaeSzQRWzQHKpmxjMXI4N4Oi
-      * Y3CRgqF4y0CIPAAAAAAAoXnLQIYjKr/LLrahbISheM0DX6F5zQKcpXdpZHRozNymaGVpZ2h0EqFwlJLNAdfNBIuSy0CGHszMzMzNy0CN9ZmZmZmakstAj/0zMzMzM8tAhXJmZmZmZpLLQJOyAAAAAADNAeI=
-      */
-     view scheduling-and-listing-system-context of cp.scheduling-and-listing-system {
-      title '[System Context] Scheduling and Listing System'
-      include *
-        where
-          not (kind is application or kind is database or kind is webapp)
-      include cp.court-hearings-subdomain._
-      include cp.case-administration-subdomain._
-      include cp.opami-subdomain._
-      exclude * -> *
-      include * <-> cp.scheduling-and-listing-system
+    view common-platform of cp {
+        title '[System Landscape] Common Platform Products and Components'
+        include
+            cp,
+            cp.court-hearings-subdomain.*,
+            cp.scheduling-and-listing-subdomain,
+            cp.scheduling-and-listing-subdomain.*,
+            cp.case-administration-subdomain.*,
+            cp.opami-subdomain,
+            cp.opami-subdomain.*,
+            cp.case-ingestion-subdomain.*,
+            cp.shared-components-subdomain,
+            cp.shared-components-subdomain.*
+        exclude * <-> *
 
-      style cp.case-administration-subdomain.*, cp.court-hearings-subdomain.*, cp.opami-subdomain.*, cp.court-hearings-subdomain.results-distribution-system {
-        color secondary
-      }
-	}
-	
-
-    view scheduling-and-listing-system-container-view of cp.scheduling-and-listing-system {
-      title '[Container View] Scheduling and Listing System'
-      include
-        *
-      // include cp.court-hearings-subdomain.hearing-system
-      include cp.court-hearings-subdomain.hearing-system.staging-darts.*
-      // include * <-> cp.scheduling-and-listing-subdomain.scheduling-and-listing-system.*
-    }
-
-    view court-scheduler-service-component-view of cp.scheduling-and-listing-system.court-scheduler-service {
-      title '[Component View] Court Scheduler Service'
-      include
-        *
-    }
-
-    view spi-system-context of cp.spi {
-      title '[System Context] SPI'
-      include *
-        where
-          not (kind is application or kind is database or kind is webapp)
-      include cp.case-administration-subdomain._
-      include cp.court-hearings-subdomain._
-      exclude * -> *
-      include * <-> cp.spi
-
-      style cp.case-administration-subdomain.*, cp.court-hearings-subdomain.* {
-        color secondary
-      }
-	  }
-
-    view spi-container-view of cp.spi {
-      title '[Container View] SPI'
-      include
-        *
-      include cp.case-management-system
-      include cp.court-hearings-subdomain.hearing-system
-      exclude * -> *
-      include * <-> cp.spi
-      include cp.spi <-> cp.spi
-
-      style cp.case-administration-subdomain.*, cp.court-hearings-subdomain.* {
-        color secondary
-      }
-    }
-
-    view work-management-system-context of cp.work-management-system {
-      title '[System Context] Work Management System'
-      include *
-        where
-          not (kind is application or kind is database or kind is webapp)
-      exclude * -> *
-      include * <-> cp.work-management-system
-
-      style cp.case-administration-subdomain.*, cp.court-hearings-subdomain.* {
-        color secondary
-      }
-	  }
-
-    view work-management-system-context-container-view of cp.work-management-system {
-      title '[Container View] Work Management System'
-      include *
+        style cp {
+            opacity 0%
+        }
     }
 }

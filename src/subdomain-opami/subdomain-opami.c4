@@ -2,6 +2,9 @@ model {
     extend cp {
         opami-subdomain = subdomain {
             title 'Operational and Management Information'
+            style {
+                color pale-red 
+            }
         }
     }
 }

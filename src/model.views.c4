@@ -1,7 +1,7 @@
 views {
 
   view index {
-    title 'System Landscape'
+    title '[System Landscape] Common Platform'
     include
       *
 
@@ -10,8 +10,8 @@ views {
     }
   }
 
-  view common-platform of cp {
-    title 'Common Platform'
+  view common-platform-subdomains of cp {
+    title '[System Landscape] Common Platform Subdomains and Products'
     include
       cp,
       cp.court-hearings-subdomain.*,
@@ -22,6 +22,26 @@ views {
       cp.opami-subdomain.*,
       cp.case-ingestion-subdomain.*,
       cp.shared-components-subdomain
+    exclude * <-> *
+
+    style cp {
+      opacity 0%
+    }
+  }
+
+  view common-platform of cp {
+    title '[System Landscape] Common Platform Products and Components'
+    include
+      cp,
+      cp.court-hearings-subdomain.*,
+      cp.scheduling-and-listing-subdomain,
+      cp.scheduling-and-listing-subdomain.*,
+      cp.case-administration-subdomain.*,
+      cp.opami-subdomain,
+      cp.opami-subdomain.*,
+      cp.case-ingestion-subdomain.*,
+      cp.shared-components-subdomain,
+      cp.shared-components-subdomain.*
     exclude * <-> *
 
     style cp {

@@ -2,6 +2,9 @@ model {
     extend cp {
         court-hearings-subdomain = subdomain {
             title 'Court Hearings'
+            style {
+                color pale-purple
+            }
         }
     }
 }

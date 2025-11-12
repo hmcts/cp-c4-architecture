@@ -1,30 +1,57 @@
 model {
     extend cp.shared-components-subdomain {
-        notification-notify = application {
-                title 'Notification Notify'
+
+        notify-system = shared-component {
+            title 'Notify System'
+            summary 'Provides email and letter sending services to the rest of the common platform'
+            notification-notify = application {
+                    title 'Notification Notify'
+                    technology 'JavaEE + Wildfly'
+                    summary 'Acts an an intermediary between common platform services and GOV.UK Notify and Office 365 services for sending emails and letters'
+            }
+        }   
+
+        id-mapper-system = shared-component {
+            title 'Id Mapper System'
+            summary 'Stores mappings between different types of identifiers for the rest of the common platform'
+            system-id-mapper = application {
+                    title 'System Id Mapper'
+                    technology 'JavaEE + Wildfly'
+                    summary 'Stores mappings between different types of identifiers for other systems to query'
+            }
+        }   
+
+        scheduling-system = shared-component {
+            title 'Scheduling System'
+            summary 'Shared system for scheduling jobs to send commands to other systems at specific times'
+            system-scheduling = application {
+                title 'System Scheduling'
                 technology 'JavaEE + Wildfly'
-                summary 'Acts an an intermediary between common platform services and GOV.UK Notify and Office 365 services for sending emails and letters'
+                summary 'Sends commands to other systems on a scheduled basis'
+            }	
         }
-        system-id-mapper = application {
-                title 'System Id Mapper'
+
+        ui-notification-system = shared-component {
+            title 'UI Notification System'
+            summary 'Enables the UI to receive notifications when events occur in other parts of the common platform'
+            notification-service = application {
+                title 'Notification Service'
                 technology 'JavaEE + Wildfly'
+                summary 'Sends events to the UI using a subscription-based model'
+            }		
+        }   
+
+        document-generation-system = shared-component {
+            title 'Document Generation System'
+            summary 'Shared solution for generating documents from templates'
+            document-generator = application {
+                title 'Document Generator'
+                technology 'JavaEE + Wildfly'
+                summary 'Generates PDF documents using templates and data provided by calling systems'
+            }
         }
 
-        system-scheduling = application {
-            title 'System Scheduling'
-            technology 'JavaEE + Wildfly'
-        }	
-        notification-service = application {
-            title 'Notification Service'
-            technology 'JavaEE + Wildfly'
-        }		
-
-        document-generator = application {
-            title 'Document Generator'
-            technology 'JavaEE + Wildfly'
-        }
-
-        users-and-groups-system = system {
+        users-and-groups-system = shared-component {
             title 'Users and Groups Systems'
             summary 'Manages users, groups, organisations, roles and permissions'
         
@@ -48,17 +75,27 @@ model {
             }
         }
 
-        support = application {
-            title 'Support'
-            technology 'JavaEE + Wildfly'
+        support-system = shared-component {
+            title 'Support System'
+            support = application {
+                title 'Support'
+                technology 'JavaEE + Wildfly'
+            }
         }
 
-        system-announcement = application {
-            title 'System Announcement'
-            technology 'JavaEE + Wildfly'
+        ssystem-announcement-system = shared-component {
+            title 'System Announcement System'
+            summary 'Manages system-wide announcements to be displayed on the UI'
+            system-announcement = application {
+                title 'System Announcement'
+                technology 'JavaEE + Wildfly'
+                summary 'Manages system-wide announcements to be displayed on the UI'
+            }
         }
 
-        reference-data-system = system {
+        reference-data-system = shared-component {
+            title 'Reference Data System'
+            summary 'Holds reference data used by the rest of the common platform'
             reference-data = application {
                 title 'Reference Data'
                 technology 'JavaEE + Wildfly'                

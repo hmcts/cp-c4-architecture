@@ -2,6 +2,9 @@ model {
     extend cp {
         case-administration-subdomain = subdomain {
             title 'Case Administration'
+            style {
+                color pale-yellow
+            }
         }
     }
 }

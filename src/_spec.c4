@@ -23,6 +23,13 @@ specification {
     }
   }
 
+  element shared-component {
+    notation "Shared Component"
+    style {
+      opacity 20%
+    }
+  }
+
   element system {
     notation "Software System"
     style {
@@ -84,4 +91,11 @@ specification {
   relationship many-to-many {
     line dotted
   }
+
+  color pale-blue #a4c1f4
+  color pale-yellow #ffe699
+  color pale-green #b6d7a8
+  color pale-purple #d5a6bd
+  color pale-red #ea9999
+  color pale-grey #999999
 }

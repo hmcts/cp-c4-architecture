@@ -1,0 +1,8 @@
+model {
+    extend cp.opami-subdomain {
+        audit-system = system {
+            title 'Audit System'
+            description ''
+        }
+    }
+}

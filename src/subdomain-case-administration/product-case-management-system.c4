@@ -54,6 +54,10 @@ model {
                 summary 'Stores events and entities'
             }
 
+            prosecution-case-file-service = application {
+                title 'Prosectution Case File Service'
+            }
+
             sjp-service = application {
                 title 'SJP Service'
                 technology 'JavaEE + Wildfly'

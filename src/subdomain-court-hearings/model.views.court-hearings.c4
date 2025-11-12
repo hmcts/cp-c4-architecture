@@ -1,0 +1,24 @@
+views {
+    view hearing-system-context of cp.hearing-system {
+        title '[System Context] Hearing System'
+        include *
+        where
+            not (kind is application or kind is database or kind is webapp)
+        include cp.court-hearings-subdomain._
+        include cp.scheduling-and-listing-subdomain._
+        include cp.case-administration-subdomain._
+        include cp.opami-subdomain._
+        include cp.case-ingestion-subdomain._
+        exclude * -> *
+        include * <-> cp.hearing-system
+
+        style cp.case-administration-subdomain.*, cp.scheduling-and-listing-subdomain.*, cp.opami-subdomain.*, cp.case-ingestion-subdomain.* {
+            color secondary
+        }
+    }
+
+    view results-distribution-system-context of cp.results-distribution-system {
+        title '[System Context] Results Distribution System'
+        include *
+    }
+}

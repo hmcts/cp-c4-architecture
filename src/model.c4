@@ -1,9 +1,9 @@
 model {
 
-  cp = system 'Common Platform' {
+    cp = system 'Common Platform' {
 
-    description '
-      Crime Common Platform
-    '
-  }
+        description '
+          Crime Common Platform
+        '
+    }
 }

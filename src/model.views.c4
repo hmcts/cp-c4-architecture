@@ -142,4 +142,10 @@ views {
         color secondary
       }
     }
+
+    view work-management-system-context-container-view of cp.work-management-system {
+      title '[System Context] Work Management System'
+      include *
+      include cp.case-administration-subdomain.work-management-system.*
+    }
 }

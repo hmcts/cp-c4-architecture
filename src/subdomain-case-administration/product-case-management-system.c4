@@ -7,8 +7,95 @@ model {
             this -> cp.scheduling-and-listing-system 'requests listings for hearings using'
             this -> cp.management-information-system 'sends data to'
 
-            prosecution-case-file-service = application {
-                title 'Prosectution Case File Service'
+            subscriptions-ui = webapp {
+                title 'Subscriptions UI'
+                technology 'Angular'
+                summary 'Provides ?'
+
+                this -> subscriptions-service "makes API calls to"
+            }
+
+            prosecution-casefile-ui = webapp {
+                title 'Prosection Case File UI'
+                technology 'Angular'
+                summary 'Provides access to the primary Case and Application at a glance management screens'
+            }
+
+            sjp-ui = webapp {
+                title 'SJP UI'
+                technology 'Angular'
+                summary 'Provides access to the primary Case and Application at a glance management screens for SJP (Single Justice Procedure) cases'
+
+                this -> sjp-service "makes API calls to"
+            }
+
+            case-management-ui = webapp {
+                title 'Case Management UI'
+                technology 'Angular'
+                summary 'Provides ?'
+            }
+
+            prosecutor-ui = webapp {
+                title 'Prosecutor UI'
+                technology 'Angular'
+                summary 'Provides ?'
+
+                this -> progression-service "makes API calls to"
+            }
+
+            progression-service = application {
+                title 'Case Progression Service'
+                technology 'JavaEE + Wildfly'
+                this -> progression-database
+            }
+
+            progression-database = database {
+                title 'Progression Database'
+                summary 'Stores events and entities'
+            }
+
+            sjp-service = application {
+                title 'SJP Service'
+                technology 'JavaEE + Wildfly'
+                this -> sjp-database
+            }
+
+            sjp-database = database {
+                title 'SJP Database'
+                summary 'Stores events and entities'
+            }
+
+            subscriptions-service = application {
+                title 'Subscriptions Service'
+                technology 'JavaEE + Wildfly'
+                this -> subscriptions-database
+            }
+
+            subscriptions-database = database {
+                title 'Subscriptions Database'
+                summary 'Stores events and entities'
+            }
+
+            assignment-service = application {
+                title 'Assignment Service'
+                technology 'JavaEE + Wildfly'
+                this -> assignment-database
+            }
+
+            assignment-database = database {
+                title 'Assignment Database'
+                summary 'Stores events and entities'
+            }
+
+            application-court-orders-service = application {
+                title 'Application Court Orders Service'
+                technology 'JavaEE + Wildfly'
+                this -> application-court-orders-database
+            }
+
+            application-court-orders-database = database {
+                title 'Application Court Orders  Database'
+                summary 'Stores events and entities'
             }
         }
     }

@@ -4,6 +4,51 @@ model {
             title 'Work Management System'
             description 'Manages work queues for case activity tasks'
 
+            ctsc_manager -> work-management-system 'Manages CTSC team\'s activity/task workload'
+            ctsc_manager -> camunda-optimize 'Reviews dashboards and team performance metrics'
+            ctsc_staff -> work-management-system 'Actions activity/tasks to provide support and helpdesk functions'
+
+            work-management-ui = webapp {
+                title 'Work Management UI'
+                technology 'Angular'
+                summary 'Provides functionality for managing CP activities (tasks)'
+
+                this -> work-management-proxy 'makes API calls to'
+
+                ctsc_manager -> this 'Manages CTSC activity workloads'
+                ctsc_staff -> this 'Action CTSC activities'
+            }
+
+            work-management-proxy = application {
+                title 'Work Management Proxy'
+                technology 'JavaEE + Wildfly'
+                this -> business-process-service 'makes API calls to'
+            }
+
+
+            business-process-service = application {
+                title 'Business Process Service'
+                technology 'JavaEE + Wildfly'
+                this -> camunda 'makes API calls to'
+            }
+
+
+            camunda = application {
+                title 'Camunda'
+                technology 'Camunda'
+                this -> camunda-database
+            }
+
+            camunda-optimize = application {
+                title 'Camunda Optimize'
+                technology 'Camunda'
+                this -> camunda-database
+            }
+
+            camunda-database = database {
+                title 'Camunda Database'
+                summary 'Stores workflow processes and acitivity (Task) information'
+            }
         }
     }
 }

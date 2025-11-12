@@ -1,4 +1,38 @@
 views {
+
+    view case-management-system-context of cp.case-management-system {
+        title '[System Context] Case Management System'
+        include *
+        where
+            not (kind is application or kind is database or kind is webapp)
+        include cp.court-hearings-subdomain._
+        include cp.case-ingestion-subdomain._
+        include cp.opami-subdomain._
+        include cp.scheduling-and-listing-subdomain._
+        exclude * -> *
+        include * <-> cp.case-management-system
+
+        style cp.case-ingestion-subdomain.*, cp.court-hearings-subdomain.*, cp.opami-subdomain.*, cp.scheduling-and-listing-subdomain.* {
+            color secondary
+        }
+    }
+
+    view case-management-system-container-view of cp.case-management-system {
+        title '[Container View] Case Management System'
+        include *
+        include cp.spi
+        include cp.hearing-system
+        include cp.scheduling-and-listing-system
+        include cp.management-information-system
+        exclude * -> *
+        include * <-> cp.case-management-system
+        include cp.case-management-system <-> cp.case-management-system
+
+        style cp.case-administration-subdomain.*, cp.court-hearings-subdomain.* {
+            color secondary
+        }
+    }
+
     view work-management-system-context of cp.work-management-system {
         title '[System Context] Work Management System'
         include *
@@ -6,13 +40,9 @@ views {
             not (kind is application or kind is database or kind is webapp)
         exclude * -> *
         include * <-> cp.work-management-system
-
-        style cp.case-administration-subdomain.*, cp.court-hearings-subdomain.* {
-            color secondary
-        }
     }
 
-    view work-management-system-context-container-view of cp.work-management-system {
+    view work-management-system-container-view of cp.work-management-system {
         title '[Container View] Work Management System'
         include *
     }

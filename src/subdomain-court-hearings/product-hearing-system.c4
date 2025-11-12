@@ -1,6 +1,6 @@
 model {
     extend cp.court-hearings-subdomain {
-        hearing-system = system {
+        hearing-system = product {
             title 'Hearing System'
             summary 'Manages the lifecycle of hearings and records what happens in them'
         

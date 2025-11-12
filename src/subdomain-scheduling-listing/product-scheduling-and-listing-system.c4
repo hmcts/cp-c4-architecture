@@ -1,6 +1,6 @@
 model {
     extend cp.scheduling-and-listing-subdomain {
-        scheduling-and-listing-system = system {
+        scheduling-and-listing-system = product {
             title 'Scheduling and Listing System'
             summary 'Allows management of court schedules, booking of hearings and the publication of listings'
         

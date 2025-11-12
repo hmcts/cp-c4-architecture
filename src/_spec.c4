@@ -23,6 +23,13 @@ specification {
         }
     }
 
+    element product {
+        notation "Product"
+        style {
+            opacity 20%
+        }
+    }
+
     element shared-component {
         notation "Shared Component"
         style {

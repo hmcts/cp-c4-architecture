@@ -1,6 +1,6 @@
 model {
     extend cp.court-hearings-subdomain {
-        online-plea = system {
+        online-plea = product {
             title 'Online Plea'
             description 'Allows defendants to enter an please online for SJP cases'
         }

@@ -1,6 +1,6 @@
 model {
     extend cp.case-administration-subdomain {
-        case-management-system = system {
+        case-management-system = product {
             title 'Case Management System'
             description 'Manages cases'
 

@@ -1,6 +1,6 @@
 model {
     extend cp.court-hearings-subdomain {
-        results-distribution-system = system {
+        results-distribution-system = product {
             title 'Results Distribution System'
             description 'Distributes results'
         }

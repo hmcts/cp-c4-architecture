@@ -1,6 +1,6 @@
 model {
     extend cp.case-ingestion-subdomain {
-        spi = system {
+        spi = product {
             title 'Standard Prosecutor Interface (SPI)'
             description 'Standard Prosecutor Interface'
             summary 'Implements the SPI interface to receive police cases'

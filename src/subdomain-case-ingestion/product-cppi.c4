@@ -1,6 +1,6 @@
 model {
     extend cp.case-ingestion-subdomain {
-        cppi = system {
+        cppi = product {
             title 'Common Platform Prosecutor Interface (CPPI)'
             description 'Common Platform Prosecutor Interface'
 

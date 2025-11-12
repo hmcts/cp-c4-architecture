@@ -1,6 +1,6 @@
 model {
     extend cp.opami-subdomain {
-        management-information-system = system {
+        management-information-system = product {
             title 'Management Information System'
             description ''
         }

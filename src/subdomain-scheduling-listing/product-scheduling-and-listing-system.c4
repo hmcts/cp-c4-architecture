@@ -11,7 +11,6 @@ model {
 
             scheduling-and-listing-system -> xhibit "Sends Crown Court lists to"
             scheduling-and-listing-system -> cath "Publish court lists to"
-            this -> cp.management-information-system 'sends data to'
             
 
             listing-ui = webapp {
@@ -47,6 +46,9 @@ model {
                 
 
                 this -> xhibit 'Sends Crown Court lists to'
+                this -[auth]-> cp.users-and-groups 'makes authorisation decisions using'
+                this -[mi]-> cp.management-information-system 'sends data to'
+                this -[audit]-> cp.audit-system 'sends data to'
 
                 command-api = component {
                     title 'Command API'

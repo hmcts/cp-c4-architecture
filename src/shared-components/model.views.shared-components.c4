@@ -1,0 +1,44 @@
+views {
+    view users-and-groups-system-context of cp.users-and-groups-system {
+        title '[System Context] Users and Groups System'
+        include *
+        where
+            not (kind is application or kind is database or kind is webapp)
+        // include cp.court-hearings-subdomain._
+        include cp.scheduling-and-listing-subdomain._
+        // include cp.case-administration-subdomain._
+        // include cp.opami-subdomain._
+        // include cp.case-ingestion-subdomain._
+        exclude * -> *
+        include * <-> cp.users-and-groups-system
+
+        style cp.case-administration-subdomain.*, cp.scheduling-and-listing-subdomain.*, cp.opami-subdomain.*, cp.case-ingestion-subdomain.* {
+            color secondary
+        }
+    }
+
+    view users-and-groups-system-container-view of cp.users-and-groups-system {
+        title '[Container View] Users and Groups System'
+        include *
+        // include cp.case-administration-subdomain.case-management-system
+        // include cp.court-hearings-subdomain.hearing-system
+        include cp.scheduling-and-listing-subdomain.scheduling-and-listing-system
+        // exclude * -> *
+        // include * <-> cp.users-and-groups-system
+    }
+
+    view reference-data-system-context of cp.reference-data-system {
+        title '[System Context] Reference Data System'
+        include *
+        include cp.court-hearings-subdomain.hearing-system
+    }
+
+    view reference-data-system-container-view of cp.reference-data-system {
+        title '[Container View] Reference Data System'
+        include
+            *
+        // include cp.court-hearings-subdomain.hearing-system
+        // include cp.court-hearings-subdomain.hearing-system.staging-darts.*
+        // include * <-> cp.scheduling-and-listing-subdomain.scheduling-and-listing-system.*
+    }
+}

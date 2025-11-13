@@ -1,0 +1,44 @@
+views {
+    view management-information-system-context of cp.management-information-system {
+        title '[System Context] Management Information System'
+        include *
+        where
+            not (kind is application or kind is database or kind is webapp)
+        // include cp.court-hearings-subdomain._
+        // include cp.scheduling-and-listing-subdomain._
+        // include cp.case-administration-subdomain._
+        // include cp.opami-subdomain._
+        // include cp.case-ingestion-subdomain._
+        exclude * -> *
+        include * <-> cp.management-information-system
+
+        style cp.case-administration-subdomain.*, cp.scheduling-and-listing-subdomain.*, cp.opami-subdomain.*, cp.case-ingestion-subdomain.* {
+            color secondary
+        }
+    }
+
+    view management-information-system-container-view of cp.management-information-system {
+        title '[Container View] Management Information System'
+        include
+            *
+        include cp.case-administration-subdomain.case-management-system
+        include cp.court-hearings-subdomain.hearing-system
+        include cp.scheduling-and-listing-subdomain.scheduling-and-listing-system
+        exclude * -> *
+        include * <-> cp.management-information-system
+    }
+
+    view audit-system-context of cp.audit-system {
+        title '[System Context] Audit System'
+        include *
+    }
+
+    view audit-system-container-view of cp.audit-system {
+        title '[Container View] Audit System'
+        include
+            *
+        // include cp.court-hearings-subdomain.hearing-system
+        // include cp.court-hearings-subdomain.hearing-system.staging-darts.*
+        // include * <-> cp.scheduling-and-listing-subdomain.scheduling-and-listing-system.*
+    }
+}

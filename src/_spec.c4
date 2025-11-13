@@ -1,6 +1,7 @@
 specification {
 
     element actor {
+        technology 'Person'
         style {
             shape person
             color green
@@ -25,6 +26,7 @@ specification {
 
     element product {
         notation "Product"
+        technology 'Product'
         style {
             opacity 20%
         }
@@ -32,6 +34,7 @@ specification {
 
     element shared-component {
         notation "Shared Component"
+        technology 'Shared Component'
         style {
             opacity 20%
         }
@@ -46,6 +49,7 @@ specification {
 
     element external-system {
         notation "External Software System"
+        technology 'External System'
         style {
             opacity 20%
             color muted
@@ -90,6 +94,10 @@ specification {
     tag deprecated {
         color rgb(100 100 100)
     }
+
+    relationship audit
+    relationship auth
+    relationship mi
 
     relationship solid {
         line solid

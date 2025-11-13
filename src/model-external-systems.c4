@@ -1,10 +1,11 @@
 model {
     libra = external-system "Libra" "Heritage magistrates case management system"
-    xhibit = external-system "Xhibit" "Maintains court schedules for Crown Courts" "Existing System"
-    rota = external-system "Rota" "Prepares sitting pattern for Magistrates Courts" "Existing System"
-    cath = external-system "CATH" "" "Existing System"
-    darts = external-system "DARTS" "Manages digital sudio recordins and transcripts" "Existing System"
-    hmpps = external-system "HMPPS" "Manages digital sudio recordins and transcripts" "Existing System"
-    laa = external-system "Legal Aid Agency" "Manages digital sudio recordins and transcripts" "Existing System"
+    xhibit = external-system "Xhibit" "Maintains court schedules for Crown Courts"
+    rota = external-system "Rota" "Prepares sitting pattern for Magistrates Courts"
+    cath = external-system "CATH" ""
+    darts = external-system "DARTS" "Manages digital audio recordings and transcripts"
+    hmpps = external-system "HMPPS" ""
+    laa = external-system "Legal Aid Agency" ""
     cjse = external-system "Criminal Justice System Exchange" "Routes and forwards police cases to HMCTS"
+    crime-idam = external-system "Crime IDAM" ""
 }

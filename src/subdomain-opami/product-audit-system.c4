@@ -2,7 +2,7 @@ model {
     extend cp.opami-subdomain {
         audit-system = product {
             title 'Audit System'
-            description ''
+            description 'Stores audit logs and enables querying of audit data for forensic audit purposes'
         }
     }
 }

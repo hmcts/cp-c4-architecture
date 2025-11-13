@@ -17,8 +17,26 @@ views {
         }
     }
 
+    view hearing-system-container-view of cp.hearing-system {
+        title '[Container View] Hearing System'
+        include *
+        include cp.shared-components-subdomain.reference-data-system
+        include cp.scheduling-and-listing-subdomain.scheduling-and-listing-system
+        exclude * -> *
+        include * <-> cp.hearing-system._
+    }
+
     view results-distribution-system-context of cp.results-distribution-system {
         title '[System Context] Results Distribution System'
         include *
+    }
+
+    view results-distribution-system-container-view of cp.results-distribution-system {
+        title '[Container View] Results Distribution System'
+        include
+            *
+        // include cp.court-hearings-subdomain.hearing-system
+        // include cp.court-hearings-subdomain.hearing-system.staging-darts.*
+        // include * <-> cp.scheduling-and-listing-subdomain.scheduling-and-listing-system.*
     }
 }

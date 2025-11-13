@@ -52,26 +52,51 @@ model {
         }
 
         users-and-groups-system = shared-component {
-            title 'Users and Groups Systems'
+            title 'Users and Groups System'
             summary 'Manages users, groups, organisations, roles and permissions'
         
+            manage-permissions-ui = webapp {
+                title 'Manage Permissions UI'
+                technology 'Angular'
+                summary 'Enables administration of user roles and permissions'
+
+                this -> users-and-groups 'updates user and group data' 'JSON/HTTPS'
+            }
+
             users-and-groups = application {
                 title 'Users and Groups'
                 technology 'JavaEE + Wildfly'
                 summary 'Stores users, groups, organisations, roles and permissions'
+
+                this -> users-and-groups-database 'stores user and group data in'
+            }
+
+            users-and-groups-database = database {
+                title 'Users and Groups Database'
+                summary 'Stores user and group data'
             }
 
             idam-events-consumer = application {
                 title 'IDAM Events Consumer'
                 technology ' Java + Dropwizard'
                 summary 'Passes events from IDAM to the Staging service'
+
+                crime-idam -> this "sends user and group changes to"
+                this -> staging "sends user and group changes to" "JSON/HTTPS"
             }
 
             staging = application {
                 title 'Staging'
                 technology 'JavaEE + Wildfly'
-                summary 'Receives IDAM events via the IDAM Events Consumer and updates the Users and Groups service
-'
+                summary 'Receives IDAM events via the IDAM Events Consumer and updates the Users and Groups service'
+
+                this -> staging-database 'stores events in'
+                this -> users-and-groups 'updates user and group data' 'JSON/HTTPS'
+            }
+
+            staging-database = database {
+                title 'Staging Database'
+                summary 'Stores events'
             }
         }
 

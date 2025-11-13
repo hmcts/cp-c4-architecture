@@ -4,15 +4,15 @@ model {
             title 'Hearing System'
             summary 'Manages the lifecycle of hearings and records what happens in them'
         
-            defendant -> hearing-system "Enters plea using"
-            judge_or_magestrate -> hearing-system "Enters plea using"
-            recorder -> hearing-system "Enters plea using"
-            listing_officer -> hearing-system "Enters plea using"
-            court_clerk -> hearing-system "Enters plea using"
-            legal_advisor -> hearing-system "Enters plea using"
-            court_admin -> hearing-system "Enters plea using"
+            defendant -> hearing-system "enters plea using"
+            judge_or_magestrate -> hearing-system "accesses hearing lists and boxwork using"
+            recorder -> hearing-system "records events during hearings using"
+            listing_officer -> hearing-system "manages court schedule and allocates hearings using"
+            court_clerk -> hearing-system "runs court room logistics on hearing day using"
+            legal_advisor -> hearing-system "manages hearins in court and advises magistrates using"
+            court_admin -> hearing-system "administrates hearsing and manages documenation using"
 
-            hearing-system -> results-distribution-system "distributes results using"
+            
             hearing-system -> darts "posts hearing events to"
             hearing-system -> hmpps "posts hearing events to"
             hearing-system -> laa "posts hearing events to"
@@ -20,6 +20,25 @@ model {
             hearing-system -> cp.case-management-system "shares case markers and case status changes with, creates hearings using"
             // hearing-system -> ref_data "hearing deatils changed"
             hearing-system -> cp.management-information-system "sends data to"
+
+            notepad-parsing-ui = webapp {
+                title 'Notepad Parsing UI'
+                technology 'Angular'
+                summary 'Converts entered shorthand text into result definitions and prompts'
+                
+                this -> cp.reference-data-system.reference-data 'obtains result definition data from' {
+                    technology 'JSON/HTTPS'
+                }
+
+                court_clerk -> this 'records hearing using'
+
+            }
+
+            court-hearing-ui = webapp {
+                title 'Court Hearing UI'
+                technology 'Angular'
+                summary 'Providdes functionality for managing hearings'
+             }
 
             staging-darts = application {
                 title 'Staging DARTS'
@@ -30,6 +49,8 @@ model {
             hearing-service = application {
                 title 'Hearing Service'
                 technology 'JavaEE + Wildfly'
+
+                this -> results-distribution-system "distributes results using"
             }
 
             results-service = application {

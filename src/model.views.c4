@@ -17,10 +17,11 @@ views {
             cp.scheduling-and-listing-subdomain,
             cp.scheduling-and-listing-subdomain.*,
             cp.case-administration-subdomain.*,
-            cp.opami-subdomain,
             cp.opami-subdomain.*,
             cp.case-ingestion-subdomain.*,
-            cp.shared-components-subdomain
+            cp.shared-components-subdomain,
+            cp.shared-components-subdomain.*
+                where kind is product
         exclude * <-> *
 
         style cp {

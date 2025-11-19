@@ -2,7 +2,7 @@ model {
     extend cp.case-ingestion-subdomain {
         cppi = product {
             title 'Common Platform Prosecutor Interface (CPPI)'
-            description 'Common Platform Prosecutor Interface'
+            description 'Enables cases and materials to submitted to the courts by non-police prosecutors'
 
             this -> cp.case-management-system 'sends cases to'
         }

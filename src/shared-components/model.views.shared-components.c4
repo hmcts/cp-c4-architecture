@@ -1,4 +1,10 @@
 views {
+
+    // view shared-components-system-landscape of cp.shared-components-subdomain {
+    //     title '[System Landscape] Users and Groups System'
+    //     include *
+    // }
+
     view users-and-groups-system-context of cp.users-and-groups-system {
         title '[System Context] Users and Groups System'
         include *
@@ -40,5 +46,10 @@ views {
         // include cp.court-hearings-subdomain.hearing-system
         // include cp.court-hearings-subdomain.hearing-system.staging-darts.*
         // include * <-> cp.scheduling-and-listing-subdomain.scheduling-and-listing-system.*
+    }
+
+    view notify-system-context of cp.notify-system {
+        title '[System Context] Notify System'
+        include *
     }
 }

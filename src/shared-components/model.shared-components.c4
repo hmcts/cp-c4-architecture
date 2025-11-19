@@ -8,6 +8,8 @@ model {
                     title 'Notification Notify'
                     technology 'JavaEE + Wildfly'
                     summary 'Acts an an intermediary between common platform services and GOV.UK Notify and Office 365 services for sending emails and letters'
+
+                    link https://github.com/hmcts/cpp-context-notification-notify 'Repository'
             }
         }   
 
@@ -51,7 +53,7 @@ model {
             }
         }
 
-        users-and-groups-system = shared-component {
+        users-and-groups-system = product {
             title 'Users and Groups System'
             summary 'Manages users, groups, organisations, roles and permissions'
         

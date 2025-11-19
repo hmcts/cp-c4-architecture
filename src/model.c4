@@ -1,9 +1,21 @@
 model {
 
     cp = system 'Common Platform' {
+        title 'Common Platform'
+        summary 'System of record for criminal cases in the Magistrates Court and Crown Court'
+        description '''
+          # Crime Common Platform
 
-        description '
-          Crime Common Platform
-        '
+          The Common Platform is the primary system of record for criminal cases and applications processed by the Magistrates Court and Crown Court. It operates alongside other systems to provide the following capabilities to HMCTS and numerous third parties:
+
+          * Case Management
+          * Case Subject Management
+          * Hearing Management
+          * Information Management
+          * Legal Matter Management
+          * Partner Management
+          * User Management
+          * Work Management
+        '''
     }
 }

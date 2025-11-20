@@ -8,4 +8,6 @@ model {
     laa = external-system "Legal Aid Agency" ""
     cjse = external-system "Criminal Justice System Exchange" "Routes and forwards police cases to HMCTS"
     crime-idam = external-system "Crime IDAM" ""
+    gov-uk-notify = external-system "GOV.UK Notify" "Government service for sending emails and letters"
+    office365 = external-system "Office 365" "Microsoft email service"
 }

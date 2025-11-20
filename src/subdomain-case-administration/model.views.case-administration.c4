@@ -46,4 +46,39 @@ views {
         title '[Container View] Work Management System'
         include *
     }
+
+    view progression-service-context of cp.case-management-system.progression-service {
+        title '[System Context] Case Progression Service'
+        include *
+        where
+            not (kind is application or kind is database or kind is webapp)
+        // Include shared components that progression-service uses
+        include cp.shared-components-subdomain.notify-system.notification-notify
+        include cp.shared-components-subdomain.id-mapper-system.system-id-mapper
+        include cp.shared-components-subdomain.reference-data-system.reference-data
+        // Include UI that uses progression-service
+        include cp.case-administration-subdomain.case-management-system.prosecutor-ui
+        exclude * -> *
+        include * <-> cp.case-management-system.progression-service
+        exclude * <-> *
+            where kind is audit or kind is mi or kind is auth
+
+        style cp.shared-components-subdomain.*, cp.case-administration-subdomain.* {
+            color secondary
+        }
+    }
+
+    view progression-service-container-view of cp.case-management-system.progression-service {
+        title '[Container View] Case Progression Service'
+        include *
+        include cp.shared-components-subdomain.notify-system
+        include cp.shared-components-subdomain.id-mapper-system
+        include cp.shared-components-subdomain.reference-data-system
+        include cp.case-administration-subdomain.case-management-system.prosecutor-ui
+    }
+
+    view progression-service-component-view of cp.case-management-system.progression-service {
+        title '[Component View] Case Progression Service'
+        include *
+    }
 }

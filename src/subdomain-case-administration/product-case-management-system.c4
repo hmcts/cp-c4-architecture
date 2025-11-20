@@ -46,22 +46,102 @@ model {
             progression-service = application {
                 title 'Case Progression Service'
                 technology 'JavaEE + Wildfly'
+                summary 'Manages case progression, hearings, documents, and notifications for prosecution cases'
                 this -> progression-database
+                this -> progression-eventprocessorstore-database
+                this -> cp.notify-system.notification-notify 'sends email and letter notifications' 'JSON/HTTPS'
+                this -> cp.id-mapper-system.system-id-mapper 'creates and queries ID mappings for notifications, materials, and documents' 'JSON/HTTPS'
+                this -> cp.reference-data-system.reference-data 'queries reference data' 'JSON/HTTPS'
+
+                command-api = component {
+                    title 'Command API'
+                    technology 'Java Component'
+                    summary 'REST API for case progression commands'
+                    
+                    this -> command-handler
+                }
+
+                command-handler = component {
+                    title 'Command Handler'
+                    technology 'Java Component'
+                    summary 'Processes progression commands and triggers domain events'
+                    
+                    this -> event-processor
+                }
+
+                query-api = component {
+                    title 'Query API'
+                    technology 'Java Component'
+                    summary 'REST API for querying case progression data'
+                    
+                    this -> query-view
+                }
+
+                query-view = component {
+                    title 'Query View'
+                    technology 'Java Component'
+                    summary 'Provides read models for case progression queries'
+                    
+                    this -> viewstore-persistence
+                }
+
+                event-listener = component {
+                    title 'Event Listener'
+                    technology 'Java Component'
+                    summary 'Listens to events from other systems'
+                    
+                    this -> event-processor
+                }
+
+                event-processor = component {
+                    title 'Event Processor'
+                    technology 'Java Component'
+                    summary 'Processes events and updates the viewstore, handles notifications and ID mappings'
+                    
+                    this -> viewstore-persistence
+                    this -> event-indexer
+                }
+
+                event-indexer = component {
+                    title 'Event Indexer'
+                    technology 'Java Component'
+                    summary 'Indexes events for search functionality'
+                    
+                    this -> viewstore-persistence
+                }
+
+                viewstore-persistence = component {
+                    title 'View Store Persistence'
+                    technology 'Java Component'
+                    summary 'CRUD Repository for progression viewstore data'
+                    
+                    this -> progression-database
+                }
             }
 
             progression-database = database {
                 title 'Progression Database'
-                summary 'Stores events and entities'
+                summary 'Stores events, aggregates, and viewstore data'
+            }
+
+            progression-eventprocessorstore-database = database {
+                title 'Progression Event Processor Store Database'
+                summary 'Stores event processor state and checkpoint data'
             }
 
             prosecution-case-file-service = application {
                 title 'Prosectution Case File Service'
+                technology 'JavaEE + Wildfly'
+                this -> cp.id-mapper-system.system-id-mapper 'creates and queries ID mappings' 'JSON/HTTPS'
+                this -> cp.notify-system.notification-notify 'sends email and letter notifications' 'JSON/HTTPS'
             }
 
             sjp-service = application {
                 title 'SJP Service'
                 technology 'JavaEE + Wildfly'
                 this -> sjp-database
+                this -> cp.users-and-groups-system.users-and-groups 'queries user details and permissions' 'JSON/HTTPS'
+                this -> cp.notify-system.notification-notify 'sends email and letter notifications' 'JSON/HTTPS'
             }
 
             sjp-database = database {
@@ -73,6 +153,8 @@ model {
                 title 'Subscriptions Service'
                 technology 'JavaEE + Wildfly'
                 this -> subscriptions-database
+                this -> cp.users-and-groups-system.users-and-groups 'queries user details and permissions' 'JSON/HTTPS'
+                this -> cp.notify-system.notification-notify 'sends email and letter notifications' 'JSON/HTTPS'
             }
 
             subscriptions-database = database {

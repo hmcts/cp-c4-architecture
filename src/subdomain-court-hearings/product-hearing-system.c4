@@ -34,6 +34,8 @@ model {
 
             }
 
+            hearing-service -> cp.reference-data-system.reference-data 'queries reference data' 'JSON/HTTPS'
+
             court-hearing-ui = webapp {
                 title 'Court Hearing UI'
                 technology 'Angular'
@@ -51,11 +53,24 @@ model {
                 technology 'JavaEE + Wildfly'
 
                 this -> results-distribution-system "distributes results using"
+                this -> cp.users-and-groups-system.users-and-groups 'queries user permissions and roles' 'JSON/HTTPS'
+                this -> cp.document-generation-system.document-generator 'generates documents' 'JSON/HTTPS'
             }
 
             results-service = application {
                 title 'Results Service'
-                technology 'JavaEE + Wildfly'         
+                technology 'JavaEE + Wildfly'
+                this -> cp.users-and-groups-system.users-and-groups 'queries user permissions and roles' 'JSON/HTTPS'
+            }
+
+            hearing-nows = application {
+                title 'Hearing NOWs'
+                technology 'JavaEE + Wildfly'
+                summary 'Manages Notice of Witness (NOW) documents and notifications for hearings'
+                this -> cp.id-mapper-system.system-id-mapper 'creates and queries ID mappings for notifications, materials, and documents' 'JSON/HTTPS'
+                this -> cp.users-and-groups-system.users-and-groups 'queries groups with organisation' 'JSON/HTTPS'
+                this -> cp.document-generation-system.document-generator 'generates NOW documents' 'JSON/HTTPS'
+                this -> cp.notify-system.notification-notify 'sends email and letter notifications' 'JSON/HTTPS'
             }
         }
     }

@@ -4,6 +4,11 @@ model {
             title 'Defence Potal'
             description 'Provides access to cases for defence advocates'
 
+            defence-service = application {
+                title 'Defence Service'
+                technology 'JavaEE + Wildfly'
+                this -> cp.users-and-groups-system.users-and-groups 'queries user details and permissions' 'JSON/HTTPS'
+            }
         }
     }
 }

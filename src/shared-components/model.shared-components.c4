@@ -1,13 +1,114 @@
 model {
     extend cp.shared-components-subdomain {
 
+        staging-system = shared-component {
+            title 'Staging System'
+            summary 'Receives IDAM events and stages them for processing by the Users and Groups service'
+            
+            staging = application {
+                title 'Staging'
+                technology 'JavaEE + Wildfly'
+                summary 'Receives IDAM events via the IDAM Events Consumer and updates the Users and Groups service'
+                this -> staging-database
+
+                command-api = component {
+                    title 'Command API'
+                    technology 'Java Component'
+                    summary 'REST API for receiving IDAM events'
+                    
+                    crime-idam -> this 'sends user and group changes to' 'JSON/HTTPS'
+                }
+
+                command-handler = component {
+                    title 'Command Handler'
+                    technology 'Java Component'
+                    summary 'Processes commands and triggers domain events'
+                    
+                    this -> event-processor
+                }
+
+                event-processor = component {
+                    title 'Event Processor'
+                    technology 'Java Component'
+                    summary 'Processes events and updates the viewstore'
+                    
+                    this -> viewstore-persistence
+                    this -> cp.users-and-groups-system.users-and-groups 'updates user and group data' 'JSON/HTTPS'
+                }
+
+                viewstore-persistence = component {
+                    title 'View Store Persistence'
+                    technology 'Java Component'
+                    summary 'CRUD Repository for viewstore data'
+                    
+                    this -> staging-database
+                }
+            }
+
+            staging-database = database {
+                title 'Staging Database'
+                summary 'Stores events and viewstore data'
+            }
+        }
+
         notify-system = shared-component {
             title 'Notify System'
             summary 'Provides email and letter sending services to the rest of the common platform'
             notification-notify = application {
-                    title 'Notification Notify'
-                    technology 'JavaEE + Wildfly'
-                    summary 'Acts an an intermediary between common platform services and GOV.UK Notify and Office 365 services for sending emails and letters'
+                title 'Notification Notify'
+                technology 'JavaEE + Wildfly'
+                summary 'Acts an an intermediary between common platform services and GOV.UK Notify and Office 365 services for sending emails and letters'
+                this -> notification-notify-database
+                this -> cp.gov-uk-notify 'sends email and letter notifications to' 'HTTPS'
+                this -> cp.office365 'sends email notifications to' 'HTTPS'
+
+                this -[auth]-> cp.users-and-groups-system.users-and-groups 'makes authorisation decisions using'
+                this -[audit]-> cp.audit-system 'sends data to'
+
+                command-api = component {
+                    title 'Command API'
+                    technology 'Java Component'
+                    summary 'REST API for sending email and letter notifications'
+                }
+
+                event-processor = component {
+                    title 'Event Processor'
+                    technology 'Java Component'
+                    summary 'Processes notification events and routes to appropriate sender'
+                    
+                    this -> gov-notify-client
+                    this -> office365-client
+                    this -> viewstore-persistence
+                }
+
+                gov-notify-client = component {
+                    title 'GOV.UK Notify Client'
+                    technology 'Java Component'
+                    summary 'Client for sending emails and letters via GOV.UK Notify'
+                    
+                    this -> cp.gov-uk-notify 'sends email and letter notifications to' 'HTTPS'
+                }
+
+                office365-client = component {
+                    title 'Office 365 Client'
+                    technology 'Java Component'
+                    summary 'Client for sending emails via Office 365'
+                    
+                    this -> cp.office365 'sends email notifications to' 'HTTPS'
+                }
+
+                viewstore-persistence = component {
+                    title 'View Store Persistence'
+                    technology 'Java Component'
+                    summary 'CRUD Repository for notification records'
+                    
+                    this -> notification-notify-database
+                }
+            }
+
+            notification-notify-database = database {
+                title 'Notification Notify Database'
+                summary 'Stores notification records and viewstore data'
             }
         }   
 
@@ -15,9 +116,34 @@ model {
             title 'Id Mapper System'
             summary 'Stores mappings between different types of identifiers for the rest of the common platform'
             system-id-mapper = application {
-                    title 'System Id Mapper'
-                    technology 'JavaEE + Wildfly'
-                    summary 'Stores mappings between different types of identifiers for other systems to query'
+                title 'System Id Mapper'
+                technology 'JavaEE + Wildfly'
+                summary 'Stores mappings between different types of identifiers for other systems to query'
+                this -> id-mapper-database
+
+                this -[auth]-> cp.users-and-groups-system.users-and-groups 'makes authorisation decisions using'
+                this -[audit]-> cp.audit-system 'sends data to'
+
+                api = component {
+                    title 'ID Mapper API'
+                    technology 'Java Component'
+                    summary 'REST API for creating and querying ID mappings'
+                    
+                    this -> persistence
+                }
+
+                persistence = component {
+                    title 'Persistence'
+                    technology 'Java Component'
+                    summary 'CRUD Repository for ID mappings'
+                    
+                    this -> id-mapper-database
+                }
+            }
+
+            id-mapper-database = database {
+                title 'ID Mapper Database'
+                summary 'Stores identifier mappings'
             }
         }   
 
@@ -28,7 +154,51 @@ model {
                 title 'System Scheduling'
                 technology 'JavaEE + Wildfly'
                 summary 'Sends commands to other systems on a scheduled basis'
-            }	
+                this -> system-scheduling-database
+
+                command-api = component {
+                    title 'Command API'
+                    technology 'Java Component'
+                    summary 'REST API for creating and managing scheduled jobs'
+                }
+
+                command-handler = component {
+                    title 'Command Handler'
+                    technology 'Java Component'
+                    summary 'Processes scheduling commands and triggers domain events'
+                    
+                    this -> event-processor
+                }
+
+                event-processor = component {
+                    title 'Event Processor'
+                    technology 'Java Component'
+                    summary 'Processes events and updates the viewstore'
+                    
+                    this -> viewstore-persistence
+                }
+
+                scheduler = component {
+                    title 'Scheduler'
+                    technology 'Java Component'
+                    summary 'Executes scheduled jobs and sends commands to target systems'
+                    
+                    this -> viewstore-persistence
+                }
+
+                viewstore-persistence = component {
+                    title 'View Store Persistence'
+                    technology 'Java Component'
+                    summary 'CRUD Repository for scheduled jobs data'
+                    
+                    this -> system-scheduling-database
+                }
+            }
+
+            system-scheduling-database = database {
+                title 'System Scheduling Database'
+                summary 'Stores scheduled jobs and viewstore data'
+            }
         }
 
         ui-notification-system = shared-component {
@@ -38,7 +208,55 @@ model {
                 title 'Notification Service'
                 technology 'JavaEE + Wildfly'
                 summary 'Sends events to the UI using a subscription-based model'
-            }		
+                this -> notification-database
+
+                this -[auth]-> cp.users-and-groups-system.users-and-groups 'makes authorisation decisions using'
+                this -[audit]-> cp.audit-system 'sends data to'
+
+                command-api = component {
+                    title 'Command API'
+                    technology 'Java Component'
+                    summary 'REST API for managing notification subscriptions'
+                }
+
+                query-api = component {
+                    title 'Query API'
+                    technology 'Java Component'
+                    summary 'REST API for querying notifications and subscriptions'
+                    
+                    this -> viewstore-persistence
+                }
+
+                event-processor = component {
+                    title 'Event Processor'
+                    technology 'Java Component'
+                    summary 'Processes events from other systems and creates notifications'
+                    
+                    this -> subscription-manager
+                    this -> viewstore-persistence
+                }
+
+                subscription-manager = component {
+                    title 'Subscription Manager'
+                    technology 'Java Component'
+                    summary 'Manages UI subscriptions and delivers notifications'
+                    
+                    this -> viewstore-persistence
+                }
+
+                viewstore-persistence = component {
+                    title 'View Store Persistence'
+                    technology 'Java Component'
+                    summary 'CRUD Repository for notifications and subscriptions'
+                    
+                    this -> notification-database
+                }
+            }
+
+            notification-database = database {
+                title 'Notification Database'
+                summary 'Stores notifications, subscriptions and viewstore data'
+            }
         }   
 
         document-generation-system = shared-component {
@@ -48,6 +266,64 @@ model {
                 title 'Document Generator'
                 technology 'JavaEE + Wildfly'
                 summary 'Generates PDF documents using templates and data provided by calling systems'
+                this -> document-generator-database
+
+                this -[auth]-> cp.users-and-groups-system.users-and-groups 'makes authorisation decisions using'
+                this -[audit]-> cp.audit-system 'sends data to'
+                this -> cp.notify-system.notification-notify 'sends email notifications for document generation' 'JSON/HTTPS'
+
+                command-api = component {
+                    title 'Command API'
+                    technology 'Java Component'
+                    summary 'REST API for generating documents'
+                    
+                    this -> validation
+                }
+
+                query-api = component {
+                    title 'Query API'
+                    technology 'Java Component'
+                    summary 'REST API for querying document generation status'
+                    
+                    this -> viewstore-persistence
+                }
+
+                docmosis-service = component {
+                    title 'Docmosis Service'
+                    technology 'Java Component'
+                    summary 'Document generation engine using Docmosis templates'
+                    
+                    this -> validation
+                }
+
+                validation = component {
+                    title 'Validation'
+                    technology 'Java Component'
+                    summary 'Validates document generation requests and templates'
+                    
+                    this -> docmosis-service
+                }
+
+                event-processor = component {
+                    title 'Event Processor'
+                    technology 'Java Component'
+                    summary 'Processes events and updates the viewstore'
+                    
+                    this -> viewstore-persistence
+                }
+
+                viewstore-persistence = component {
+                    title 'View Store Persistence'
+                    technology 'Java Component'
+                    summary 'CRUD Repository for document generation records'
+                    
+                    this -> document-generator-database
+                }
+            }
+
+            document-generator-database = database {
+                title 'Document Generator Database'
+                summary 'Stores document generation records and viewstore data'
             }
         }
 
@@ -67,8 +343,52 @@ model {
                 title 'Users and Groups'
                 technology 'JavaEE + Wildfly'
                 summary 'Stores users, groups, organisations, roles and permissions'
+                this -> users-and-groups-database
 
-                this -> users-and-groups-database 'stores user and group data in'
+                this -[auth]-> cp.users-and-groups-system.users-and-groups 'makes authorisation decisions using'
+                this -[audit]-> cp.audit-system 'sends data to'
+                
+                // Relationships FROM other systems TO this service are defined in subdomain product files
+
+                query-api = component {
+                    title 'Query API'
+                    technology 'Java Component'
+                    summary 'REST API for querying users, groups, and permissions'
+                    
+                    this -> cache
+                    this -> viewstore-persistence
+                }
+
+                command-api = component {
+                    title 'Command API'
+                    technology 'Java Component'
+                    summary 'REST API for managing users, groups, and permissions'
+                }
+
+                event-processor = component {
+                    title 'Event Processor'
+                    technology 'Java Component'
+                    summary 'Processes events and updates the viewstore'
+                    
+                    this -> cache
+                    this -> viewstore-persistence
+                }
+
+                cache = component {
+                    title 'Cache'
+                    technology 'Java Component'
+                    summary 'Caches user and group data for performance'
+                    
+                    this -> viewstore-persistence
+                }
+
+                viewstore-persistence = component {
+                    title 'View Store Persistence'
+                    technology 'Java Component'
+                    summary 'CRUD Repository for users, groups, and permissions'
+                    
+                    this -> users-and-groups-database
+                }
             }
 
             users-and-groups-database = database {
@@ -78,33 +398,60 @@ model {
 
             idam-events-consumer = application {
                 title 'IDAM Events Consumer'
-                technology ' Java + Dropwizard'
+                technology 'Java + Dropwizard'
                 summary 'Passes events from IDAM to the Staging service'
 
                 crime-idam -> this "sends user and group changes to"
-                this -> staging "sends user and group changes to" "JSON/HTTPS"
-            }
-
-            staging = application {
-                title 'Staging'
-                technology 'JavaEE + Wildfly'
-                summary 'Receives IDAM events via the IDAM Events Consumer and updates the Users and Groups service'
-
-                this -> staging-database 'stores events in'
-                this -> users-and-groups 'updates user and group data' 'JSON/HTTPS'
-            }
-
-            staging-database = database {
-                title 'Staging Database'
-                summary 'Stores events'
+                this -> cp.staging-system.staging "sends user and group changes to" "JSON/HTTPS"
             }
         }
 
         support-system = shared-component {
             title 'Support System'
+            summary 'Provides support functionality for the common platform'
             support = application {
                 title 'Support'
                 technology 'JavaEE + Wildfly'
+                summary 'Provides support and utility services'
+                this -> support-database
+
+                this -[auth]-> cp.users-and-groups-system.users-and-groups 'makes authorisation decisions using'
+                this -[audit]-> cp.audit-system 'sends data to'
+
+                command-api = component {
+                    title 'Command API'
+                    technology 'Java Component'
+                    summary 'REST API for support operations'
+                }
+
+                query-api = component {
+                    title 'Query API'
+                    technology 'Java Component'
+                    summary 'REST API for querying support data'
+                    
+                    this -> viewstore-persistence
+                }
+
+                event-processor = component {
+                    title 'Event Processor'
+                    technology 'Java Component'
+                    summary 'Processes events and updates the viewstore'
+                    
+                    this -> viewstore-persistence
+                }
+
+                viewstore-persistence = component {
+                    title 'View Store Persistence'
+                    technology 'Java Component'
+                    summary 'CRUD Repository for support data'
+                    
+                    this -> support-database
+                }
+            }
+
+            support-database = database {
+                title 'Support Database'
+                summary 'Stores support data and viewstore data'
             }
         }
 
@@ -115,6 +462,21 @@ model {
                 title 'System Announcement'
                 technology 'JavaEE + Wildfly'
                 summary 'Manages system-wide announcements to be displayed on the UI'
+                this -> system-announcement-database
+
+                this -[auth]-> cp.users-and-groups-system.users-and-groups 'makes authorisation decisions using'
+                this -[audit]-> cp.audit-system 'sends data to'
+
+                api = component {
+                    title 'System Announcement API'
+                    technology 'Java Component'
+                    summary 'REST API for creating, querying, updating, and deleting system announcements'
+                }
+            }
+
+            system-announcement-database = database {
+                title 'System Announcement Database'
+                summary 'Stores system announcements'
             }
         }
 
@@ -123,7 +485,8 @@ model {
             summary 'Holds reference data used by the rest of the common platform'
             reference-data = application {
                 title 'Reference Data'
-                technology 'JavaEE + Wildfly'                
+                technology 'JavaEE + Wildfly'
+                this -> cp.users-and-groups-system.users-and-groups 'queries organisation details for user' 'JSON/HTTPS'
             }
             reference-data-offences = application {
                 title 'Reference Data Offences'

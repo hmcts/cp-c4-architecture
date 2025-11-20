@@ -34,6 +34,7 @@ model {
                 this -> staging-spi-database
                 cp.hearing-system.results-service -> this 'sends results'
                 this -> cjse 'sends case results to police'
+                this -> cp.id-mapper-system.system-id-mapper 'creates and queries ID mappings' 'JSON/HTTPS'
             }
 
             staging-spi-database = database {

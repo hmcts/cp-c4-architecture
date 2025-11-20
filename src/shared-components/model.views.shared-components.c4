@@ -4,15 +4,18 @@ views {
         include *
         where
             not (kind is application or kind is database or kind is webapp)
-        // include cp.court-hearings-subdomain._
-        include cp.scheduling-and-listing-subdomain._
-        // include cp.case-administration-subdomain._
-        // include cp.opami-subdomain._
-        // include cp.case-ingestion-subdomain._
+        include cp.case-administration-subdomain.case-management-system.subscriptions-service
+        include cp.case-administration-subdomain.case-management-system.sjp-service
+        include cp.case-administration-subdomain.work-management-system.work-management-proxy
+        include cp.case-administration-subdomain.defence-portal.defence-service
+        include cp.court-hearings-subdomain.hearing-system.hearing-service
+        include cp.court-hearings-subdomain.hearing-system.results-service
+        include cp.court-hearings-subdomain.hearing-system.hearing-nows
+        include cp.shared-components-subdomain.reference-data-system.reference-data
         exclude * -> *
         include * <-> cp.users-and-groups-system
 
-        style cp.case-administration-subdomain.*, cp.scheduling-and-listing-subdomain.*, cp.opami-subdomain.*, cp.case-ingestion-subdomain.* {
+        style cp.case-administration-subdomain.*, cp.court-hearings-subdomain.*, cp.shared-components-subdomain.* {
             color secondary
         }
     }
@@ -20,25 +23,251 @@ views {
     view users-and-groups-system-container-view of cp.users-and-groups-system {
         title '[Container View] Users and Groups System'
         include *
-        // include cp.case-administration-subdomain.case-management-system
-        // include cp.court-hearings-subdomain.hearing-system
-        include cp.scheduling-and-listing-subdomain.scheduling-and-listing-system
-        // exclude * -> *
-        // include * <-> cp.users-and-groups-system
+        include cp.case-administration-subdomain.case-management-system
+        include cp.case-administration-subdomain.work-management-system
+        include cp.case-administration-subdomain.defence-portal
+        include cp.court-hearings-subdomain.hearing-system
+        include cp.shared-components-subdomain.reference-data-system
     }
 
     view reference-data-system-context of cp.reference-data-system {
         title '[System Context] Reference Data System'
         include *
-        include cp.court-hearings-subdomain.hearing-system
+        where
+            not (kind is application or kind is database or kind is webapp)
+        include cp.court-hearings-subdomain.hearing-system.hearing-service
+        include cp.court-hearings-subdomain.hearing-system.notepad-parsing-ui
+        include cp.case-administration-subdomain.work-management-system.work-management-proxy
+        include cp.shared-components-subdomain.users-and-groups-system
+        exclude * -> *
+        include * <-> cp.reference-data-system
+
+        style cp.case-administration-subdomain.*, cp.court-hearings-subdomain.*, cp.shared-components-subdomain.* {
+            color secondary
+        }
     }
 
     view reference-data-system-container-view of cp.reference-data-system {
         title '[Container View] Reference Data System'
-        include
-            *
-        // include cp.court-hearings-subdomain.hearing-system
-        // include cp.court-hearings-subdomain.hearing-system.staging-darts.*
-        // include * <-> cp.scheduling-and-listing-subdomain.scheduling-and-listing-system.*
+        include *
+        include cp.court-hearings-subdomain.hearing-system.hearing-service
+        include cp.court-hearings-subdomain.hearing-system.notepad-parsing-ui
+        include cp.case-administration-subdomain.work-management-system.work-management-proxy
+    }
+
+    view staging-system-context of cp.staging-system {
+        title '[System Context] Staging System'
+        include *
+        where
+            not (kind is application or kind is database or kind is webapp)
+        exclude * -> *
+        include * <-> cp.staging-system
+        exclude * <-> *
+            where kind is audit or kind is mi or kind is auth
+    }
+
+    view staging-system-container-view of cp.staging-system {
+        title '[Container View] Staging System'
+        include *
+    }
+
+    view staging-component-view of cp.staging-system.staging {
+        title '[Component View] Staging'
+        include *
+    }
+
+    view system-scheduling-context of cp.scheduling-system {
+        title '[System Context] System Scheduling'
+        include *
+        where
+            not (kind is application or kind is database or kind is webapp)
+        // System Scheduling is used programmatically by other services to schedule jobs
+        // No specific consumers found in current codebase - may be used by admin UIs or other services
+        exclude * -> *
+        include * <-> cp.scheduling-system
+        exclude * <-> *
+            where kind is audit or kind is mi or kind is auth
+    }
+
+    view system-scheduling-container-view of cp.scheduling-system {
+        title '[Container View] System Scheduling'
+        include *
+    }
+
+    view system-scheduling-component-view of cp.scheduling-system.system-scheduling {
+        title '[Component View] System Scheduling'
+        include *
+    }
+
+    view notification-service-context of cp.ui-notification-system {
+        title '[System Context] UI Notification System'
+        include *
+        where
+            not (kind is application or kind is database or kind is webapp)
+        include cp.case-administration-subdomain.case-management-system.subscriptions-service
+        exclude * -> *
+        include * <-> cp.ui-notification-system
+        exclude * <-> *
+            where kind is audit or kind is mi or kind is auth
+
+        style cp.case-administration-subdomain.* {
+            color secondary
+        }
+    }
+
+    view notification-service-container-view of cp.ui-notification-system {
+        title '[Container View] UI Notification System'
+        include *
+    }
+
+    view notification-service-component-view of cp.ui-notification-system.notification-service {
+        title '[Component View] Notification Service'
+        include *
+    }
+
+    view notification-notify-context of cp.notify-system {
+        title '[System Context] Notify System'
+        // Include the notification-notify application (inside the NOTIFY SYSTEM boundary)
+        include cp.notify-system.notification-notify
+        // Include external systems - these will appear outside the NOTIFY SYSTEM boundary as gray boxes
+        include cp.gov-uk-notify
+        include cp.office365
+        // Include applications that use notification-notify
+        include cp.case-administration-subdomain.case-management-system.subscriptions-service
+        include cp.case-administration-subdomain.case-management-system.progression-service
+        include cp.case-administration-subdomain.case-management-system.sjp-service
+        include cp.case-administration-subdomain.case-management-system.prosecution-case-file-service
+        include cp.court-hearings-subdomain.hearing-system.hearing-nows
+        include cp.shared-components-subdomain.document-generation-system.document-generator
+        // Show relationships from notification-notify to external systems
+        include cp.notify-system.notification-notify -> cp.gov-uk-notify
+        include cp.notify-system.notification-notify -> cp.office365
+        // Show relationships from other applications to notification-notify
+        exclude * -> *
+        include * <-> cp.notify-system.notification-notify
+        exclude * <-> *
+            where kind is audit or kind is mi or kind is auth
+
+        style cp.case-administration-subdomain.*, cp.court-hearings-subdomain.*, cp.shared-components-subdomain.* {
+            color secondary
+        }
+    }
+
+    view notification-notify-container-view of cp.notify-system {
+        title '[Container View] Notify System'
+        include *
+    }
+
+    view notification-notify-component-view of cp.notify-system.notification-notify {
+        title '[Component View] Notification Notify'
+        include *
+    }
+
+    view system-id-mapper-context of cp.id-mapper-system {
+        title '[System Context] ID Mapper System'
+        include *
+        where
+            not (kind is application or kind is database or kind is webapp)
+        include cp.case-administration-subdomain._
+        include cp.case-ingestion-subdomain._
+        include cp.court-hearings-subdomain._
+        exclude * -> *
+        include * <-> cp.id-mapper-system
+        exclude * <-> *
+            where kind is audit or kind is mi or kind is auth
+
+        style cp.case-administration-subdomain.*, cp.case-ingestion-subdomain.*, cp.court-hearings-subdomain.* {
+            color secondary
+        }
+    }
+
+    view system-id-mapper-container-view of cp.id-mapper-system {
+        title '[Container View] ID Mapper System'
+        include *
+    }
+
+    view system-id-mapper-component-view of cp.id-mapper-system.system-id-mapper {
+        title '[Component View] System ID Mapper'
+        include *
+    }
+
+    view users-and-groups-component-view of cp.users-and-groups-system.users-and-groups {
+        title '[Component View] Users and Groups'
+        include *
+    }
+
+    view document-generation-context of cp.document-generation-system {
+        title '[System Context] Document Generation System'
+        include *
+        where
+            not (kind is application or kind is database or kind is webapp)
+        include cp.court-hearings-subdomain.hearing-system.hearing-service
+        include cp.court-hearings-subdomain.hearing-system.hearing-nows
+        include cp.shared-components-subdomain.notify-system
+        exclude * -> *
+        include * <-> cp.document-generation-system
+        exclude * <-> *
+            where kind is audit or kind is mi or kind is auth
+
+        style cp.court-hearings-subdomain.*, cp.shared-components-subdomain.* {
+            color secondary
+        }
+    }
+
+    view document-generation-container-view of cp.document-generation-system {
+        title '[Container View] Document Generation System'
+        include *
+    }
+
+    view document-generation-component-view of cp.document-generation-system.document-generator {
+        title '[Component View] Document Generator'
+        include *
+    }
+
+    view support-system-context of cp.support-system {
+        title '[System Context] Support System'
+        include *
+        where
+            not (kind is application or kind is database or kind is webapp)
+        // Support System provides feedback functionality - typically used by UIs
+        // UI consumers are in separate frontend repositories, not in this backend workspace
+        exclude * -> *
+        include * <-> cp.support-system
+        exclude * <-> *
+            where kind is audit or kind is mi or kind is auth
+    }
+
+    view support-system-container-view of cp.support-system {
+        title '[Container View] Support System'
+        include *
+    }
+
+    view support-component-view of cp.support-system.support {
+        title '[Component View] Support'
+        include *
+    }
+
+    view system-announcement-context of cp.ssystem-announcement-system {
+        title '[System Context] System Announcement System'
+        include *
+        where
+            not (kind is application or kind is database or kind is webapp)
+        // System Announcement is used by UIs to display banner announcements
+        // UI consumers (case-management-ui, prosecution-casefile-ui, sjp-ui, listing-ui, court-hearing-ui)
+        // are in separate frontend repositories, not in this backend workspace
+        exclude * -> *
+        include * <-> cp.ssystem-announcement-system
+        exclude * <-> *
+            where kind is audit or kind is mi or kind is auth
+    }
+
+    view system-announcement-container-view of cp.ssystem-announcement-system {
+        title '[Container View] System Announcement System'
+        include *
+    }
+
+    view system-announcement-component-view of cp.ssystem-announcement-system.system-announcement {
+        title '[Component View] System Announcement'
+        include *
     }
 }

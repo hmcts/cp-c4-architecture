@@ -16,7 +16,7 @@ model {
             listing-ui = webapp {
                 title 'Listing UI'
                 technology 'Angular'
-                summary 'Provides functionality for managing coute listings'
+                summary 'Provides functionality for managing court listings'
                 this -> listing-service 'makes API calls to'
 
                 listing_officer -> this 'Allocates hearings using'

@@ -23,6 +23,8 @@ model {
                 title 'Work Management Proxy'
                 technology 'JavaEE + Wildfly'
                 this -> business-process-service 'makes API calls to'
+                this -> cp.users-and-groups-system.users-and-groups 'queries user details and permissions' 'JSON/HTTPS'
+                this -> cp.reference-data-system.reference-data 'queries reference data' 'JSON/HTTPS'
             }
 
 

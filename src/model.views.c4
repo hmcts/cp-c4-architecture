@@ -20,7 +20,8 @@ views {
             cp.opami-subdomain,
             cp.opami-subdomain.*,
             cp.case-ingestion-subdomain.*,
-            cp.shared-components-subdomain
+            cp.shared-components-subdomain,
+            cp.shared-components-subdomain.*
         exclude * <-> *
 
         style cp {
@@ -44,6 +45,26 @@ views {
         exclude * <-> *
 
         style cp {
+            opacity 0%
+        }
+    }
+
+    view shared-components-overview of cp.shared-components-subdomain {
+        title '[System Landscape] Shared Components'
+        include
+            cp.shared-components-subdomain.staging-system,
+            cp.shared-components-subdomain.notify-system,
+            cp.shared-components-subdomain.id-mapper-system,
+            cp.shared-components-subdomain.scheduling-system,
+            cp.shared-components-subdomain.ui-notification-system,
+            cp.shared-components-subdomain.document-generation-system,
+            cp.shared-components-subdomain.users-and-groups-system,
+            cp.shared-components-subdomain.support-system,
+            cp.shared-components-subdomain.reference-data-system,
+            cp.shared-components-subdomain.ssystem-announcement-system
+        exclude * <-> *
+
+        style cp.shared-components-subdomain {
             opacity 0%
         }
     }

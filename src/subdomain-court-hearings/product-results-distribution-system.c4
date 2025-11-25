@@ -3,6 +3,16 @@ model {
         results-distribution-system = product {
             title 'Results Distribution System'
             description 'Distributes results'
+
+            hearing-nows = application {
+                title 'DRAFT - Hearing NOWs'
+                technology 'JavaEE + Wildfly'
+                summary 'DRAFT - Manages Notice of Witness (NOW) documents and notifications for hearings'
+                this -> cp.id-mapper-system.system-id-mapper 'creates and queries ID mappings for notifications, materials, and documents' 'JSON/HTTPS'
+                this -> cp.users-and-groups-system.users-and-groups 'queries groups with organisation' 'JSON/HTTPS'
+                this -> cp.document-generation-system.document-generator 'generates NOWs using' 'JSON/HTTPS'
+                this -> cp.notify-system.notification-notify 'sends emails and letters using' 'JSON/HTTPS'
+            }
         }
     }
 }

@@ -4,14 +4,14 @@ views {
         include *
         where
             not (kind is application or kind is database or kind is webapp)
-        include cp.case-administration-subdomain.case-management-system.subscriptions-service
-        include cp.case-administration-subdomain.case-management-system.sjp-service
-        include cp.case-administration-subdomain.work-management-system.work-management-proxy
-        include cp.case-administration-subdomain.defence-portal.defence-service
-        include cp.court-hearings-subdomain.hearing-system.hearing-service
-        include cp.court-hearings-subdomain.hearing-system.results-service
-        include cp.court-hearings-subdomain.hearing-system.hearing-nows
-        include cp.shared-components-subdomain.reference-data-system.reference-data
+        // include cp.case-administration-subdomain.case-management-system.subscriptions-service
+        // include cp.case-administration-subdomain.case-management-system.sjp-service
+        // include cp.case-administration-subdomain.work-management-system.work-management-proxy
+        // include cp.case-administration-subdomain.defence-portal.defence-service
+        // include cp.court-hearings-subdomain.hearing-system.hearing-service
+        // include cp.court-hearings-subdomain.hearing-system.results-service
+        // include cp.court-hearings-subdomain.hearing-system.hearing-nows
+        // include cp.shared-components-subdomain.reference-data-system.reference-data
         exclude * -> *
         include * <-> cp.users-and-groups-system
 
@@ -127,21 +127,21 @@ views {
 
     view notification-notify-context of cp.notify-system {
         title '[System Context] Notify System'
-        // Include the notification-notify application (inside the NOTIFY SYSTEM boundary)
-        include cp.notify-system.notification-notify
-        // Include external systems - these will appear outside the NOTIFY SYSTEM boundary as gray boxes
-        include cp.gov-uk-notify
-        include cp.office365
+        include *
+            where
+                not (kind is application or kind is database or kind is webapp)
+
         // Include applications that use notification-notify
-        include cp.case-administration-subdomain.case-management-system.subscriptions-service
-        include cp.case-administration-subdomain.case-management-system.progression-service
-        include cp.case-administration-subdomain.case-management-system.sjp-service
-        include cp.case-administration-subdomain.case-management-system.prosecution-case-file-service
-        include cp.court-hearings-subdomain.hearing-system.hearing-nows
-        include cp.shared-components-subdomain.document-generation-system.document-generator
-        // Show relationships from notification-notify to external systems
-        include cp.notify-system.notification-notify -> cp.gov-uk-notify
-        include cp.notify-system.notification-notify -> cp.office365
+        // include cp.case-administration-subdomain.case-management-system.subscriptions-service
+        // include cp.case-administration-subdomain.case-management-system.progression-service
+        // include cp.case-administration-subdomain.case-management-system.sjp-service
+        // include cp.case-administration-subdomain.case-management-system.prosecution-case-file-service
+        // include cp.court-hearings-subdomain.hearing-system.hearing-nows
+        // include cp.shared-components-subdomain.document-generation-system.document-generator
+
+        include cp.case-administration-subdomain._
+        include cp.court-hearings-subdomain._
+
         // Show relationships from other applications to notification-notify
         exclude * -> *
         include * <-> cp.notify-system.notification-notify
@@ -199,11 +199,9 @@ views {
     view document-generation-context of cp.document-generation-system {
         title '[System Context] Document Generation System'
         include *
-        where
-            not (kind is application or kind is database or kind is webapp)
-        include cp.court-hearings-subdomain.hearing-system.hearing-service
-        include cp.court-hearings-subdomain.hearing-system.hearing-nows
-        include cp.shared-components-subdomain.notify-system
+            where
+                not (kind is application or kind is database or kind is webapp)
+        include cp.court-hearings-subdomain._
         exclude * -> *
         include * <-> cp.document-generation-system
         exclude * <-> *

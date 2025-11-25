@@ -59,8 +59,8 @@ model {
                 technology 'JavaEE + Wildfly'
                 summary 'Acts an an intermediary between common platform services and GOV.UK Notify and Office 365 services for sending emails and letters'
                 this -> notification-notify-database
-                this -> cp.gov-uk-notify 'sends email and letter notifications to' 'HTTPS'
-                this -> cp.office365 'sends email notifications to' 'HTTPS'
+                // this -> gov-uk-notify 'sends emails and letters using' 'HTTPS'
+                // this -> office365 'sends emails using' 'HTTPS'
 
                 this -[auth]-> cp.users-and-groups-system.users-and-groups 'makes authorisation decisions using'
                 this -[audit]-> cp.audit-system 'sends data to'
@@ -86,7 +86,7 @@ model {
                     technology 'Java Component'
                     summary 'Client for sending emails and letters via GOV.UK Notify'
                     
-                    this -> cp.gov-uk-notify 'sends email and letter notifications to' 'HTTPS'
+                    this -> gov-uk-notify 'sends emails and letters using' 'HTTPS'
                 }
 
                 office365-client = component {
@@ -94,7 +94,7 @@ model {
                     technology 'Java Component'
                     summary 'Client for sending emails via Office 365'
                     
-                    this -> cp.office365 'sends email notifications to' 'HTTPS'
+                    this -> office365 'sends emails using' 'HTTPS'
                 }
 
                 viewstore-persistence = component {
@@ -345,7 +345,7 @@ model {
                 summary 'Stores users, groups, organisations, roles and permissions'
                 this -> users-and-groups-database
 
-                this -[auth]-> cp.users-and-groups-system.users-and-groups 'makes authorisation decisions using'
+                // this -[auth]-> cp.users-and-groups-system.users-and-groups 'makes authorisation decisions using'
                 this -[audit]-> cp.audit-system 'sends data to'
                 
                 // Relationships FROM other systems TO this service are defined in subdomain product files

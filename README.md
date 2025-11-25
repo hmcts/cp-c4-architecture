@@ -4,9 +4,6 @@ This repository describes the archiecture of the Crime Common Platform. It uses 
 
 The output of this project can be viewed in interactive form at https://hmcts.github.io/cp-c4-architecture/
 
-Install/update node using your terminal or download and run the [.pkg installer](https://nodejs.org/en/download)
-
-
 ## How-to
 
 ### Setup your local environment
@@ -34,6 +31,8 @@ Check if you have a compatible version already installed
 ```bash
 node -v
 ```
+
+If not, install/update node using your terminal or download and run the [.pkg installer](https://nodejs.org/en/download)
 
 ### CLI
 

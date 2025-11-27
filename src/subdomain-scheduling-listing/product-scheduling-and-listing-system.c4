@@ -42,6 +42,10 @@ model {
             listing-service = application {
                 title 'Listing Service'
                 technology 'JavaEE + Wildfly'
+                summary 'Manages court listings'
+
+                link https://github.com/hmcts/cpp-context-listing 'Repository'
+
                 this -> listing-database
                 
 
@@ -49,6 +53,8 @@ model {
                 this -[auth]-> cp.users-and-groups 'makes authorisation decisions using'
                 this -[mi]-> cp.management-information-system 'sends data to'
                 this -[audit]-> cp.audit-system 'sends data to'
+                this -[shared]-> cp.document-generator 'generates court list PDFs using'
+                this -[shared]-> cp.reference-data 'gets reference data from'
 
                 command-api = component {
                     title 'Command API'
@@ -61,7 +67,13 @@ model {
             court-scheduler-service = application {
                 title 'Court Scheduler Service'
                 technology 'JavaEE + Wildfly'
+                summary 'Manages court schedules'
+
+                link https://github.com/hmcts/cpp-context-listing-courtscheduler 'Repository'
+
                 this -> scsl-database
+                this -[auth]-> cp.users-and-groups 'makes authorisation decisions using'
+                this -[shared]-> cp.reference-data 'gets reference data from'
                 
                 api = component {
                     title 'Court Scheduler API'
@@ -79,6 +91,7 @@ model {
 
                     rota -> this "Sends court schedules to"
                     this -> common-service
+                    cp.system-scheduling -[shared]-> this 'triggers overnight Rota file processing'
                 }
 
                 common-service = component {
@@ -101,8 +114,13 @@ model {
             staging-pub-hub-service = application {
                 title 'Staging Pub Hub'
                 technology 'JavaEE + Wildfly'
+                summary 'Publishes court listings'
+
+                link https://github.com/hmcts/cpp-context-staging-pubhub 'Repository'
+
                 scsl-database -> this
                 this -> cath 'Publishes court lists to'
+                this -[shared]-> cp.reference-data 'gets reference data from'
             }
 
             listing-database = database {

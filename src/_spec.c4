@@ -36,6 +36,7 @@ specification {
         notation "Shared Component"
         technology 'Shared Component'
         style {
+            color indigo
             opacity 20%
         }
     }
@@ -98,6 +99,7 @@ specification {
     relationship audit
     relationship auth
     relationship mi
+    relationship shared
 
     relationship solid {
         line solid

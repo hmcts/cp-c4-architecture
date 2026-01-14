@@ -1,29 +1,30 @@
 views {
-    view spi-system-context of cp.spi {
-        title '[System Context] SPI'
+    view spi-system-context of cp.case-ingestion-subdomain {
+        title '[System Context] Case & Material Ingestion'
         include *
         where
             not (kind is application or kind is database or kind is webapp)
         include cp.case-administration-subdomain._
         include cp.court-hearings-subdomain._
         exclude * -> *
-        include * <-> cp.spi
 
         style cp.case-administration-subdomain.*, cp.court-hearings-subdomain.* {
             color secondary
         }
     }
 
-    view spi-container-view of cp.spi {
-        title '[Container View] SPI'
+    view spi-container-view of cp.case-ingestion-subdomain {
+        title '[Container View] Case & Material Ingestion'
         include *
-        include cp.case-management-system
-        include cp.court-hearings-subdomain.hearing-system
-        exclude * -> *
-        include * <-> cp.spi
-        include cp.spi <-> cp.spi
+        include cp.case-ingestion-subdomain.case-material-api._
+        include cp.case-ingestion-subdomain.case-api._
+        include cp.case-management-system._
+        include cp.court-hearings-subdomain._
+        include doc-ocr <-> defendant
+        include * <-> cp.case-ingestion-subdomain.manual-case-create
+        include * -> cp.case-management-system.prosecution-case-file-service
 
-        style cp.case-administration-subdomain.*, cp.court-hearings-subdomain.* {
+        style cp.case-administration-subdomain.*, cp.court-hearings-subdomain.*, cp.case-management-system.* {
             color secondary
         }
     }

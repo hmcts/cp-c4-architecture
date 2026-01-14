@@ -8,4 +8,10 @@ model {
     laa = external-system "Legal Aid Agency" ""
     cjse = external-system "Criminal Justice System Exchange" "Routes and forwards police cases to HMCTS"
     crime-idam = external-system "Crime IDAM" ""
+    doc-ocr = external-system {
+        title 'Document OCR Service' 
+        summary 'Receives documents via mail and converts them to digital versions'
+        defendant -> this 'Submits filled-in case material issued by a prosecutor'
+    }
+    
 }

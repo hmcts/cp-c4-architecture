@@ -1,50 +1,88 @@
 model {
     extend cp.case-ingestion-subdomain {
-        spi = product {
-            title 'Standard Prosecutor Interface (SPI)'
-            description 'Standard Prosecutor Interface'
-            summary 'Implements the SPI interface to receive police cases'
 
-            error-queue-ui = webapp {
-                title 'Error Queue UI'
-                technology 'Angular'
-                summary 'Enables resolution of API case validation errors'
-                this -> cp.case-management-system.prosecution-case-file-service 'makes API calls to'
+        manual-case-create = product {
+            title 'Manual Case Creation UX'
+            technology 'JavaEE + Wildfly'
+            summary 'Provides for a web-based user interface for prosecutors to create cases, upload documents and get results'
+            this -> cp.case-administration-subdomain.prosecution-case-file-service 'creates cases'
+            this -> cp.case-administration-subdomain.prosecution-case-file-service 'adds material'
+            non_police_prosecutor -> this 'creates cases'
+            non_police_prosecutor -> this 'adds material'
+            civils_prosecutor -> this 'creates case'
+            civils_prosecutor -> this 'adds material'
+            court_admin -> this 'views case information'
+            ctsc_staff -> this 'views case information'
+        }
 
-                court_admin -> this 'resolves case validation errors using'
+        case-material-api = product {
+            title 'C&MI Material APIs'
+            description 'Case & Materials Ingestion APIs for Material Management'
+            summary 'Permits uploading material and associating to a case'
 
+            libra -> this 'adds material to a Libra cases'
+                
+            case-material = application {
+                title 'Case Material Store'
+                description 'Long term store of material pertaining to a case'
+                technology 'Alfresco'
             }
+
+            bulk-scan = application {
+                title 'Bulk Scan'
+                doc-ocr -> this 'receives documents pertaining to an existing case'
+                this -> document-queue 'sends scanned documents'
+            }
+            
+            document-queue = application {
+                title 'Case-Document Marshaller (Document Queue)'
+                technology 'JavaEE + Wildfly'
+                summary 'Acts as a staging area to pair documents with cases before progressing'
+                cp.case-management-system.prosecution-case-file-service -> this 'notifies to attach, remove and deletes documents'
+            }
+            
+        }
+
+        case-api = product {
+            title 'C&MI Case APIs'
+            description 'Case & Materials Ingestion APIs for Case Management'
+            summary 'Permits case creation, lookup and resulting'
 
             case-filter = application {
                 title 'Case Filter'
                 technology 'Azure Functions'
                 summary 'Case interceptor that routes to the appropriate magistrate case management system (Libra or Common Platform) based on routing rules'
-                this -> libra 'forwards cases to'
-                this -> staging-spi-service 'forwards cases to'
-                cjse -> this 'sends police cases to'
-                this -> filter-routing-configuiration
+                this -> libra 'replicates cases'
+                cjse -> this 'sends police cases'
+                this -> staging-spi-service 'replicates cases'
+            }
+            cp-prosecutor-interface = application {
+                title 'CP Prosecutor Interface'
+                technology 'JavaEE + Wildfly'
+                summary 'Entry point for non-police prosecutors to create cases and add case material'
+                non_police_prosecutor -> this 'submits NPP cases and gets results'
+                this -> case-material 'forwards case material to store'
+                this -> cp.court-hearings-subdomain.results-distribution-system 'gets case results'
+            }
+            
+            cp-civils-interface = application {
+                title 'CP Civils Interface'
+                technology 'JavaEE + Wildfly'
+                summary 'Entry point for civil prosecutors to create cases'
+                civils_prosecutor -> this 'submits civil cases'
+                libra -> this 'replicates Libra cases'
             }
 
             staging-spi-service = application {
-                title 'Staging SPI'
+                title 'CP SPI interface'
                 technology 'JavaEE + Wildfly'
                 summary 'Implements the SPI interface to enable receiving police cases and sending case results to police'
-
-                this -> cp.case-management-system.prosecution-case-file-service 'sends cases to'
-                this -> staging-spi-database
                 cp.hearing-system.results-service -> this 'sends results'
                 this -> cjse 'sends case results to police'
             }
 
-            staging-spi-database = database {
-                title 'Staging SPI Database'
-                summary 'Stores events and entities'
-            }
+            this -> cp.case-management-system.prosecution-case-file-service 'sends cases'
 
-            filter-routing-configuiration = database {
-                title 'Filter Routing Configuration'
-                summary 'Stores filter criteria configuration'
-            }
         }
     }
 }

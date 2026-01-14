@@ -2,12 +2,13 @@ model {
     defendant = actor "Defendant" "The person charged with one or more offences"
     judge_or_magestrate = actor "Judge or magistrate" "Precides over court hearing"
     recorder = actor "Recorder" "Records hearing"
-    listing_officer = actor "Listing Officer" "Manages the court's daily schedule and ensures cases are heard efficiently" {
-        
-    }
+    listing_officer = actor "Listing Officer" "Manages the court's daily schedule and ensures cases are heard efficiently" 
     court_clerk = actor "Court Clerk" "Organises physical and electronic case files, ensuring all documents are readily accessible when needed"
     legal_advisor = actor "Legal Advisor" "Manages hearings in court and advises magistrates"
     court_admin = actor "Court Administrator" "Manages court operations"
     ctsc_staff = actor "CTSC Staff" "Courts and Tribunals Service Centre staff"
     ctsc_manager = actor "CTSC Manager" "Courts and Tribunals Service Centre Manager"
+    non_police_prosecutor = actor "Non-Police Prosecutor" "An enforcement officer working for a non-police organisation"
+    civils_prosecutor = actor "Civil Prosecutor" "An enforcement officer working for a civil agency"
+    police = actor "Police"
 }

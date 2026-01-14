@@ -20,7 +20,7 @@ views {
     view case-management-system-container-view of cp.case-management-system {
         title '[Container View] Case Management System'
         include *
-        include cp.spi
+        include cp.case-api
         include cp.hearing-system
         include cp.scheduling-and-listing-system
         include cp.management-information-system

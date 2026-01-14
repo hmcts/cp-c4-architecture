@@ -53,10 +53,7 @@ model {
                 this -> results-distribution-system "distributes results using"
             }
 
-            results-service = application {
-                title 'Results Service'
-                technology 'JavaEE + Wildfly'         
-            }
+
         }
     }
 }

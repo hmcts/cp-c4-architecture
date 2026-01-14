@@ -2,7 +2,86 @@ model {
     extend cp.court-hearings-subdomain {
         results-distribution-system = product {
             title 'Results Distribution System'
-            description 'Distributes results'
+            description 'Distributes the results of hearing to third parties'
+
+            results-cache = database {
+                title 'Results Cache'
+                technology 'Reddis'
+                summary 'Stores results temporarily for Azure Functions'
+            }
+
+            laa-result-functions = application {
+                title 'LAA Result Functions'
+                technology 'Azure Functions'
+            }
+            nows-result-functions = application {
+                title 'NOWs Result Functions'
+                technology 'Azure Functions'
+            }
+            probation-result-functions = application {
+                title 'Probation Result Functions'
+                technology 'Azure Functions'
+            }
+            court-order-result-functions = application {
+                title 'Court Order Result Functions'
+                technology 'Azure Functions'
+            }
+            court-register-result-functions = application {
+                title 'Court Register Result Functions'
+                technology 'Azure Functions'
+            }
+            prison-court-record-result-functions = application {
+                title 'Prison Court Record Result Functions'
+                technology 'Azure Functions'
+            }
+            informant-register-result-functions = application {
+                title 'Informant Register Result Functions'
+                technology 'Azure Functions'
+            }
+            sjp-result-functions = application {
+                title 'SJP Result Functions'
+                technology 'Azure Functions'
+            }
+
+            staging-enforcement-service = application {
+                title 'Staging Enforcement Service'
+                technology 'JavaEE + Wildfly'         
+            }
+
+            staging-enforcement-database = database {
+                title 'Staging Enforcement Database'
+                summary 'Stores events and entities'
+            }
+
+            staging-dvla-service = application {
+                title 'Staging DVLA Service'
+                technology 'JavaEE + Wildfly'         
+            }
+
+            staging-dvla-database = database {
+                title 'Staging DVLA Database'
+                summary 'Stores events and entities'
+            }
+
+            results-service = application {
+                title 'Results Service'
+                technology 'JavaEE + Wildfly'         
+            }
+
+            results-database = database {
+                title 'Results Database'
+                summary 'Stores events and entities'
+            }
+
+            hearing-nows-service = application {
+                title 'Hearing NOWs Service'
+                technology 'JavaEE + Wildfly'         
+            }
+
+            hearing-nows-database = database {
+                title 'Hearing NOWs Database'
+                summary 'Stores events and entities'
+            }
         }
     }
 }

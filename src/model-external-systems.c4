@@ -2,7 +2,7 @@ model {
     libra = external-system "Libra" "Heritage magistrates case management system"
     xhibit = external-system "Xhibit" "Maintains court schedules for Crown Courts"
     rota = external-system "Rota" "Prepares sitting pattern for Magistrates Courts"
-    cath = external-system "CATH" ""
+    cath = external-system "Court and Tribunal Hearings (CaTH)" "Publishing platform for lists, outcomes and judgements"
     darts = external-system "DARTS" "Manages digital audio recordings and transcripts"
     hmpps = external-system "HMPPS" ""
     laa = external-system "Legal Aid Agency" ""

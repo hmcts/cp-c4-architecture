@@ -13,7 +13,7 @@ views {
         exclude * -> *
         include * <-> cp.scheduling-and-listing-system
         exclude * <-> *
-            where kind is audit or kind is mi or kind is auth
+            where kind is audit or kind is mi or kind is auth or kind is shared
 
         style cp.case-administration-subdomain.*, cp.court-hearings-subdomain.*, cp.opami-subdomain.*, cp.court-hearings-subdomain.results-distribution-system {
             color secondary
@@ -26,12 +26,26 @@ views {
         include
             *
         // include cp.court-hearings-subdomain.hearing-system
+        include cp.opami-subdomain._
+        include cp.shared-components-subdomain._
         include cp.court-hearings-subdomain.hearing-system.staging-darts.*
         // include * <-> cp.scheduling-and-listing-subdomain.scheduling-and-listing-system.*
     }
 
     view court-scheduler-service-component-view of cp.scheduling-and-listing-system.court-scheduler-service {
         title '[Component View] Court Scheduler Service'
+        include
+            *
+    }
+
+    view listing-service-component-view of cp.scheduling-and-listing-system.listing-service {
+        title '[Component View] Listing Service'
+        include
+            *
+    }
+
+    view staging-pub-hub-service-component-view of cp.scheduling-and-listing-system.staging-pub-hub-service {
+        title '[Component View] Staging Pub Hub'
         include
             *
     }

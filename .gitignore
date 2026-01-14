@@ -4,3 +4,4 @@ build
 test/likec4-model.ts
 relationships.csv
 react/
+.likec4

@@ -27,6 +27,8 @@ views {
         exclude * -> *
         include * <-> cp.case-management-system
         include cp.case-management-system <-> cp.case-management-system
+        include cp.court-hearings-subdomain.hearing-system.*
+
 
         style cp.case-administration-subdomain.*, cp.court-hearings-subdomain.* {
             color secondary
@@ -39,11 +41,24 @@ views {
         where
             not (kind is application or kind is database or kind is webapp)
         exclude * -> *
-        include * <-> cp.work-management-system
+        include * <-> cp.work-management-system            
     }
 
     view work-management-system-container-view of cp.work-management-system {
         title '[Container View] Work Management System'
+        include *
+
+        // Bring in services outside of CAD
+        include cp.court-hearings-subdomain.hearing-service
+        include cp.scheduling-and-listing-system.listing-service
+        include cp.case-management-system.progression-service
+        include cp.case-management-system.prosecution-case-file-service
+        include cp.case-management-system.sjp-service
+        include cp.defence-portal.defence-service
+    }
+
+    view work-management-system-component-view of cp.work-management-system {
+        title '[Component View] Work Management System'
         include *
     }
 }

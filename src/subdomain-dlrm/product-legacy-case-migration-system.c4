@@ -1,5 +1,5 @@
 model {
-    extend cp.opami-subdomain {
+    extend cp.dlrm-subdomain {
         legacy-case-migration-system = product {
             title 'Legacy Case Migration System'
             description 'Supports the migration of cases from legacy systems as part of the DLRM project'

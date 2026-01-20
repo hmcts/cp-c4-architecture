@@ -30,8 +30,15 @@ model {
                 title 'Business Process Service'
                 technology 'JavaEE + Wildfly'
                 this -> camunda 'makes API calls to'
+                cp.hearing-service -> this 'Sends hearing outcome updates to update business process activities'
+                cp.prosecution-case-file-service -> this 'Sends case creation failures to update business process activities'
+                cp.progression-service -> this 'Sends case record updates to update business process activities'
+                cp.sjp-service -> this 'Sends SJP case record updates to update business process activities'
+                cp.listing-service -> this 'Sends hearing scheduling updates to update business process activities'
+                cp.defence-service -> this 'Sends defence case updates to update business process activities'
+                // TODO @matthew.rich Needs to be created
+                //cp.correspondence-service -> this 'Creates & Updates Tasks'
             }
-
 
             camunda = application {
                 title 'Camunda'

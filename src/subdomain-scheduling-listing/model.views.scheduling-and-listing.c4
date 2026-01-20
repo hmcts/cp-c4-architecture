@@ -23,8 +23,7 @@ views {
 
     view scheduling-and-listing-system-container-view of cp.scheduling-and-listing-system {
         title '[Container View] Scheduling and Listing System'
-        include
-            *
+        include *
         // include cp.court-hearings-subdomain.hearing-system
         include cp.opami-subdomain._
         include cp.shared-components-subdomain._

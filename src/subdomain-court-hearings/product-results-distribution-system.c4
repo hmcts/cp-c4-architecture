@@ -2,7 +2,29 @@ model {
     extend cp.court-hearings-subdomain {
         results-distribution-system = product {
             title 'Results Distribution System'
-            description 'Distributes the results of hearing to third parties'
+            description 'Distributes the results of hearings to third parties'
+
+            results-service = application {
+                title 'Results Service'
+                technology 'JavaEE + Wildfly'   
+                
+                this -> results-database
+                this -> results-cache 'stores results in'
+                this -> laa-result-functions 'sends results to'
+                this -> nows-result-functions 'sends results to'
+                this -> probation-result-functions 'sends results to'
+                this -> court-order-result-functions 'sends results to'
+                this -> court-register-result-functions 'sends results to'
+                this -> prison-court-record-result-functions 'sends results to'
+                this -> informant-register-result-functions 'sends results to'
+                this -> sjp-result-functions 'sends results to'
+
+            }
+
+            results-database = database {
+                title 'Results Database'
+                summary 'Stores events and entities'
+            }
 
             results-cache = database {
                 title 'Results Cache'
@@ -13,39 +35,78 @@ model {
             laa-result-functions = application {
                 title 'LAA Result Functions'
                 technology 'Azure Functions'
+                summary 'Distributes hearing results to the Legal Aid Agency to support legal aid funding decisions and case management'
+
+                this -> laa 'sends results to'
             }
+            
             nows-result-functions = application {
                 title 'NOWs Result Functions'
                 technology 'Azure Functions'
+                summary 'Creates and distributes Notices, Orders and Warrants (NOWs) to police forces, DVLA, enforcement agencies, and major creditors for public safety and compliance monitoring'
+
+                this -> hearing-nows-service 'triggers generation of NOWs documents'
+                this -> results-cache
             }
+
             probation-result-functions = application {
                 title 'Probation Result Functions'
                 technology 'Azure Functions'
+                summary 'Distributes hearing results to probation services for offender management, risk assessment, and sentence planning'
+
+                this -> results-cache
+                this -> hmpps 'sends results to'
             }
+            
             court-order-result-functions = application {
                 title 'Court Order Result Functions'
                 technology 'Azure Functions'
+                summary 'Creates, updates and removes court orders based on hearing results'
+
+                this -> results-cache
+                this -> cp.case-administration-subdomain.application-court-orders-service
             }
+            
             court-register-result-functions = application {
                 title 'Court Register Result Functions'
                 technology 'Azure Functions'
+                summary 'Updates the register of court events'
+
+                this -> results-cache
+                this -> cp.case-administration-subdomain.progression-service 'adds results to court register'
             }
+            
             prison-court-record-result-functions = application {
                 title 'Prison Court Record Result Functions'
                 technology 'Azure Functions'
+                summary 'Notifies prison services of court results for inmates, supporting prisoner management and release planning'
+
+                this -> results-cache
+                this -> cp.case-administration-subdomain.progression-service
             }
+
             informant-register-result-functions = application {
                 title 'Informant Register Result Functions'
                 technology 'Azure Functions'
+                summary 'Updates the informant register'
+
+                this -> results-cache
+                this -> results-service 'updates the informant register'
             }
+
             sjp-result-functions = application {
                 title 'SJP Result Functions'
                 technology 'Azure Functions'
+                summary 'Handles Single Justice Procedure case results'
+
+                this -> results-cache
             }
 
             staging-enforcement-service = application {
                 title 'Staging Enforcement Service'
                 technology 'JavaEE + Wildfly'         
+
+                this -> staging-enforcement-database
             }
 
             staging-enforcement-database = database {
@@ -56,6 +117,8 @@ model {
             staging-dvla-service = application {
                 title 'Staging DVLA Service'
                 technology 'JavaEE + Wildfly'         
+
+                this -> staging-dvla-database
             }
 
             staging-dvla-database = database {
@@ -63,19 +126,11 @@ model {
                 summary 'Stores events and entities'
             }
 
-            results-service = application {
-                title 'Results Service'
-                technology 'JavaEE + Wildfly'         
-            }
-
-            results-database = database {
-                title 'Results Database'
-                summary 'Stores events and entities'
-            }
-
             hearing-nows-service = application {
                 title 'Hearing NOWs Service'
-                technology 'JavaEE + Wildfly'         
+                technology 'JavaEE + Wildfly'
+                
+                this -> hearing-nows-database
             }
 
             hearing-nows-database = database {

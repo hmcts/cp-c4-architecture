@@ -29,13 +29,24 @@ views {
     view results-distribution-system-context of cp.results-distribution-system {
         title '[System Context] Results Distribution System'
         include *
+        where
+            not (kind is application or kind is database or kind is webapp)
+        include cp.court-hearings-subdomain._
+        include cp.case-ingestion-subdomain._
+        exclude * -> *
+        include * <-> cp.results-distribution-system
     }
 
     view results-distribution-system-container-view of cp.results-distribution-system {
         title '[Container View] Results Distribution System'
-        include
-            *
-        // include cp.court-hearings-subdomain.hearing-system
+        include *
+        include cp.case-ingestion-subdomain._
+        include cp.case-administration-subdomain._
+        include cp.court-hearings-subdomain._
+        include cp.case-administration-subdomain.case-management-system
+        exclude * -> *
+        include * <-> cp.results-distribution-system._
+        include cp.results-distribution-system._ <-> cp.results-distribution-system._
         // include cp.court-hearings-subdomain.hearing-system.staging-darts.*
         // include * <-> cp.scheduling-and-listing-subdomain.scheduling-and-listing-system.*
     }

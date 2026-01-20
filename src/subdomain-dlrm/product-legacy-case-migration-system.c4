@@ -1,0 +1,32 @@
+model {
+    extend cp.opami-subdomain {
+        legacy-case-migration-system = product {
+            title 'Legacy Case Migration System'
+            description 'Supports the migration of cases from legacy systems as part of the DLRM project'
+
+            staging-dlrm = application {
+                title 'Staging DLRM'
+                technology 'JavaEE + Wildfly'         
+
+                this -> staging-dlrm-database
+            }
+
+            staging-dlrm-database = database {
+                title 'Staging DLRM Database'
+                summary 'Stores events and entities'
+            }
+
+            pcf-dlrm = application {
+                title 'Prosecution Case File DLRM'
+                technology 'JavaEE + Wildfly'         
+
+                this -> pcf-dlrm-database
+            }
+
+            pcf-dlrm-database = database {
+                title 'Prosecution Case File DLRM Database'
+                summary 'Stores events and entities'
+            }
+        }
+    }
+}

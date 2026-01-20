@@ -1,0 +1,26 @@
+views {
+    view legacy-case-migration-system-context of cp.legacy-case-migration-system {
+        title '[System Context] Legacy Case Migration System'
+        include *
+        where
+            not (kind is application or kind is database or kind is webapp)
+        // include cp.court-hearings-subdomain._
+        // include cp.scheduling-and-listing-subdomain._
+        // include cp.case-administration-subdomain._
+        // include cp.opami-subdomain._
+        // include cp.case-ingestion-subdomain._
+        // exclude * -> *
+        // include * <-> cp.hearing-system
+
+        // style cp.case-administration-subdomain.*, cp.scheduling-and-listing-subdomain.*, cp.opami-subdomain.*, cp.case-ingestion-subdomain.* {
+        //     color secondary
+        // }
+    }
+
+    view legacy-case-migration-system-container-view of cp.legacy-case-migration-system {
+        title '[Container View] Legacy Case Migration System'
+        include *
+        // exclude * -> *
+        // include * <-> cp.legacy-case-migration-system._
+    }
+}

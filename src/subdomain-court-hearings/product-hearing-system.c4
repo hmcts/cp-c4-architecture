@@ -50,10 +50,13 @@ model {
                 title 'Hearing Service'
                 technology 'JavaEE + Wildfly'
 
-                this -> results-distribution-system "distributes results using"
+                this -> results-distribution-system.results-service "distributes results using"
             }
 
-
+            hearing-database = database {
+                title 'Hearing Database'
+                summary 'Stores events and entities'
+            }
         }
     }
 }

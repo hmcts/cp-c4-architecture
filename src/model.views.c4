@@ -21,7 +21,9 @@ views {
             cp.case-ingestion-subdomain.*,
             cp.shared-components-subdomain,
             cp.shared-components-subdomain.*
-                where kind is product
+                where kind is product,
+            cp.dlrm-subdomain,
+            cp.dlrm-subdomain.*
         exclude * <-> *
 
         style cp {
@@ -41,7 +43,9 @@ views {
             cp.opami-subdomain.*,
             cp.case-ingestion-subdomain.*,
             cp.shared-components-subdomain,
-            cp.shared-components-subdomain.*
+            cp.shared-components-subdomain.*,
+            cp.dlrm-subdomain,
+            cp.dlrm-subdomain.*
         exclude * <-> *
 
         style cp {

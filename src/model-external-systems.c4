@@ -8,4 +8,5 @@ model {
     laa = external-system "Legal Aid Agency" ""
     cjse = external-system "Criminal Justice System Exchange" "Routes and forwards police cases to HMCTS"
     crime-idam = external-system "Crime IDAM" ""
+    dlrm-migration-platform = external-system "DLRM Migration Platform" "Platform for undertaking legacy system migrations"
 }

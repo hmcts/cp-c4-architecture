@@ -120,7 +120,7 @@ model {
             }
         }
 
-        reference-data-system = shared-component {
+        reference-data-system = product {
             title 'Reference Data System'
             summary 'Holds reference data used by the rest of the common platform'
             reference-data = application {

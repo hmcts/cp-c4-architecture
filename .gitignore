@@ -3,5 +3,6 @@ dist
 build
 test/likec4-model.ts
 relationships.csv
+product-components.csv
 react/
 .likec4

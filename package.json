@@ -16,6 +16,7 @@
     "postinstall": "npm run generate:model",
     "generate:model": "likec4 gen model -o ./test/likec4-model.ts",
     "generate:relationships-csv": "likec4 gen relationships-csv && open ./relationships.csv",
+    "generate:product-components-csv": "likec4 gen product-components-csv && open ./product-components.csv",
     "generate:react": "likec4 generate react -o ./react/likec4-views.mjs",
     "export:png": "likec4 export png -o ./png"
   },

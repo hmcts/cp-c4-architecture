@@ -13,10 +13,17 @@ model {
             scheduling-and-listing-system -> cath "Publish court lists to"
             
 
-            listing-ui = webapp {
+            listing-ui = user-interface {
                 title 'Listing UI'
                 technology 'Angular'
                 summary 'Provides functionality for managing coute listings'
+                metadata {
+                    language 'TypeScript'
+                    software-framework 'Angular'
+                }
+                style {
+                    icon tech:angular
+                }
                 this -> listing-service 'makes API calls to'
 
                 listing_officer -> this 'Allocates hearings using'
@@ -26,11 +33,18 @@ model {
 
             }
 
-            court-scheduler-ui = webapp {
+            court-scheduler-ui = user-interface {
                 title 'Court Scheduler UI'
                 technology 'Angular'
                 summary 'Provides functionality for managing court schedules'
-                
+                metadata {
+                    language 'TypeScript'
+                    software-framework 'Angular'
+                }
+                style {
+                    icon tech:angular
+                }
+
                 this -> api 'makes API calls to' {
                     technology 'JSON/HTTPS'
                 }
@@ -39,10 +53,14 @@ model {
 
             }
 
-            listing-service = application {
+            listing-service = microservice {
                 title 'Listing Service'
-                technology 'JavaEE + Wildfly'
+                technology 'Java EE'
                 summary 'Manages court listings'
+                metadata {
+                    language 'Java'
+                    software-framework 'Java EE 8'
+                }
 
                 link https://github.com/hmcts/cpp-context-listing 'Repository'
 
@@ -64,10 +82,14 @@ model {
                 }
             }
 
-            court-scheduler-service = application {
+            court-scheduler-service = microservice {
                 title 'Court Scheduler Service'
-                technology 'JavaEE + Wildfly'
+                technology 'Java EE'
                 summary 'Manages court schedules'
+                metadata {
+                    language 'Java'
+                    software-framework 'Java EE 8'
+                }
 
                 link https://github.com/hmcts/cpp-context-listing-courtscheduler 'Repository'
 
@@ -111,10 +133,14 @@ model {
                 }
             }
 
-            staging-pub-hub-service = application {
+            staging-pub-hub-service = microservice {
                 title 'Staging Pub Hub'
-                technology 'JavaEE + Wildfly'
+                technology 'Java EE'
                 summary 'Publishes court listings'
+                metadata {
+                    language 'Java'
+                    software-framework 'Java EE 8'
+                }
 
                 link https://github.com/hmcts/cpp-context-staging-pubhub 'Repository'
 
@@ -123,14 +149,22 @@ model {
                 this -[shared]-> cp.reference-data 'gets reference data from'
             }
 
-            listing-database = database {
+            listing-database = datastore {
                 title 'Listing Database'
+                technology 'PostgreSQL'
                 summary 'Stores events and entities'
+                style {
+                    icon tech:postgresql
+                }
             }
 
-            scsl-database = database {
+            scsl-database = datastore {
                 title 'SCSL Database'
+                technology 'PostgreSQL'
                 summary 'Stores events and entities'
+                style {
+                    icon tech:postgresql
+                }
             }
         }
     }

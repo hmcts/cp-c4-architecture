@@ -4,50 +4,73 @@ model {
             title 'Legacy Case Migration System'
             description 'Supports the migration of cases from legacy systems as part of the DLRM programme'
 
-            dlrm-integration-functions = application {
+            dlrm-integration-functions = functions {
                 title 'DLRM Integration Functions'
                 technology 'Azure Functions'
                 summary 'Validates case data and orchestrates sending to Staging DLRM'
+                metadata {
+                    language 'TypeScript'
+                    software-framework 'Node.js 20.9.0'
+                }
 
                 this -> staging-dlrm 'sends cases to'
                 this -> dlrm-integration-storage 'puts outcome files into'
             }
 
-            dlrm-integration-storage = database {
+            dlrm-integration-storage = datastore {
                 title 'DLRM Integration Storage'
                 technology 'Azure Blob Storage'
+                style {
+                    icon azure:storage-accounts
+                }
 
                 dlrm-migration-platform -> this 'sends migrated cases to and retrieves outcome files from'
                 this -> dlrm-integration-functions 'triggers'
             }
 
-            staging-dlrm = application {
+            staging-dlrm = microservice {
                 title 'Staging DLRM'
-                technology 'JavaEE + Wildfly'      
-                summary 'Receives migrated cases and materials and transfers from the DLRM data miration platform'   
+                technology 'Java EE'
+                summary 'Receives migrated cases and materials and transfers from the DLRM data miration platform'
+                metadata {
+                    language 'Java'
+                    software-framework 'Java EE 8'
+                }
 
                 this -> staging-dlrm-database 'stores transitory data during migration'
                 this -> pcf-dlrm 'sends migrated cases to'
                 this -> dlrm-integration-functions 'notifies outcomes'
             }
 
-            staging-dlrm-database = database {
+            staging-dlrm-database = datastore {
                 title 'Staging DLRM Database'
+                technology 'PostgreSQL'
                 summary 'Stores events and entities'
+                style {
+                    icon tech:postgresql
+                }
             }
 
-            pcf-dlrm = application {
+            pcf-dlrm = microservice {
                 title 'Prosecution Case File DLRM'
-                technology 'JavaEE + Wildfly'         
+                technology 'Java EE'
+                metadata {
+                    language 'Java'
+                    software-framework 'Java EE 8'
+                }
 
                 this -> staging-dlrm 'notifies outcomes'
                 this -> pcf-dlrm-database 'stores case processing outcomes'
                 this -> cp.case-management-system.progression-service 'notifies of new migrated case availability'
             }
 
-            pcf-dlrm-database = database {
+            pcf-dlrm-database = datastore {
                 title 'Prosecution Case File DLRM Database'
+                technology 'PostgreSQL'
                 summary 'Stores events and entities'
+                style {
+                    icon tech:postgresql
+                }
             }
         }
     }

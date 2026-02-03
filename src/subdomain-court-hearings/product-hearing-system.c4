@@ -21,11 +21,18 @@ model {
             // hearing-system -> ref_data "hearing deatils changed"
             hearing-system -> cp.management-information-system "sends data to"
 
-            notepad-parsing-ui = webapp {
+            notepad-parsing-ui = user-interface {
                 title 'Notepad Parsing UI'
                 technology 'Angular'
                 summary 'Converts entered shorthand text into result definitions and prompts'
-                
+                metadata {
+                    language 'TypeScript'
+                    software-framework 'Angular'
+                }
+                style {
+                    icon tech:angular
+                }
+
                 this -> cp.reference-data-system.reference-data 'obtains result definition data from' {
                     technology 'JSON/HTTPS'
                 }
@@ -34,28 +41,47 @@ model {
 
             }
 
-            court-hearing-ui = webapp {
+            court-hearing-ui = user-interface {
                 title 'Court Hearing UI'
                 technology 'Angular'
                 summary 'Providdes functionality for managing hearings'
+                metadata {
+                    language 'TypeScript'
+                    software-framework 'Angular'
+                }
+                style {
+                    icon tech:angular
+                }
              }
 
-            staging-darts = application {
+            staging-darts = microservice {
                 title 'Staging DARTS'
-                technology 'JavaEE + Wildfly'
+                technology 'Java EE'
+                metadata {
+                    language 'Java'
+                    software-framework 'Java EE 8'
+                }
                 cp.listing-service -> this 'listens to daily court list published by'
             }
 
-            hearing-service = application {
+            hearing-service = microservice {
                 title 'Hearing Service'
-                technology 'JavaEE + Wildfly'
+                technology 'Java EE'
+                metadata {
+                    language 'Java'
+                    software-framework 'Java EE 8'
+                }
 
                 this -> results-distribution-system.results-service "distributes results using"
             }
 
-            hearing-database = database {
+            hearing-database = datastore {
                 title 'Hearing Database'
+                technology 'PostgreSQL'
                 summary 'Stores events and entities'
+                style {
+                    icon tech:postgresql
+                }
             }
         }
     }

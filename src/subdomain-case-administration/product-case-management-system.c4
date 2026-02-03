@@ -7,99 +7,179 @@ model {
             this -> cp.scheduling-and-listing-system 'requests listings for hearings using'
             this -> cp.management-information-system 'sends data to'
 
-            subscriptions-ui = webapp {
+            subscriptions-ui = user-interface {
                 title 'Subscriptions UI'
                 technology 'Angular'
                 summary 'Provides ?'
+                metadata {
+                    language 'TypeScript'
+                    software-framework 'Angular'
+                }
+                style {
+                    icon tech:angular
+                }
 
                 this -> subscriptions-service "makes API calls to"
             }
 
-            prosecution-casefile-ui = webapp {
+            prosecution-casefile-ui = user-interface {
                 title 'Prosection Case File UI'
                 technology 'Angular'
                 summary 'Provides access to the primary Case and Application at a glance management screens'
+                metadata {
+                    language 'TypeScript'
+                    software-framework 'Angular'
+                }
+                style {
+                    icon tech:angular
+                }
             }
 
-            sjp-ui = webapp {
+            sjp-ui = user-interface {
                 title 'SJP UI'
                 technology 'Angular'
                 summary 'Provides access to the primary Case and Application at a glance management screens for SJP (Single Justice Procedure) cases'
+                metadata {
+                    language 'TypeScript'
+                    software-framework 'Angular'
+                }
+                style {
+                    icon tech:angular
+                }
 
                 this -> sjp-service "makes API calls to"
             }
 
-            case-management-ui = webapp {
+            case-management-ui = user-interface {
                 title 'Case Management UI'
                 technology 'Angular'
                 summary 'Provides ?'
+                metadata {
+                    language 'TypeScript'
+                    software-framework 'Angular'
+                }
+                style {
+                    icon tech:angular
+                }
             }
 
-            prosecutor-ui = webapp {
+            prosecutor-ui = user-interface {
                 title 'Prosecutor UI'
                 technology 'Angular'
                 summary 'Provides ?'
+                metadata {
+                    language 'TypeScript'
+                    software-framework 'Angular'
+                }
+                style {
+                    icon tech:angular
+                }
 
                 this -> progression-service "makes API calls to"
             }
 
-            progression-service = application {
+            progression-service = microservice {
                 title 'Case Progression Service'
-                technology 'JavaEE + Wildfly'
+                technology 'Java EE'
+                metadata {
+                    language 'Java'
+                    software-framework 'Java EE 8'
+                }
                 this -> progression-database
             }
 
-            progression-database = database {
+            progression-database = datastore {
                 title 'Progression Database'
+                technology 'PostgreSQL'
                 summary 'Stores events and entities'
+                style {
+                    icon tech:postgresql
+                }
             }
 
-            prosecution-case-file-service = application {
+            prosecution-case-file-service = microservice {
                 title 'Prosectution Case File Service'
+                technology 'Java EE'
+                metadata {
+                    language 'Java'
+                    software-framework 'Java EE 8'
+                }
             }
 
-            sjp-service = application {
+            sjp-service = microservice {
                 title 'SJP Service'
-                technology 'JavaEE + Wildfly'
+                technology 'Java EE'
+                metadata {
+                    language 'Java'
+                    software-framework 'Java EE 8'
+                }
                 this -> sjp-database
             }
 
-            sjp-database = database {
+            sjp-database = datastore {
                 title 'SJP Database'
+                technology 'PostgreSQL'
                 summary 'Stores events and entities'
+                style {
+                    icon tech:postgresql
+                }
             }
 
-            subscriptions-service = application {
+            subscriptions-service = microservice {
                 title 'Subscriptions Service'
-                technology 'JavaEE + Wildfly'
+                technology 'Java EE'
+                metadata {
+                    language 'Java'
+                    software-framework 'Java EE 8'
+                }
                 this -> subscriptions-database
             }
 
-            subscriptions-database = database {
+            subscriptions-database = datastore {
                 title 'Subscriptions Database'
+                technology 'PostgreSQL'
                 summary 'Stores events and entities'
+                style {
+                    icon tech:postgresql
+                }
             }
 
-            assignment-service = application {
+            assignment-service = microservice {
                 title 'Assignment Service'
-                technology 'JavaEE + Wildfly'
+                technology 'Java EE'
+                metadata {
+                    language 'Java'
+                    software-framework 'Java EE 8'
+                }
                 this -> assignment-database
             }
 
-            assignment-database = database {
+            assignment-database = datastore {
                 title 'Assignment Database'
+                technology 'PostgreSQL'
                 summary 'Stores events and entities'
+                style {
+                    icon tech:postgresql
+                }
             }
 
-            application-court-orders-service = application {
+            application-court-orders-service = microservice {
                 title 'Application Court Orders Service'
-                technology 'JavaEE + Wildfly'
+                technology 'Java EE'
+                metadata {
+                    language 'Java'
+                    software-framework 'Java EE 8'
+                }
                 this -> application-court-orders-database
             }
 
-            application-court-orders-database = database {
+            application-court-orders-database = datastore {
                 title 'Application Court Orders  Database'
+                technology 'PostgreSQL'
                 summary 'Stores events and entities'
+                style {
+                    icon tech:postgresql
+                }
             }
         }
     }

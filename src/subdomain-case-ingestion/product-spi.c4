@@ -5,30 +5,45 @@ model {
             description 'Standard Prosecutor Interface'
             summary 'Implements the SPI interface to receive police cases'
 
-            error-queue-ui = webapp {
+            error-queue-ui = user-interface {
                 title 'Error Queue UI'
                 technology 'Angular'
                 summary 'Enables resolution of API case validation errors'
+                metadata {
+                    language 'TypeScript'
+                    software-framework 'Angular'
+                }
+                style {
+                    icon tech:angular
+                }
                 this -> cp.case-management-system.prosecution-case-file-service 'makes API calls to'
 
                 court_admin -> this 'resolves case validation errors using'
 
             }
 
-            case-filter = application {
+            case-filter = functions {
                 title 'Case Filter'
                 technology 'Azure Functions'
                 summary 'Case interceptor that routes to the appropriate magistrate case management system (Libra or Common Platform) based on routing rules'
+                metadata {
+                    language 'TypeScript'
+                    software-framework 'Node.js 20.9.0'
+                }
                 this -> libra 'forwards cases to'
                 this -> staging-spi-service 'forwards cases to'
                 cjse -> this 'sends police cases to'
                 this -> filter-routing-configuiration
             }
 
-            staging-spi-service = application {
+            staging-spi-service = microservice {
                 title 'Staging SPI'
-                technology 'JavaEE + Wildfly'
+                technology 'Java EE'
                 summary 'Implements the SPI interface to enable receiving police cases and sending case results to police'
+                metadata {
+                    language 'Java'
+                    software-framework 'Java EE 8'
+                }
 
                 this -> cp.case-management-system.prosecution-case-file-service 'sends cases to'
                 this -> staging-spi-database
@@ -36,14 +51,22 @@ model {
                 this -> cjse 'sends case results to police'
             }
 
-            staging-spi-database = database {
+            staging-spi-database = datastore {
                 title 'Staging SPI Database'
+                technology 'PostgreSQL'
                 summary 'Stores events and entities'
+                style {
+                    icon tech:postgresql
+                }
             }
 
-            filter-routing-configuiration = database {
+            filter-routing-configuiration = datastore {
                 title 'Filter Routing Configuration'
+                technology 'PostgreSQL'
                 summary 'Stores filter criteria configuration'
+                style {
+                    icon tech:postgresql
+                }
             }
         }
     }

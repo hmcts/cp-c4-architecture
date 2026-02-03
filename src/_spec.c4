@@ -59,28 +59,42 @@ specification {
 
     element application
 
+    element microservice {
+        notation "Microservice"
+        style {
+            icon ../icons/java-ee.svg
+        }
+    }
+
+    element functions {
+        notation "Azure Functions"
+        technology "Azure Functions"
+        style {
+            icon azure:function-apps
+        }
+    }
+
     element component {
         style {
             opacity 20%
         }
     }
+    
     element service {
         link https://github.com/likec4/template 'Repository'
     }
 
-    element webapp {
-        notation "Web Application"
+    element user-interface {
+        notation "User Interface"
         style {
             shape browser
         }
     }
 
-    element database {
-        notation "Database"
-        technology "PostgreSQL"
+    element datastore {
+        notation "Datastore"
         style {
             shape storage
-            icon tech:postgresql
             opacity 30%
         }
     }

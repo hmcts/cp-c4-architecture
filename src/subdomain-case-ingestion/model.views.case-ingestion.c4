@@ -3,7 +3,7 @@ views {
         title '[System Context] SPI'
         include *
         where
-            not (kind is application or kind is database or kind is webapp)
+            not (kind is application or kind is microservice or kind is functions or kind is datastore or kind is user-interface)
         include cp.case-administration-subdomain._
         include cp.court-hearings-subdomain._
         exclude * -> *

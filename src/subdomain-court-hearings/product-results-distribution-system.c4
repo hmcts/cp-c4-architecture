@@ -4,10 +4,14 @@ model {
             title 'Results Distribution System'
             description 'Distributes the results of hearings to third parties'
 
-            results-service = application {
+            results-service = microservice {
                 title 'Results Service'
-                technology 'JavaEE + Wildfly'   
-                
+                technology 'Java EE'
+                metadata {
+                    language 'Java'
+                    software-framework 'Java EE 8'
+                }
+
                 this -> results-database
                 this -> results-cache 'stores results in'
                 this -> laa-result-functions 'sends results to'
@@ -21,121 +25,184 @@ model {
 
             }
 
-            results-database = database {
+            results-database = datastore {
                 title 'Results Database'
+                technology 'PostgreSQL'
                 summary 'Stores events and entities'
+                style {
+                    icon tech:postgresql
+                }
             }
 
-            results-cache = database {
+            results-cache = datastore {
                 title 'Results Cache'
-                technology 'Reddis'
+                technology 'Redis'
                 summary 'Stores results temporarily for Azure Functions'
+                style {
+                    icon tech:redis
+                }
             }
 
-            laa-result-functions = application {
+            laa-result-functions = functions {
                 title 'LAA Result Functions'
                 technology 'Azure Functions'
                 summary 'Distributes hearing results to the Legal Aid Agency to support legal aid funding decisions and case management'
+                metadata {
+                    language 'TypeScript'
+                    software-framework 'Node.js 20.9.0'
+                }
 
                 this -> laa 'sends results to'
             }
             
-            nows-result-functions = application {
+            nows-result-functions = functions {
                 title 'NOWs Result Functions'
                 technology 'Azure Functions'
                 summary 'Creates and distributes Notices, Orders and Warrants (NOWs) to police forces, DVLA, enforcement agencies, and major creditors for public safety and compliance monitoring'
+                metadata {
+                    language 'TypeScript'
+                    software-framework 'Node.js 20.9.0'
+                }
 
                 this -> hearing-nows-service 'triggers generation of NOWs documents'
                 this -> results-cache
             }
 
-            probation-result-functions = application {
+            probation-result-functions = functions {
                 title 'Probation Result Functions'
                 technology 'Azure Functions'
                 summary 'Distributes hearing results to probation services for offender management, risk assessment, and sentence planning'
+                metadata {
+                    language 'TypeScript'
+                    software-framework 'Node.js 20.9.0'
+                }
 
                 this -> results-cache
                 this -> hmpps 'sends results to'
             }
             
-            court-order-result-functions = application {
+            court-order-result-functions = functions {
                 title 'Court Order Result Functions'
                 technology 'Azure Functions'
                 summary 'Creates, updates and removes court orders based on hearing results'
+                metadata {
+                    language 'TypeScript'
+                    software-framework 'Node.js 20.9.0'
+                }
 
                 this -> results-cache
                 this -> cp.case-administration-subdomain.application-court-orders-service
             }
             
-            court-register-result-functions = application {
+            court-register-result-functions = functions {
                 title 'Court Register Result Functions'
                 technology 'Azure Functions'
                 summary 'Updates the register of court events'
+                metadata {
+                    language 'TypeScript'
+                    software-framework 'Node.js 20.9.0'
+                }
 
                 this -> results-cache
                 this -> cp.case-administration-subdomain.progression-service 'adds results to court register'
             }
             
-            prison-court-record-result-functions = application {
+            prison-court-record-result-functions = functions {
                 title 'Prison Court Record Result Functions'
                 technology 'Azure Functions'
                 summary 'Notifies prison services of court results for inmates, supporting prisoner management and release planning'
+                metadata {
+                    language 'TypeScript'
+                    software-framework 'Node.js 20.9.0'
+                }
 
                 this -> results-cache
                 this -> cp.case-administration-subdomain.progression-service
             }
 
-            informant-register-result-functions = application {
+            informant-register-result-functions = functions {
                 title 'Informant Register Result Functions'
                 technology 'Azure Functions'
                 summary 'Updates the informant register'
+                metadata {
+                    language 'TypeScript'
+                    software-framework 'Node.js 20.9.0'
+                }
 
                 this -> results-cache
                 this -> results-service 'updates the informant register'
             }
 
-            sjp-result-functions = application {
+            sjp-result-functions = functions {
                 title 'SJP Result Functions'
                 technology 'Azure Functions'
                 summary 'Handles Single Justice Procedure case results'
+                metadata {
+                    language 'TypeScript'
+                    software-framework 'Node.js 20.9.0'
+                }
 
                 this -> results-cache
             }
 
-            staging-enforcement-service = application {
+            staging-enforcement-service = microservice {
                 title 'Staging Enforcement Service'
-                technology 'JavaEE + Wildfly'         
+                technology 'Java EE'
+                metadata {
+                    language 'Java'
+                    software-framework 'Java EE 8'
+                }
 
                 this -> staging-enforcement-database
             }
 
-            staging-enforcement-database = database {
+            staging-enforcement-database = datastore {
                 title 'Staging Enforcement Database'
+                technology 'PostgreSQL'
                 summary 'Stores events and entities'
+                style {
+                    icon tech:postgresql
+                }
             }
 
-            staging-dvla-service = application {
+            staging-dvla-service = microservice {
                 title 'Staging DVLA Service'
-                technology 'JavaEE + Wildfly'         
+                technology 'Java EE'
+                metadata {
+                    language 'Java'
+                    software-framework 'Java EE 8'
+                }
 
                 this -> staging-dvla-database
             }
 
-            staging-dvla-database = database {
+            staging-dvla-database = datastore {
                 title 'Staging DVLA Database'
+                technology 'PostgreSQL'
                 summary 'Stores events and entities'
+                style {
+                    icon tech:postgresql
+                }
             }
 
-            hearing-nows-service = application {
+            hearing-nows-service = microservice {
                 title 'Hearing NOWs Service'
-                technology 'JavaEE + Wildfly'
-                
+                technology 'Java EE'
+                metadata {
+                    language 'Java'
+                    software-framework 'Java EE 8'
+                }
+
                 this -> hearing-nows-database
             }
 
-            hearing-nows-database = database {
+            hearing-nows-database = datastore {
                 title 'Hearing NOWs Database'
+                technology 'PostgreSQL'
                 summary 'Stores events and entities'
+                style {
+                    icon tech:postgresql
+                }
             }
         }
     }

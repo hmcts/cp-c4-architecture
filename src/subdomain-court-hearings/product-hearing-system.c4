@@ -52,6 +52,7 @@ model {
                 style {
                     icon tech:angular
                 }
+                link https://github.com/hmcts/cpp-ui-hearing 'Repository'
              }
 
             staging-darts = microservice {
@@ -61,6 +62,7 @@ model {
                     language 'Java'
                     software-framework 'Java EE 8'
                 }
+                link https://github.com/hmcts/cpp-context-staging-darts 'Repository'
                 cp.listing-service -> this 'listens to daily court list published by'
             }
 
@@ -71,6 +73,7 @@ model {
                     language 'Java'
                     software-framework 'Java EE 8'
                 }
+                link https://github.com/hmcts/cpp-context-hearing 'Repository'
 
                 this -> results-distribution-system.results-service "distributes results using"
             }

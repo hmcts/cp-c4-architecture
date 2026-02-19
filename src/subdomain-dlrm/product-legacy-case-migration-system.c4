@@ -36,6 +36,7 @@ model {
                     language 'Java'
                     software-framework 'Java EE 8'
                 }
+                link https://github.com/hmcts/cpp-context-stagingdlrm 'Repository'
 
                 this -> staging-dlrm-database 'stores transitory data during migration'
                 this -> pcf-dlrm 'sends migrated cases to'
@@ -58,6 +59,7 @@ model {
                     language 'Java'
                     software-framework 'Java EE 8'
                 }
+                link https://github.com/hmcts/cpp-context-prosecution-casefile-dlrm 'Repository'
 
                 this -> staging-dlrm 'notifies outcomes'
                 this -> pcf-dlrm-database 'stores case processing outcomes'

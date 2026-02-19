@@ -33,6 +33,7 @@ model {
                 style {
                     icon tech:angular
                 }
+                link https://github.com/hmcts/cpp-ui-prosecution-casefile 'Repository'
             }
 
             sjp-ui = user-interface {
@@ -46,6 +47,7 @@ model {
                 style {
                     icon tech:angular
                 }
+                link https://github.com/hmcts/cpp-ui-sjp 'Repository'
 
                 this -> sjp-service "makes API calls to"
             }
@@ -61,6 +63,7 @@ model {
                 style {
                     icon tech:angular
                 }
+                link https://github.com/hmcts/cpp-ui-case-management 'Repository'
             }
 
             prosecutor-ui = user-interface {
@@ -74,6 +77,7 @@ model {
                 style {
                     icon tech:angular
                 }
+                link https://github.com/hmcts/cpp-ui-prosecutor 'Repository'
 
                 this -> progression-service "makes API calls to"
             }
@@ -85,6 +89,7 @@ model {
                     language 'Java'
                     software-framework 'Java EE 8'
                 }
+                link https://github.com/hmcts/cpp-context-progression 'Repository'
                 this -> progression-database
             }
 
@@ -104,6 +109,7 @@ model {
                     language 'Java'
                     software-framework 'Java EE 8'
                 }
+                link https://github.com/hmcts/cpp-context-prosecution-casefile 'Repository'
             }
 
             sjp-service = microservice {
@@ -113,6 +119,7 @@ model {
                     language 'Java'
                     software-framework 'Java EE 8'
                 }
+                link https://github.com/hmcts/cpp-context-sjp 'Repository'
                 this -> sjp-database
             }
 
@@ -132,6 +139,7 @@ model {
                     language 'Java'
                     software-framework 'Java EE 8'
                 }
+                link https://github.com/hmcts/cpp-context-subscriptions 'Repository'
                 this -> subscriptions-database
             }
 
@@ -170,6 +178,7 @@ model {
                     language 'Java'
                     software-framework 'Java EE 8'
                 }
+                link https://github.com/hmcts/cpp-context-applications-courtorders 'Repository'
                 this -> application-court-orders-database
             }
 

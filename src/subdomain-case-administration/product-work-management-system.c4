@@ -33,6 +33,7 @@ model {
                     language 'Java'
                     software-framework 'Java EE 8'
                 }
+                link https://github.com/hmcts/cpp-context-work-management-proxy 'Repository'
                 this -> business-process-service 'makes API calls to'
             }
 
@@ -44,6 +45,7 @@ model {
                     language 'Java'
                     software-framework 'Java EE 8'
                 }
+                link https://github.com/hmcts/cpp-context-businessprocesses 'Repository'
                 this -> camunda 'makes API calls to'
                 cp.hearing-service -> this 'Sends hearing outcome updates to update business process activities'
                 cp.prosecution-case-file-service -> this 'Sends case creation failures to update business process activities'

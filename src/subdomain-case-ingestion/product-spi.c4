@@ -44,6 +44,7 @@ model {
                     language 'Java'
                     software-framework 'Java EE 8'
                 }
+                link https://github.com/hmcts/cpp-context-staging-prosecutors-spi 'Repository'
 
                 this -> cp.case-management-system.prosecution-case-file-service 'sends cases to'
                 this -> staging-spi-database

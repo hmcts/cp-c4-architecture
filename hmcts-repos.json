@@ -1,0 +1,570 @@
+[
+  {
+    "description": "CPP UI Prosecution Casefile",
+    "name": "cpp-ui-prosecution-casefile"
+  },
+  {
+    "description": "CPP Context Listing Repo",
+    "name": "cpp-context-listing"
+  },
+  {
+    "description": "CPP Context Listing Courtscheduler Repo",
+    "name": "cpp-context-listing-courtscheduler"
+  },
+  {
+    "description": "CPP Context Users  Groups Repo",
+    "name": "cpp-context-users-groups"
+  },
+  {
+    "description": "CPP Context reference data Repo",
+    "name": "cpp-context-reference-data"
+  },
+  {
+    "description": "CPP Hashicorp Vault Terraform Repo",
+    "name": "cpp-terraform-hvault"
+  },
+  {
+    "description": "Configuration for network",
+    "name": "cpp-terraform-network"
+  },
+  {
+    "description": "azurerm Azure AD",
+    "name": "cpp-terraform-azurerm-azuread"
+  },
+  {
+    "description": "Legacy automation.terraform repo",
+    "name": "cpp-automation-terraform"
+  },
+  {
+    "description": "CPP Context Hearing Repo",
+    "name": "cpp-context-hearing"
+  },
+  {
+    "description": "CPP Context system doc generator Repo",
+    "name": "cpp-context-system-doc-generator"
+  },
+  {
+    "description": "CPP UI Home",
+    "name": "cpp-ui-home"
+  },
+  {
+    "description": "CPP UI E2E Serenity repo",
+    "name": "cpp-ui-e2e-serenity"
+  },
+  {
+    "description": "CPP UI Courtscheduler Repo",
+    "name": "cpp-ui-courtscheduler"
+  },
+  {
+    "description": "CPP Context PCF DLRM Repo",
+    "name": "cpp-context-prosecution-casefile-dlrm"
+  },
+  {
+    "description": "CPP UI Defence",
+    "name": "cpp-ui-defence"
+  },
+  {
+    "description": "",
+    "name": "cpp-mbd-idam-integration"
+  },
+  {
+    "description": "CPP UI Listing",
+    "name": "cpp-ui-listing"
+  },
+  {
+    "description": "CPP Context Staging Dvla Repo",
+    "name": "cpp-context-staging-dvla"
+  },
+  {
+    "description": "CPP repo to manage crime Azure Update Management maintenance configurations",
+    "name": "cpp-aum-maintenance-configurations"
+  },
+  {
+    "description": "Azure devops yaml templates",
+    "name": "cpp-azure-devops-templates"
+  },
+  {
+    "description": "CPP Context SJP Repo",
+    "name": "cpp-context-sjp"
+  },
+  {
+    "description": "CPP Context Staging DLRM Repo",
+    "name": "cpp-context-stagingdlrm"
+  },
+  {
+    "description": "CPP UI Hearing",
+    "name": "cpp-ui-hearing"
+  },
+  {
+    "description": "",
+    "name": "cpp-azure-policy"
+  },
+  {
+    "description": "CPP Context Prosecution Case File Repo",
+    "name": "cpp-context-prosecution-casefile"
+  },
+  {
+    "description": "CPP Platform libraries Repo",
+    "name": "cpp-platform-libraries"
+  },
+  {
+    "description": "CPP repo for setting up developers working environment with docker containers",
+    "name": "cpp-developers-docker"
+  },
+  {
+    "description": "Root module to create AKS cluster resources",
+    "name": "cpp-terraform-azurerm-aks"
+  },
+  {
+    "description": "CPP Context Business processes Repo",
+    "name": "cpp-context-businessprocesses"
+  },
+  {
+    "description": "CPP Context Staging prosecutors SPI Repo",
+    "name": "cpp-context-staging-prosecutors-spi"
+  },
+  {
+    "description": "Local End to End development environment",
+    "name": "cpp-dev-environment"
+  },
+  {
+    "description": "CPP UI E2E repo",
+    "name": "cpp-ui-e2e"
+  },
+  {
+    "description": "CPP Context resulting Repo",
+    "name": "cpp-context-resulting"
+  },
+  {
+    "description": "CPP Context progression Repo",
+    "name": "cpp-context-progression"
+  },
+  {
+    "description": "CPP UI core repo",
+    "name": "cpp-ui-core"
+  },
+  {
+    "description": "CPP repo for docker images",
+    "name": "cpp-docker-images"
+  },
+  {
+    "description": "CPP Platform Priming Repo",
+    "name": "cpp-platform-priming"
+  },
+  {
+    "description": "CPP Context Notification Repo",
+    "name": "cpp-context-notification"
+  },
+  {
+    "description": "CPP API tests repo",
+    "name": "cpp-apitests"
+  },
+  {
+    "description": "CPP Context applications courtorders Repo",
+    "name": "cpp-context-applications-courtorders"
+  },
+  {
+    "description": "CPP repo to deploy context apps to AKS",
+    "name": "cpp-aks-deploy"
+  },
+  {
+    "description": "Terraform to deploy the Audit fabric capability and workspace.",
+    "name": "cpp-terraform-audit-fabric"
+  },
+  {
+    "description": "TF root repo for Azure postgres",
+    "name": "cpp-terraform-azurerm-postgresql"
+  },
+  {
+    "description": "TF Module for Fabric Capacities",
+    "name": "cpp-module-terraform-fabric-capacity"
+  },
+  {
+    "description": "",
+    "name": "cpp-module-terraform-fabric-workspaces"
+  },
+  {
+    "description": "CPP Platform Core Domain Repo",
+    "name": "cpp-platform-core-domain"
+  },
+  {
+    "description": "CPP Platform Maven Service Parent Pom Repo",
+    "name": "cpp-platform-maven-service-parent-pom"
+  },
+  {
+    "description": "CPP repo to deploy alfresco to AKS",
+    "name": "cpp-alfresco-deploy"
+  },
+  {
+    "description": "TF root module for Storage Accounts",
+    "name": "cpp-terraform-azurerm-storage-account"
+  },
+  {
+    "description": "CPP repo for aks operations",
+    "name": "cpp-aks-ops"
+  },
+  {
+    "description": "",
+    "name": "cpp-hmrctesterapp"
+  },
+  {
+    "description": "",
+    "name": "cpp-scheduler"
+  },
+  {
+    "description": "",
+    "name": "cpp-libradac"
+  },
+  {
+    "description": "",
+    "name": "cpp-libragw"
+  },
+  {
+    "description": "TF repo for creating Azure AI foundry and its related resources",
+    "name": "cpp-terraform-azurerm-azure-ai-foundry"
+  },
+  {
+    "description": "This is a repository and Pipeline that will manage Github repositories",
+    "name": "cpp-github-repo-mgr"
+  },
+  {
+    "description": "",
+    "name": "cpp-build"
+  },
+  {
+    "description": "",
+    "name": "cpp-test-resources"
+  },
+  {
+    "description": "CPP idam terraform repo",
+    "name": "cpp-terraform-azurerm-idam"
+  },
+  {
+    "description": "",
+    "name": "cpp-common-code-lgw"
+  },
+  {
+    "description": "CPP UI Prosecutor",
+    "name": "cpp-ui-prosecutor"
+  },
+  {
+    "description": "CPP Context Unifiedsearch Query Repo",
+    "name": "cpp-context-unifiedsearch-query"
+  },
+  {
+    "description": "Configuration for APIM",
+    "name": "cpp-azure-api-management"
+  },
+  {
+    "description": "CPP Context MI ReportData Repo",
+    "name": "cpp-context-mi-reportdata"
+  },
+  {
+    "description": "TF module for Azure postgres",
+    "name": "cpp-module-terraform-azurerm-postgresql"
+  },
+  {
+    "description": "CPP Context defence Repo",
+    "name": "cpp-context-defence"
+  },
+  {
+    "description": "CPP Context Notification Notify Repo",
+    "name": "cpp-context-notification-notify"
+  },
+  {
+    "description": "Root module to configure AKS cluster",
+    "name": "cpp-terraform-azurerm-aks-config"
+  },
+  {
+    "description": "CPP repo to deploy funcation app source code and configurations",
+    "name": "cpp-functionapp-deployment"
+  },
+  {
+    "description": "CPP Context azure legalaidagency Repo",
+    "name": "cpp-context-azure-legalaidagency"
+  },
+  {
+    "description": "CPP Context staging enforcement Repo",
+    "name": "cpp-context-staging-enforcement"
+  },
+  {
+    "description": "Federation Credentials",
+    "name": "cpp-terraform-federation-credentials"
+  },
+  {
+    "description": "This repo is created to obtain the CaseID or CaseURN for every material_ID",
+    "name": "cpp-context-material-id-mapper"
+  },
+  {
+    "description": "Root module to create App Insights resources",
+    "name": "cpp-terraform-azurerm-appinsights"
+  },
+  {
+    "description": "TF root repo for Azure functionapp deployment",
+    "name": "cpp-terraform-functionapp-deployment"
+  },
+  {
+    "description": "TF root for Azure DevOps agents VMSS",
+    "name": "cpp-terraform-ado-agents"
+  },
+  {
+    "description": "Repo for checks gitleaks like secret, keys, password",
+    "name": "cpp-hooks-gitleaks"
+  },
+  {
+    "description": "Ansible repo for automation",
+    "name": "cpp-automation-ansible"
+  },
+  {
+    "description": "This is pilot implementation of Notification service using MbD strategy - not for production use",
+    "name": "cpp-mbd-notification-svc-pilot"
+  },
+  {
+    "description": "CPP Context results Repo",
+    "name": "cpp-context-results"
+  },
+  {
+    "description": "CPP Context Staging prosecutors Repo",
+    "name": "cpp-context-staging-prosecutors"
+  },
+  {
+    "description": "CPP Context material Repo",
+    "name": "cpp-context-material"
+  },
+  {
+    "description": "CPP UI pdk repo",
+    "name": "cpp-ui-pdk2"
+  },
+  {
+    "description": "CPP UI Case Management",
+    "name": "cpp-ui-case-management"
+  },
+  {
+    "description": "CPP UI AI intelligence",
+    "name": "cpp-ui-ai-intelligence"
+  },
+  {
+    "description": "CPP Context MI SystemData Repo",
+    "name": "cpp-context-mi-systemdata"
+  },
+  {
+    "description": "CPP Context referencedata offences data Repo",
+    "name": "cpp-context-referencedata-offences"
+  },
+  {
+    "description": "CPP Context Prosecution Documentqueue Repo",
+    "name": "cpp-context-prosecution-documentqueue"
+  },
+  {
+    "description": "CPP Context System Id Mapper Repo",
+    "name": "cpp-context-system-id-mapper"
+  },
+  {
+    "description": "CPP Context staging bulkscan",
+    "name": "cpp-context-staging-bulkscan"
+  },
+  {
+    "description": "CPP Context hearing nows Repo",
+    "name": "cpp-context-hearing-nows"
+  },
+  {
+    "description": "CPP helm charts repo",
+    "name": "cpp-helm-chart"
+  },
+  {
+    "description": "TF module to create Application Insights resources",
+    "name": "cpp-module-terraform-azurerm-appinsights"
+  },
+  {
+    "description": "CPP Context Staging DCS Repo",
+    "name": "cpp-context-staging-dcs"
+  },
+  {
+    "description": "CPP Context Subscriptions Repo",
+    "name": "cpp-context-subscriptions"
+  },
+  {
+    "description": "TF root repo for report running graph query for finops",
+    "name": "cpp-terraform-azurerm-graphhourlyusage"
+  },
+  {
+    "description": "CPP Context staging darts Repo",
+    "name": "cpp-context-staging-darts"
+  },
+  {
+    "description": "CPP Platform maven common bom Repo",
+    "name": "cpp-platform-maven-common-bom"
+  },
+  {
+    "description": "CPP Context staging prosecutors civil Repo",
+    "name": "cpp-context-staging-prosecutors-civil"
+  },
+  {
+    "description": "CPP Context Support Repo",
+    "name": "cpp-context-support"
+  },
+  {
+    "description": "CPP Context staging Repo",
+    "name": "cpp-context-staging"
+  },
+  {
+    "description": "CPP Context system announcement Repo",
+    "name": "cpp-context-system-announcement"
+  },
+  {
+    "description": "CPP Context staging pubhub Repo",
+    "name": "cpp-context-staging-pubhub"
+  },
+  {
+    "description": "CPP Context work management proxy Repo",
+    "name": "cpp-context-work-management-proxy"
+  },
+  {
+    "description": "CPP Context Correspondence Repo",
+    "name": "cpp-context-correspondence"
+  },
+  {
+    "description": "CPP Context Archiving Repo",
+    "name": "cpp-context-archiving"
+  },
+  {
+    "description": "CPP UI SJP",
+    "name": "cpp-ui-sjp"
+  },
+  {
+    "description": "CPP UI External Services",
+    "name": "cpp-ui-external-services"
+  },
+  {
+    "description": "CPP Context Audit2dls Repo",
+    "name": "cpp-context-audit2dls"
+  },
+  {
+    "description": "CPP UI Audit Reports",
+    "name": "cpp-ui-audit-reports"
+  },
+  {
+    "description": "CPP Context System Scheduling Repo",
+    "name": "cpp-context-system-scheduling"
+  },
+  {
+    "description": "CPP Context Boxworkmanagement Repo",
+    "name": "cpp-context-boxworkmanagement"
+  },
+  {
+    "description": "TF repo for creating artemis instances and configuration",
+    "name": "cpp-terraform-azurerm-artemis"
+  },
+  {
+    "description": "",
+    "name": "cpp-aum-maintenance-configurations-trial"
+  },
+  {
+    "description": "TF root repo for terraform demo",
+    "name": "cpp-terraform-demo"
+  },
+  {
+    "description": "Daves Fourth Test Repo",
+    "name": "cpp-terraform-dave1"
+  },
+  {
+    "description": "TF module to create stateless nginx vms",
+    "name": "cpp-terraform-azurerm-vmss-stateless-nginx"
+  },
+  {
+    "description": "",
+    "name": "cp-case-document-knowledge-service"
+  },
+  {
+    "description": "CP Audit Reports Service",
+    "name": "cp-audit-reports-service-v2"
+  },
+  {
+    "description": "CP Victimspathfinder repo to deploy apps to AKS",
+    "name": "cp-vp-aks-deploy"
+  },
+  {
+    "description": "Common platform result definitions browser",
+    "name": "cp-result-definitions-browser"
+  },
+  {
+    "description": "Court List Publishing Service Spring Boot",
+    "name": "cp-court-list-publishing-service"
+  },
+  {
+    "description": "",
+    "name": "cp-client-mirror-gateway"
+  },
+  {
+    "description": "",
+    "name": "cp-crime-portal"
+  },
+  {
+    "description": "Common Platform cake shop",
+    "name": "cp-cake-shop"
+  },
+  {
+    "description": "Spring boot project to publish audit data to artemis queues",
+    "name": "cp-audit-filter"
+  },
+  {
+    "description": "Common Platform architecture defined using C4 modelling notation",
+    "name": "cp-c4-architecture"
+  },
+  {
+    "description": "Common Platform event store",
+    "name": "cp-event-store"
+  },
+  {
+    "description": "",
+    "name": "cp-test-idam-simulator"
+  },
+  {
+    "description": "",
+    "name": "cp-vodafone-services"
+  },
+  {
+    "description": "",
+    "name": "cp-commons"
+  },
+  {
+    "description": "",
+    "name": "cp-common-code"
+  },
+  {
+    "description": "Spring boot filter to apply auth rules on incoming web requests",
+    "name": "cp-auth-rules-filter"
+  },
+  {
+    "description": "Common Platform maven common bom",
+    "name": "cp-maven-common-bom"
+  },
+  {
+    "description": "A stateful multithreaded  task executor for HMCTS.",
+    "name": "cp-task-manager"
+  },
+  {
+    "description": "Document Ingestion Rag Service",
+    "name": "cp-ai-rag-service"
+  },
+  {
+    "description": "CP API Marketplace repo to deploy apps to AKS",
+    "name": "cp-amp-aks-deploy"
+  },
+  {
+    "description": "Common Platform framework libraries",
+    "name": "cp-framework-libraries"
+  },
+  {
+    "description": "Common Platform microservice framework",
+    "name": "cp-microservice-framework"
+  },
+  {
+    "description": "A stateful multithreaded job and task executor.",
+    "name": "cp-job-manager"
+  },
+  {
+    "description": "Common Platform maven framework parent pom",
+    "name": "cp-maven-framework-parent-pom"
+  }
+]

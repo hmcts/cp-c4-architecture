@@ -28,6 +28,7 @@ model {
                         language 'Java'
                         software-framework 'Java EE 8'
                     }
+                    link https://github.com/hmcts/cpp-context-system-id-mapper 'Repository'
             }
         }   
 
@@ -42,6 +43,7 @@ model {
                     language 'Java'
                     software-framework 'Java EE 8'
                 }
+                link https://github.com/hmcts/cpp-context-system-scheduling 'Repository'
             }	
         }
 
@@ -56,6 +58,7 @@ model {
                     language 'Java'
                     software-framework 'Java EE 8'
                 }
+                link https://github.com/hmcts/cpp-context-notification 'Repository'
             }		
         }   
 
@@ -70,6 +73,7 @@ model {
                     language 'Java'
                     software-framework 'Java EE 8'
                 }
+                link https://github.com/hmcts/cpp-context-system-doc-generator 'Repository'
             }
         }
 
@@ -100,6 +104,7 @@ model {
                     language 'Java'
                     software-framework 'Java EE 8'
                 }
+                link https://github.com/hmcts/cpp-context-users-groups 'Repository'
 
                 this -> users-and-groups-database 'stores user and group data in'
             }
@@ -137,6 +142,7 @@ model {
                     language 'Java'
                     software-framework 'Java EE 8'
                 }
+                link https://github.com/hmcts/cpp-context-staging 'Repository'
 
                 this -> staging-database 'stores events in'
                 this -> users-and-groups 'updates user and group data' 'JSON/HTTPS'
@@ -161,6 +167,7 @@ model {
                     language 'Java'
                     software-framework 'Java EE 8'
                 }
+                link https://github.com/hmcts/cpp-context-support 'Repository'
             }
         }
 
@@ -175,6 +182,7 @@ model {
                     language 'Java'
                     software-framework 'Java EE 8'
                 }
+                link https://github.com/hmcts/cpp-context-system-announcement 'Repository'
             }
         }
 
@@ -188,6 +196,7 @@ model {
                     language 'Java'
                     software-framework 'Java EE 8'
                 }
+                link https://github.com/hmcts/cpp-context-reference-data 'Repository'
             }
             reference-data-offences = microservice {
                 title 'Reference Data Offences'
@@ -196,6 +205,7 @@ model {
                     language 'Java'
                     software-framework 'Java EE 8'
                 }
+                link https://github.com/hmcts/cpp-context-referencedata-offences 'Repository'
             }
             pnld-offences = microservice {
                 title 'PNLD Offences'

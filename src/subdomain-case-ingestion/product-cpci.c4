@@ -13,6 +13,17 @@ model {
                     software-framework 'Java EE 8'
                 }
                 link https://github.com/hmcts/cpp-context-staging-prosecutors-civil 'Repository'
+
+                this -> staging-prosecutors-civil-database
+            }
+
+            staging-prosecutors-civil-database = datastore {
+                title 'Staging Prosecutors Civil Database'
+                technology 'PostgreSQL'
+                summary 'Stores events and entities'
+                style {
+                    icon tech:postgresql
+                }
             }
         }
     }

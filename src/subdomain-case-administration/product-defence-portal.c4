@@ -28,8 +28,17 @@ model {
                     software-framework 'Java EE 8'
                 }
                 link https://github.com/hmcts/cpp-context-defence 'Repository'
-                // TOOD @matthew.rich
-                // this -> progression-database
+
+                this -> defence-database
+            }
+
+            defence-database = datastore {
+                title 'Defence Database'
+                technology 'PostgreSQL'
+                summary 'Stores events and entities'
+                style {
+                    icon tech:postgresql
+                }
             }
         }
     }

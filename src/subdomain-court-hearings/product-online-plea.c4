@@ -2,7 +2,22 @@ model {
     extend cp.court-hearings-subdomain {
         online-plea = product {
             title 'Online Plea'
-            description 'Allows defendants to enter an please online for SJP cases'
+            description 'Allows defendants to enter a plea online for SJP cases'
+
+            online-plea-ui = user-interface {
+                title 'Online Plea UI'
+                technology 'Angular'
+                summary 'Defendants use this UI to submit their pleas online, including personal and financial information and plea for each offence with mitigation statements'
+                metadata {
+                    language 'TypeScript'
+                    software-framework 'Angular'
+                }
+                style {
+                    icon tech:angular
+                }
+
+                defendant -> this 'submits plea online using'
+            }
         }
     }
 }

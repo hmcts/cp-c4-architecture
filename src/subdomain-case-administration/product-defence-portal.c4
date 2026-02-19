@@ -4,6 +4,22 @@ model {
             title 'Defence Potal'
             description 'Provides access to cases for defence advocates'
 
+            defence-ui = user-interface {
+                title 'Defence UI'
+                technology 'Angular'
+                summary 'Provides access to cases for defence advocates'
+                metadata {
+                    language 'TypeScript'
+                    software-framework 'Angular'
+                }
+                style {
+                    icon tech:angular
+                }
+                link https://github.com/hmcts/cpp-ui-defence 'Repository'
+
+                this -> defence-service 'makes API calls to'
+            }
+
             defence-service = microservice {
                 title 'Advocate Service'
                 technology 'Java EE'

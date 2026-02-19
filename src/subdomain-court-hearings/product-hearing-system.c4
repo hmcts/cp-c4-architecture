@@ -78,6 +78,17 @@ model {
                 this -> results-distribution-system.results-service "distributes results using"
             }
 
+            resulting-service = microservice {
+                title 'Resulting Service'
+                technology 'Java EE'
+                summary 'Handles the entry and management of hearing results'
+                metadata {
+                    language 'Java'
+                    software-framework 'Java EE 8'
+                }
+                link https://github.com/hmcts/cpp-context-resulting 'Repository'
+            }
+
             hearing-database = datastore {
                 title 'Hearing Database'
                 technology 'PostgreSQL'

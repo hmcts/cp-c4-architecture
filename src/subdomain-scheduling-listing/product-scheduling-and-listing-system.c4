@@ -24,6 +24,7 @@ model {
                 style {
                     icon tech:angular
                 }
+                link https://github.com/hmcts/cpp-ui-listing 'Repository'
                 this -> listing-service 'makes API calls to'
 
                 listing_officer -> this 'Allocates hearings using'
@@ -44,6 +45,7 @@ model {
                 style {
                     icon tech:angular
                 }
+                link https://github.com/hmcts/cpp-ui-courtscheduler 'Repository'
 
                 this -> api 'makes API calls to' {
                     technology 'JSON/HTTPS'

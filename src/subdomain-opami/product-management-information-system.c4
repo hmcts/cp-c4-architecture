@@ -2,7 +2,29 @@ model {
     extend cp.opami-subdomain {
         management-information-system = product {
             title 'Management Information System'
-            description ''
+            description 'Listens to events from major services and creates a standard SQL model of CP data for operational reports and statistics'
+
+            mi-system-data-service = microservice {
+                title 'MI System Data Service'
+                technology 'Java EE'
+                summary 'Listens to events from services like progression and hearing and creates a standard SQL model of the CP data as it changes during each day'
+                metadata {
+                    language 'Java'
+                    software-framework 'Java EE 8'
+                }
+                link https://github.com/hmcts/cpp-context-mi-systemdata 'Repository'
+            }
+
+            mi-report-data-service = microservice {
+                title 'MI Report Data Service'
+                technology 'Java EE'
+                summary 'Exports data nightly to the SDP for operational reports and statistics'
+                metadata {
+                    language 'Java'
+                    software-framework 'Java EE 8'
+                }
+                link https://github.com/hmcts/cpp-context-mi-reportdata 'Repository'
+            }
         }
     }
 }

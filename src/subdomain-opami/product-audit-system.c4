@@ -3,6 +3,17 @@ model {
         audit-system = product {
             title 'Audit System'
             description 'Stores audit logs and enables querying of audit data for forensic audit purposes'
+
+            audit2dls-service = microservice {
+                title 'Audit2DLS Service'
+                technology 'Java EE'
+                summary 'Transfers audit data to the Data Lake Store for long-term storage and analysis'
+                metadata {
+                    language 'Java'
+                    software-framework 'Java EE 8'
+                }
+                link https://github.com/hmcts/cpp-context-audit2dls 'Repository'
+            }
         }
     }
 }

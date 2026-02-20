@@ -190,6 +190,72 @@ model {
                     icon tech:postgresql
                 }
             }
+
+            box-work-management-service = microservice {
+                title 'Box Work Management Service'
+                technology 'Java EE'
+                summary 'Camunda-based service that manages boxwork tasks and workflows'
+                metadata {
+                    language 'Java'
+                    software-framework 'Java EE 8'
+                }
+                link https://github.com/hmcts/cpp-context-boxworkmanagement 'Repository'
+            }
+
+            unified-search-query-service = microservice {
+                title 'Unified Search Query Service'
+                technology 'Java EE'
+                summary 'Provides unified search capabilities across case data'
+                metadata {
+                    language 'Java'
+                    software-framework 'Java EE 8'
+                }
+                link https://github.com/hmcts/cpp-context-unifiedsearch-query 'Repository'
+            }
+
+            material-service = microservice {
+                title 'Material Service'
+                technology 'Java EE'
+                summary 'Manages case materials (documents and evidence)'
+                metadata {
+                    language 'Java'
+                    software-framework 'Java EE 8'
+                }
+                link https://github.com/hmcts/cpp-context-material 'Repository'
+            }
+
+            archiving-service = microservice {
+                title 'Archiving Service'
+                technology 'Java EE'
+                summary 'Handles archiving of case data'
+                metadata {
+                    language 'Java'
+                    software-framework 'Java EE 8'
+                }
+                link https://github.com/hmcts/cpp-context-archiving 'Repository'
+            }
+
+            staging-dcs-service = microservice {
+                title 'Staging DCS Service'
+                technology 'Java EE'
+                summary 'Staging service for DCS integration'
+                metadata {
+                    language 'Java'
+                    software-framework 'Java EE 8'
+                }
+                link https://github.com/hmcts/cpp-context-staging-dcs 'Repository'
+            }
+
+            correspondence-service = microservice {
+                title 'Correspondence Service'
+                technology 'Java EE'
+                summary 'Manages correspondence related to cases'
+                metadata {
+                    language 'Java'
+                    software-framework 'Java EE 8'
+                }
+                link https://github.com/hmcts/cpp-context-correspondence 'Repository'
+            }
         }
     }
 }

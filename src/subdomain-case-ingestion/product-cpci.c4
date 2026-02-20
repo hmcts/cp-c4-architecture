@@ -1,0 +1,19 @@
+model {
+    extend cp.case-ingestion-subdomain {
+        cpci = product {
+            title 'Common Platform Civil Interface (CPCI)'
+            description 'Enables civil cases to be submitted to the courts'
+
+            staging-prosecutors-civil = microservice {
+                title 'Staging Prosecutors Civil'
+                technology 'Java EE'
+                summary 'Receives and stages civil prosecution cases for ingestion into the Common Platform'
+                metadata {
+                    language 'Java'
+                    software-framework 'Java EE 8'
+                }
+                link https://github.com/hmcts/cpp-context-staging-prosecutors-civil 'Repository'
+            }
+        }
+    }
+}

@@ -63,7 +63,18 @@ model {
                     software-framework 'Java EE 8'
                 }
                 link https://github.com/hmcts/cpp-context-staging-darts 'Repository'
+
+                this -> staging-darts-database
                 cp.listing-service -> this 'listens to daily court list published by'
+            }
+
+            staging-darts-database = datastore {
+                title 'Staging DARTS Database'
+                technology 'PostgreSQL'
+                summary 'Stores events and entities'
+                style {
+                    icon tech:postgresql
+                }
             }
 
             hearing-service = microservice {
@@ -75,6 +86,7 @@ model {
                 }
                 link https://github.com/hmcts/cpp-context-hearing 'Repository'
 
+                this -> hearing-database
                 this -> results-distribution-system.results-service "distributes results using"
             }
 
@@ -87,10 +99,21 @@ model {
                     software-framework 'Java EE 8'
                 }
                 link https://github.com/hmcts/cpp-context-resulting 'Repository'
+
+                this -> resulting-database
             }
 
             hearing-database = datastore {
                 title 'Hearing Database'
+                technology 'PostgreSQL'
+                summary 'Stores events and entities'
+                style {
+                    icon tech:postgresql
+                }
+            }
+
+            resulting-database = datastore {
+                title 'Resulting Database'
                 technology 'PostgreSQL'
                 summary 'Stores events and entities'
                 style {

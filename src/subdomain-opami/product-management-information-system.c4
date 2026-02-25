@@ -13,6 +13,17 @@ model {
                     software-framework 'Java EE 8'
                 }
                 link https://github.com/hmcts/cpp-context-mi-systemdata 'Repository'
+
+                this -> mi-system-data-database
+            }
+
+            mi-system-data-database = datastore {
+                title 'MI System Data Database'
+                technology 'PostgreSQL'
+                summary 'Stores MI system data model'
+                style {
+                    icon tech:postgresql
+                }
             }
 
             mi-report-data-service = microservice {
@@ -24,6 +35,17 @@ model {
                     software-framework 'Java EE 8'
                 }
                 link https://github.com/hmcts/cpp-context-mi-reportdata 'Repository'
+
+                this -> mi-report-data-database
+            }
+
+            mi-report-data-database = datastore {
+                title 'MI Report Data Database'
+                technology 'PostgreSQL'
+                summary 'Stores MI report data for export'
+                style {
+                    icon tech:postgresql
+                }
             }
         }
     }

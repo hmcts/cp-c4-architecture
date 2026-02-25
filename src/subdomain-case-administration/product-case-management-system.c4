@@ -110,6 +110,17 @@ model {
                     software-framework 'Java EE 8'
                 }
                 link https://github.com/hmcts/cpp-context-prosecution-casefile 'Repository'
+
+                this -> prosecution-case-file-database
+            }
+
+            prosecution-case-file-database = datastore {
+                title 'Prosecution Case File Database'
+                technology 'PostgreSQL'
+                summary 'Stores events and entities'
+                style {
+                    icon tech:postgresql
+                }
             }
 
             sjp-service = microservice {
@@ -211,6 +222,17 @@ model {
                     software-framework 'Java EE 8'
                 }
                 link https://github.com/hmcts/cpp-context-unifiedsearch-query 'Repository'
+
+                this -> unified-search-datastore
+            }
+
+            unified-search-datastore = datastore {
+                title 'Unified Search Datastore'
+                technology 'Elasticsearch'
+                summary 'Indexes and stores case data for search'
+                style {
+                    icon tech:elasticsearch
+                }
             }
 
             material-service = microservice {
@@ -222,6 +244,17 @@ model {
                     software-framework 'Java EE 8'
                 }
                 link https://github.com/hmcts/cpp-context-material 'Repository'
+
+                this -> material-database
+            }
+
+            material-database = datastore {
+                title 'Material Database'
+                technology 'PostgreSQL'
+                summary 'Stores events and entities'
+                style {
+                    icon tech:postgresql
+                }
             }
 
             archiving-service = microservice {
@@ -233,6 +266,17 @@ model {
                     software-framework 'Java EE 8'
                 }
                 link https://github.com/hmcts/cpp-context-archiving 'Repository'
+
+                this -> archiving-database
+            }
+
+            archiving-database = datastore {
+                title 'Archiving Database'
+                technology 'PostgreSQL'
+                summary 'Stores events and entities'
+                style {
+                    icon tech:postgresql
+                }
             }
 
             staging-dcs-service = microservice {
@@ -244,6 +288,17 @@ model {
                     software-framework 'Java EE 8'
                 }
                 link https://github.com/hmcts/cpp-context-staging-dcs 'Repository'
+
+                this -> staging-dcs-database
+            }
+
+            staging-dcs-database = datastore {
+                title 'Staging DCS Database'
+                technology 'PostgreSQL'
+                summary 'Stores events and entities'
+                style {
+                    icon tech:postgresql
+                }
             }
 
             correspondence-service = microservice {
@@ -255,6 +310,17 @@ model {
                     software-framework 'Java EE 8'
                 }
                 link https://github.com/hmcts/cpp-context-correspondence 'Repository'
+
+                this -> correspondence-database
+            }
+
+            correspondence-database = datastore {
+                title 'Correspondence Database'
+                technology 'PostgreSQL'
+                summary 'Stores events and entities'
+                style {
+                    icon tech:postgresql
+                }
             }
         }
     }

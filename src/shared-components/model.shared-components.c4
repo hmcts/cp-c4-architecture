@@ -29,6 +29,17 @@ model {
                         software-framework 'Java EE 8'
                     }
                     link https://github.com/hmcts/cpp-context-system-id-mapper 'Repository'
+
+                    this -> id-mapper-database
+            }
+
+            id-mapper-database = datastore {
+                title 'Id Mapper Database'
+                technology 'PostgreSQL'
+                summary 'Stores identifier mappings'
+                style {
+                    icon tech:postgresql
+                }
             }
         }   
 
@@ -44,7 +55,18 @@ model {
                     software-framework 'Java EE 8'
                 }
                 link https://github.com/hmcts/cpp-context-system-scheduling 'Repository'
-            }	
+
+                this -> scheduling-database
+            }
+
+            scheduling-database = datastore {
+                title 'Scheduling Database'
+                technology 'PostgreSQL'
+                summary 'Stores scheduled jobs and events'
+                style {
+                    icon tech:postgresql
+                }
+            }
         }
 
         ui-notification-system = shared-component {
@@ -59,7 +81,18 @@ model {
                     software-framework 'Java EE 8'
                 }
                 link https://github.com/hmcts/cpp-context-notification 'Repository'
-            }		
+
+                this -> notification-database
+            }
+
+            notification-database = datastore {
+                title 'Notification Database'
+                technology 'PostgreSQL'
+                summary 'Stores notification subscriptions and events'
+                style {
+                    icon tech:postgresql
+                }
+            }
         }   
 
         document-generation-system = shared-component {
@@ -183,6 +216,17 @@ model {
                     software-framework 'Java EE 8'
                 }
                 link https://github.com/hmcts/cpp-context-system-announcement 'Repository'
+
+                this -> system-announcement-database
+            }
+
+            system-announcement-database = datastore {
+                title 'System Announcement Database'
+                technology 'PostgreSQL'
+                summary 'Stores system announcements'
+                style {
+                    icon tech:postgresql
+                }
             }
         }
 
@@ -197,7 +241,19 @@ model {
                     software-framework 'Java EE 8'
                 }
                 link https://github.com/hmcts/cpp-context-reference-data 'Repository'
+
+                this -> reference-data-database
             }
+
+            reference-data-database = datastore {
+                title 'Reference Data Database'
+                technology 'PostgreSQL'
+                summary 'Stores reference data'
+                style {
+                    icon tech:postgresql
+                }
+            }
+
             reference-data-offences = microservice {
                 title 'Reference Data Offences'
                 technology 'Java EE'
@@ -206,13 +262,37 @@ model {
                     software-framework 'Java EE 8'
                 }
                 link https://github.com/hmcts/cpp-context-referencedata-offences 'Repository'
+
+                this -> reference-data-offences-database
             }
+
+            reference-data-offences-database = datastore {
+                title 'Reference Data Offences Database'
+                technology 'PostgreSQL'
+                summary 'Stores offence reference data'
+                style {
+                    icon tech:postgresql
+                }
+            }
+
             pnld-offences = microservice {
                 title 'PNLD Offences'
                 technology 'Java EE'
                 metadata {
                     language 'Java'
                     software-framework 'Java EE 8'
+                }
+                link https://github.com/hmcts/cpp-context-staging-pnld-offences 'Repository'
+
+                this -> pnld-offences-database
+            }
+
+            pnld-offences-database = datastore {
+                title 'PNLD Offences Database'
+                technology 'PostgreSQL'
+                summary 'Stores PNLD offence data'
+                style {
+                    icon tech:postgresql
                 }
             }
         }

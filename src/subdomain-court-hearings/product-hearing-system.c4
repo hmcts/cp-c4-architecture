@@ -120,6 +120,18 @@ model {
                     icon tech:postgresql
                 }
             }
+
+            external-services-ui = user-interface {
+                title 'External Services UI'
+                technology 'Angular'
+                summary 'Provides interface for querying DVLA driver records during hearings'
+                style {
+                    icon tech:angular
+                }
+                link https://github.com/hmcts/cpp-ui-external-services 'Repository'
+
+                this -> results-distribution-system.staging-dvla-service 'queries driver records using'
+            }
         }
     }
 }

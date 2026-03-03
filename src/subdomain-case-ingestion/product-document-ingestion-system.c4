@@ -1,0 +1,62 @@
+model {
+    extend cp.case-ingestion-subdomain {
+        document-ingestion-system = product {
+            title 'Document Ingestion System'
+            description 'Manages the ingestion of prosecution documents and bulk scanned materials into the Common Platform'
+
+            staging-bulkscan-service = microservice {
+                title 'Staging Bulk Scan Service'
+                technology 'Java EE'
+                summary 'Handles bulk scanning of case documents for ingestion into the Common Platform'
+                metadata {
+                    language 'Java'
+                    software-framework 'Java EE 8'
+                }
+                link https://github.com/hmcts/cpp-context-staging-bulkscan 'Repository'
+
+                this -> staging-bulkscan-database
+            }
+
+            staging-bulkscan-database = datastore {
+                title 'Staging Bulk Scan Database'
+                technology 'PostgreSQL'
+                summary 'Stores events and entities'
+                style {
+                    icon tech:postgresql
+                }
+            }
+
+            prosecution-documentqueue-service = microservice {
+                title 'Prosecution Document Queue Service'
+                technology 'Java EE'
+                summary 'Manages queuing of prosecution documents for processing'
+                metadata {
+                    language 'Java'
+                    software-framework 'Java EE 8'
+                }
+                link https://github.com/hmcts/cpp-context-prosecution-documentqueue 'Repository'
+
+                this -> prosecution-documentqueue-database
+            }
+
+            prosecution-documentqueue-database = datastore {
+                title 'Prosecution Document Queue Database'
+                technology 'PostgreSQL'
+                summary 'Stores events and entities'
+                style {
+                    icon tech:postgresql
+                }
+            }
+
+            bulkscan-ui = user-interface {
+                title 'Bulk Scan UI'
+                technology 'Angular'
+                summary 'Provides interface for bulk scanning of case documents'
+                style {
+                    icon tech:angular
+                }
+                link https://github.com/hmcts/cpp-ui-bulkscan 'Repository'
+            }
+        }
+    }
+}

@@ -5,6 +5,28 @@ model {
             description 'Enables cases and materials to submitted to the courts by non-police prosecutors'
 
             this -> cp.case-management-system 'sends cases to'
+
+            staging-prosecutors-service = microservice {
+                title 'Staging Prosecutors Service'
+                technology 'Java EE'
+                summary 'Receives and stages prosecution cases and materials for ingestion into the Common Platform'
+                metadata {
+                    language 'Java'
+                    software-framework 'Java EE 8'
+                }
+                link https://github.com/hmcts/cpp-context-staging-prosecutors 'Repository'
+
+                this -> staging-prosecutors-database
+            }
+
+            staging-prosecutors-database = datastore {
+                title 'Staging Prosecutors Database'
+                technology 'PostgreSQL'
+                summary 'Stores events and entities'
+                style {
+                    icon tech:postgresql
+                }
+            }
         }
     }
 }

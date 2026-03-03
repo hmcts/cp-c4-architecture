@@ -19,6 +19,7 @@ model {
                 style {
                     icon tech:angular
                 }
+                link https://github.com/hmcts/cpp-ui-work-management 'Repository'
 
                 this -> work-management-proxy 'makes API calls to'
 

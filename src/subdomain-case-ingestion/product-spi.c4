@@ -27,9 +27,11 @@ model {
                 technology 'Azure Functions'
                 summary 'Case interceptor that routes to the appropriate magistrate case management system (Libra or Common Platform) based on routing rules'
                 metadata {
-                    language 'TypeScript'
-                    software-framework 'Node.js 20.9.0'
+                    language 'Java'
+                    software-framework 'Azure Functions'
                 }
+                link https://github.com/hmcts/cpp-context-staging-prosecutors-spi 'Repository'
+
                 this -> libra 'forwards cases to'
                 this -> staging-spi-service 'forwards cases to'
                 cjse -> this 'sends police cases to'

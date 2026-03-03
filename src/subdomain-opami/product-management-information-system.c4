@@ -47,6 +47,16 @@ model {
                     icon tech:postgresql
                 }
             }
+
+            opami-ui = user-interface {
+                title 'OPAMI UI'
+                technology 'Angular'
+                summary 'Provides reporting dashboards for operational management information'
+                style {
+                    icon tech:angular
+                }
+                link https://github.com/hmcts/cpp-ui-opami 'Repository'
+            }
         }
     }
 }

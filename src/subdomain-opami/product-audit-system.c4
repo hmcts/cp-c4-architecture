@@ -14,6 +14,38 @@ model {
                 }
                 link https://github.com/hmcts/cpp-context-audit2dls 'Repository'
             }
+
+            audit-filter = microservice {
+                title 'Audit Filter'
+                technology 'Spring Boot'
+                summary 'Spring Boot filter that publishes audit data to Artemis queues for request/response auditing'
+                metadata {
+                    language 'Java'
+                    software-framework 'Spring Boot'
+                }
+                link https://github.com/hmcts/cp-audit-filter 'Repository'
+            }
+
+            audit-reports-service = microservice {
+                title 'Audit Reports Service'
+                technology 'Spring Boot'
+                summary 'Provides self-service audit reports'
+                metadata {
+                    language 'Java'
+                    software-framework 'Spring Boot'
+                }
+                link https://github.com/hmcts/cp-audit-reports-service-v2 'Repository'
+            }
+
+            audit-reports-ui = user-interface {
+                title 'Audit Reports UI'
+                technology 'Angular'
+                summary 'Front-end for viewing and generating audit reports'
+                style {
+                    icon tech:angular
+                }
+                link https://github.com/hmcts/cpp-ui-audit-reports 'Repository'
+            }
         }
     }
 }

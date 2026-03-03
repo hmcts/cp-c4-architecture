@@ -12,6 +12,7 @@ model {
                     language 'TypeScript'
                     software-framework 'Node.js 20.9.0'
                 }
+                link https://github.com/hmcts/cpp-context-stagingdlrm 'Repository'
 
                 this -> staging-dlrm 'sends cases to'
                 this -> dlrm-integration-storage 'puts outcome files into'

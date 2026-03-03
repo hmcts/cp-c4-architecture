@@ -168,6 +168,17 @@ model {
                     icon tech:postgresql
                 }
             }
+
+            court-list-publishing-service = microservice {
+                title 'Court List Publishing Service'
+                technology 'Spring Boot'
+                summary 'Publishes court lists'
+                metadata {
+                    language 'Java'
+                    software-framework 'Spring Boot'
+                }
+                link https://github.com/hmcts/cp-court-list-publishing-service 'Repository'
+            }
         }
     }
 }

@@ -125,6 +125,7 @@ model {
                 style {
                     icon tech:angular
                 }
+                link https://github.com/hmcts/cpp-ui-managepermissions 'Repository'
 
                 this -> users-and-groups 'updates user and group data' 'JSON/HTTPS'
             }
@@ -162,6 +163,7 @@ model {
                 style {
                     icon ../../icons/dropwizard.svg
                 }
+                link https://github.com/hmcts/cpp-context-idam-events-consumer 'Repository'
 
                 crime-idam -> this "sends user and group changes to"
                 this -> staging "sends user and group changes to" "JSON/HTTPS"
@@ -294,6 +296,21 @@ model {
                 style {
                     icon tech:postgresql
                 }
+            }
+        }
+
+        cp-user-interface = shared-component {
+            title 'Common Platform User Interface'
+            summary 'Portal landing page and home screen for the Common Platform'
+
+            home-ui = user-interface {
+                title 'Home UI'
+                technology 'Angular'
+                summary 'Main portal landing page that provides the entry point to the Common Platform'
+                style {
+                    icon tech:angular
+                }
+                link https://github.com/hmcts/cpp-ui-home 'Repository'
             }
         }
     }

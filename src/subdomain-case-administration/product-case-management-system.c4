@@ -18,6 +18,7 @@ model {
                 style {
                     icon tech:angular
                 }
+                link https://github.com/hmcts/cpp-ui-subscriptions 'Repository'
 
                 this -> subscriptions-service "makes API calls to"
             }
@@ -321,6 +322,17 @@ model {
                 style {
                     icon tech:postgresql
                 }
+            }
+
+            material-id-mapper-service = microservice {
+                title 'Material ID Mapper Service'
+                technology 'Spring Boot'
+                summary 'Maps material IDs to CaseID or CaseURN identifiers'
+                metadata {
+                    language 'Java'
+                    software-framework 'Spring Boot'
+                }
+                link https://github.com/hmcts/cpp-context-material-id-mapper 'Repository'
             }
         }
     }

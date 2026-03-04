@@ -61,4 +61,25 @@ views {
         title '[Component View] Work Management System'
         include *
     }
+
+    view defence-portal-container-view of cp.defence-portal {
+        title '[Container View] Advocate Portal'
+        include *
+
+        // Bring in services outside of CAD
+        include cp.court-hearings-subdomain.hearing-service
+        include cp.scheduling-and-listing-system.listing-service
+        include cp.case-management-system.progression-service
+        include cp.case-management-system.material-service
+        include cp.users-and-groups-system.users-and-groups
+        include cp.reference-data-system.reference-data
+        include cp.reference-data-system.reference-data-offences
+        include cp.document-generation-system.document-generator
+
+    }
+
+    view defence-portal-component-view of cp.defence-portal {
+        title '[Component View] Advocate Portal'
+        include *
+    }
 }

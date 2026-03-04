@@ -28,8 +28,17 @@ model {
                     software-framework 'Java EE 8'
                 }
                 link https://github.com/hmcts/cpp-context-defence 'Repository'
-
+                this -> cp.material-service 'Provides IDPC access for defence representatives'
+                this -> cp.listing-service 'Retrieves listing information for (unallocated) hearings associated with cases and applications of defence clients'
+                this -> cp.hearing-service 'Retrieves hearing information related to cases and application belonging to defence clients'
+                this -> cp.progression-service 'Retrieves case, application and hearing details related to defence clients'
+                this -> cp.reference-data 'Retrieves prosecutor information and public holiday information for data calculations'
+                this -> cp.reference-data-offences 'Retrieves offence particular information related to offences the defence client is being charged with'
+                this -> cp.users-and-groups 'Used for RBAC controls'                
                 this -> defence-database
+
+                // TODO @Matthew.Rich - Needs to be removed from code then updated here
+                this -> cp.document-generator 'Used for OPA (Online Plea/Allocation) which is believed to have been descoped and needs to be removed, along with File Service usage'
             }
 
             defence-database = datastore {

@@ -24,7 +24,7 @@ Services listed in the PDF catalogue that have no corresponding C4 component.
 | Prosecution Document Queue | cpp.context.prosecution.documentqueue | cpp-context-prosecution-documentqueue | **Resolved** — added to document-ingestion-system |
 | Bulk Scan | cpp.context.staging.bulkscan | cpp-context-staging-bulkscan | **Resolved** — added to document-ingestion-system |
 | Material | cpp.context.material | cpp-context-material | **Resolved** — added to case-management-system |
-| CPS MCC UI | cpp-ui-cps-mcc | *(not in GitHub)* | **Outstanding** — no repo found |
+| CPS MCC UI | cpp-ui-cps-mcc | *(not in GitHub)* | **Not in scope** — abandoned project for manual CPS case creation; never built |
 | Bulk Scan UI | cpp-ui-bulkscan | cpp-ui-bulkscan | **Resolved** — added to document-ingestion-system |
 
 ### Case Administration
@@ -102,7 +102,7 @@ Repos in the HMCTS org (service/UI repos only, excluding infra/terraform/test/bu
 | Repo | Description | Technology | Status |
 |------|-------------|------------|--------|
 | cp-ai-rag-service | Document ingestion RAG service with 4 Azure Functions (doc metadata check, doc ingestion, answer retrieval, answer scoring) | Java 17+, Azure Functions | **Pending Discussion** — new AI/Intelligence capability. Representation to be discussed with owning team |
-| cp-audit-filter | Spring Boot filter that publishes audit data to Artemis queues | Spring Boot, Java | **Resolved** — added to audit-system |
+| cp-audit-filter | Spring Boot filter that publishes audit data to Artemis queues | Spring Boot, Java | **Not in scope** — reusable library (`java-library` plugin, published to Maven), not a deployable service. Removed from model |
 | cp-audit-reports-service-v2 | Self-service audit reports backend | Java 21, Spring Boot, Gradle | **Resolved** — added to audit-system |
 | cp-auth-rules-filter | Spring Boot filter for authorization rules on incoming requests | Spring Boot, Java, Gradle | **Not in scope** — reusable library, not a deployable service |
 | cp-case-document-knowledge-service | AI-powered cited, auditable answers about case documents | Java 21, Spring Boot 4, PostgreSQL | **Pending Discussion** — new AI/Intelligence capability. Representation to be discussed with owning team |
@@ -182,6 +182,7 @@ cp-crime-portal, cp-client-mirror-gateway, and cp-vodafone-services are part of 
 
 | Repo | Description | Technology |
 |------|-------------|------------|
+| cp-audit-filter | Spring Boot servlet filter for request/response auditing via Artemis JMS | Java 21, Gradle |
 | cp-event-store | Event sourcing framework (aggregate-snapshot, event-buffer) | Java, Maven |
 | cp-job-manager | Job/task execution engine library | Java 21, Gradle |
 | cpp-ui-core | Shared Angular component framework | Angular, TypeScript |
@@ -196,8 +197,8 @@ These are shared libraries/frameworks consumed as dependencies. May not need C4 
 | Category | Resolved | Pending Discussion | Outstanding | Not in scope | Total |
 |----------|----------|--------------------|-------------|--------------|-------|
 | Repo links added (Phase 2) | 42 | — | — | — | 42 |
-| PDF items not in model (Section 1) | 16 | 0 | 3 | — | 19 |
-| GitHub repos not in model (Section 2) | 22 | 3 | 0 | 10 | 35 |
+| PDF items not in model (Section 1) | 16 | 0 | 2 | 1 | 19 |
+| GitHub repos not in model (Section 2) | 21 | 3 | 0 | 11 | 35 |
 | Model components without repo link (Section 3) | 12 | 0 | 2 | — | 14 |
 | Shell products (Section 4) | 4 | 0 | 0 | — | 4 |
-| New capabilities (Section 6) | 0 | 3 | — | 4 | 7 |
+| New capabilities (Section 6) | 0 | 3 | — | 5 | 8 |

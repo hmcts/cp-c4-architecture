@@ -54,7 +54,7 @@ views {
         include cp.case-management-system.progression-service
         include cp.case-management-system.prosecution-case-file-service
         include cp.case-management-system.sjp-service
-        include cp.defence-portal.defence-service
+        include cp.advocate-portal.defence-service
     }
 
     view work-management-system-component-view of cp.work-management-system {
@@ -62,7 +62,7 @@ views {
         include *
     }
 
-    view defence-portal-container-view of cp.defence-portal {
+    view advocate-portal-container-view of cp.advocate-portal {
         title '[Container View] Advocate Portal'
         include *
 
@@ -78,7 +78,7 @@ views {
 
     }
 
-    view defence-portal-component-view of cp.defence-portal {
+    view advocate-portal-component-view of cp.advocate-portal {
         title '[Component View] Advocate Portal'
         include *
     }

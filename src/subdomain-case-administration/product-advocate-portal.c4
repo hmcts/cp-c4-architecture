@@ -1,7 +1,7 @@
 model {
     extend cp.case-administration-subdomain {
-        defence-portal = product {
-            title 'Defence Potal'
+        advocate-portal = product {
+            title 'Advocate Portal'
             description 'Provides access to cases for defence advocates'
 
             defence-ui = user-interface {

@@ -33,7 +33,7 @@ Services listed in the PDF catalogue that have no corresponding C4 component.
 |----------|-------------|-------------|--------|
 | Directions Management | cpp.context.directions-management | *(not in GitHub)* | **Outstanding** — no repo found |
 | Unified Search Query | cpp.context.unifiedsearch.query | cpp-context-unifiedsearch-query | **Resolved** — added to case-management-system |
-| Defence UI | cpp-ui-defence | cpp-ui-defence | **Resolved** — added to defence-portal |
+| Defence UI | cpp-ui-defence | cpp-ui-defence | **Resolved** — added to advocate-portal |
 
 ### Court Hearings
 
@@ -92,7 +92,7 @@ Repos in the HMCTS org (service/UI repos only, excluding infra/terraform/test/bu
 | cpp-ui-ai-intelligence | **Pending Discussion** — Angular 19 UI for AI-powered document intelligence search. Representation to be discussed with owning team |
 | cpp-ui-audit-reports | **Resolved** — added to audit-system |
 | cpp-ui-core | **Not in scope** — shared Angular library, not a deployable service |
-| cpp-ui-defence | **Resolved** — added to defence-portal |
+| cpp-ui-defence | **Resolved** — added to advocate-portal |
 | cpp-ui-external-services | **Resolved** — added to hearing-system |
 | cpp-ui-home | **Resolved** — added to Common Platform User Interface shared component |
 | cpp-ui-pdk2 | **Not in scope** — shared Angular library, not a deployable service |

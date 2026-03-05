@@ -17,4 +17,5 @@ model {
     sdp = external-system "Strategic Data Platform (SDP)" "MOJ data platform for operational reports and statistics" {
         mi-extract-blob-storage -> this 'provides MI extract files to'
     }
+    track-a-case = external-system "Track a Case" "Allows citizens to access details of a case, currently in Private Beta"
 }

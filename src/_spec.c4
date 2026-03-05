@@ -110,6 +110,7 @@ specification {
         color rgb(100 100 100)
     }
 
+    relationship api-marketplace
     relationship audit
     relationship auth
     relationship mi

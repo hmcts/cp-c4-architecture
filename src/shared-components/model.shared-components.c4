@@ -301,6 +301,20 @@ model {
                     icon tech:postgresql
                 }
             }
+
+            courthouses-service = microservice {
+                title 'Courthouses Service'
+                technology 'Spring Boot'
+                summary 'Provides courthouse and courtroom information via the API Marketplace'
+                metadata {
+                    language 'Java'
+                    software-framework 'Spring Boot'
+                }
+                link https://github.com/hmcts/service-cp-refdata-courthearing-courthouses 'Repository'
+
+                track-a-case -[api-marketplace]-> this 'gets courthouse data'
+                this -> reference-data 'fetches courthouse data from'
+            }
         }
 
         cp-user-interface = shared-component {

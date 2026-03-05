@@ -355,7 +355,7 @@ model {
                 link https://github.com/hmcts/service-cp-crime-prosecution-case-details 'Repository'
 
                 track-a-case -[api-marketplace]-> this 'gets prosecution case details'
-                this -> case-urn-mapper 'resolves case URN to case ID using'
+                this -[api-marketplace]-> case-urn-mapper 'resolves case URN to case ID using'
                 this -> progression-service 'fetches prosecution case data from'
             }
 

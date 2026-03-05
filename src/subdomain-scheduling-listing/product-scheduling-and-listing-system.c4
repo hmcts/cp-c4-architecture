@@ -180,7 +180,7 @@ model {
                 link https://github.com/hmcts/service-cp-crime-scheduleandlist-courtschedule 'Repository'
 
                 track-a-case -[api-marketplace]-> this 'gets court schedule'
-                this -> cp.case-urn-mapper 'resolves case URN to case ID using'
+                this -[api-marketplace]-> cp.case-urn-mapper 'resolves case URN to case ID using'
                 this -> listing-service 'fetches hearing data from'
             }
 

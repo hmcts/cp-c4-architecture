@@ -340,7 +340,6 @@ model {
                 }
                 link https://github.com/hmcts/service-cp-caseadmin-case-urn-mapper 'Repository'
 
-                track-a-case -[api-marketplace]-> this 'resolves case URNs'
                 this -> cp.system-id-mapper 'resolves identifiers using'
             }
 

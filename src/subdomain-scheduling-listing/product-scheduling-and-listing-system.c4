@@ -169,6 +169,21 @@ model {
                 }
             }
 
+            court-schedule-service = microservice {
+                title 'Court Schedule Service'
+                technology 'Spring Boot'
+                summary 'Provides court schedule data for a given case URN via the API Marketplace'
+                metadata {
+                    language 'Java'
+                    software-framework 'Spring Boot'
+                }
+                link https://github.com/hmcts/service-cp-crime-scheduleandlist-courtschedule 'Repository'
+
+                track-a-case -[api-marketplace]-> this 'gets court schedule'
+                this -[api-marketplace]-> cp.case-urn-mapper 'resolves case URN to case ID using'
+                this -> listing-service 'fetches hearing data from'
+            }
+
             court-list-publishing-service = microservice {
                 title 'Court List Publishing Service'
                 technology 'Spring Boot'

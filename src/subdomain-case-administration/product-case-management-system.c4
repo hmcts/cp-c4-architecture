@@ -330,6 +330,34 @@ model {
                 }
             }
 
+            case-urn-mapper = microservice {
+                title 'Case URN Mapper'
+                technology 'Spring Boot'
+                summary 'Translates case URNs to internal case IDs via the API Marketplace'
+                metadata {
+                    language 'Java'
+                    software-framework 'Spring Boot'
+                }
+                link https://github.com/hmcts/service-cp-caseadmin-case-urn-mapper 'Repository'
+
+                this -> cp.system-id-mapper 'resolves identifiers using'
+            }
+
+            prosecution-case-details-service = microservice {
+                title 'Prosecution Case Details Service'
+                technology 'Spring Boot'
+                summary 'Provides simplified prosecution case status and reporting restrictions via the API Marketplace'
+                metadata {
+                    language 'Java'
+                    software-framework 'Spring Boot'
+                }
+                link https://github.com/hmcts/service-cp-crime-prosecution-case-details 'Repository'
+
+                track-a-case -[api-marketplace]-> this 'gets prosecution case details'
+                this -[api-marketplace]-> case-urn-mapper 'resolves case URN to case ID using'
+                this -> progression-service 'fetches prosecution case data from'
+            }
+
             material-id-mapper-service = microservice {
                 title 'Material ID Mapper Service'
                 technology 'Spring Boot'

@@ -14,7 +14,7 @@ model {
                 }
                 link https://github.com/hmcts/cpp-context-mi-systemdata 'Repository'
 
-                this -> mi-system-data-database
+                this -> mi-system-data-database 'reads and writes data'
             }
 
             mi-system-data-database = datastore {
@@ -29,14 +29,17 @@ model {
             mi-report-data-service = microservice {
                 title 'MI Report Data Service'
                 technology 'Java EE'
-                summary 'Exports data nightly to the SDP for operational reports and statistics'
+                summary 'Generates nightly MI extracts as CSV files and uploads them to Azure Blob Storage for the SDP'
                 metadata {
                     language 'Java'
                     software-framework 'Java EE 8'
                 }
                 link https://github.com/hmcts/cpp-context-mi-reportdata 'Repository'
 
-                this -> mi-report-data-database
+                this -> mi-report-data-database 'reads and writes data'
+                this -> mi-extract-blob-storage 'uploads MI extract CSV files to'
+                this -> cp.scheduling-and-listing-system.court-scheduler-service 'queries court schedule, judiciary and allocated listings data from'
+                cp.system-scheduling -[shared]-> this 'triggers nightly MI extract'
             }
 
             mi-report-data-database = datastore {
@@ -56,6 +59,9 @@ model {
                     icon tech:angular
                 }
                 link https://github.com/hmcts/cpp-ui-opami 'Repository'
+
+                this -> mi-system-data-service 'queries dashboard data from'
+                this -> mi-report-data-service 'generates and retrieves operational reports from'
             }
         }
     }

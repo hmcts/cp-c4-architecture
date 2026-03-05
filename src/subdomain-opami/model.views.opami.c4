@@ -4,15 +4,16 @@ views {
         include *
         where
             not (kind is application or kind is microservice or kind is functions or kind is datastore or kind is user-interface)
-        // include cp.court-hearings-subdomain._
-        // include cp.scheduling-and-listing-subdomain._
-        // include cp.case-administration-subdomain._
-        // include cp.opami-subdomain._
-        // include cp.case-ingestion-subdomain._
+        include cp.court-hearings-subdomain._
+        include cp.scheduling-and-listing-subdomain._
+        include cp.case-administration-subdomain._
+        include cp.case-ingestion-subdomain._
+        include cp.shared-components-subdomain._
+            where kind is product
         exclude * -> *
         include * <-> cp.management-information-system
 
-        style cp.case-administration-subdomain.*, cp.scheduling-and-listing-subdomain.*, cp.opami-subdomain.*, cp.case-ingestion-subdomain.* {
+        style cp.case-administration-subdomain.*, cp.scheduling-and-listing-subdomain.*, cp.case-ingestion-subdomain.*, cp.court-hearings-subdomain.*, cp.shared-components-subdomain.* {
             color secondary
         }
     }
@@ -22,10 +23,19 @@ views {
         include
             *
         include cp.case-administration-subdomain.case-management-system
+        include cp.case-administration-subdomain.advocate-portal
+        include cp.case-administration-subdomain.work-management-system
         include cp.court-hearings-subdomain.hearing-system
+        include cp.court-hearings-subdomain.results-distribution-system
         include cp.scheduling-and-listing-subdomain.scheduling-and-listing-system
+        include cp.case-ingestion-subdomain.spi
+        include cp.case-ingestion-subdomain.document-ingestion-system
+        include cp.shared-components-subdomain.reference-data-system
+        include cp.shared-components-subdomain.users-and-groups-system
+        include cp.shared-components-subdomain.scheduling-system
         exclude * -> *
-        include * <-> cp.management-information-system
+        include * <-> cp.management-information-system._
+        include cp.management-information-system._ <-> cp.management-information-system._
     }
 
     view audit-system-context of cp.audit-system {

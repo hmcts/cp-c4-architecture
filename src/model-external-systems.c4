@@ -9,4 +9,12 @@ model {
     cjse = external-system "Criminal Justice System Exchange" "Routes and forwards police cases to HMCTS"
     crime-idam = external-system "Crime IDAM" ""
     dlrm-migration-platform = external-system "DLRM Migration Platform" "Platform for undertaking legacy system migrations"
+    mi-extract-blob-storage = external-system "MI Extract Blob Storage" "Azure Blob Storage used to stage MI extract files for the SDP" {
+        style {
+            icon tech:azure
+        }
+    }
+    sdp = external-system "Strategic Data Platform (SDP)" "MOJ data platform for operational reports and statistics" {
+        mi-extract-blob-storage -> this 'provides MI extract files to'
+    }
 }

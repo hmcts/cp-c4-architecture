@@ -1,6 +1,6 @@
 views {
 
-     
+
      view scheduling-and-listing-system-context of cp.scheduling-and-listing-system {
         title '[System Context] Scheduling and Listing System'
         include *
@@ -8,26 +8,25 @@ views {
                 not (kind is application or kind is microservice or kind is functions or kind is datastore or kind is user-interface)
         include cp.court-hearings-subdomain._
         include cp.case-administration-subdomain._
-        // include cp.opami-subdomain._
-        // include cp.shared-components-subdomain._
         exclude * -> *
         include * <-> cp.scheduling-and-listing-system
         exclude * <-> *
             where kind is audit or kind is mi or kind is auth or kind is shared
 
-        style cp.case-administration-subdomain.*, cp.court-hearings-subdomain.*, cp.opami-subdomain.*, cp.court-hearings-subdomain.results-distribution-system {
+        style cp.case-administration-subdomain.*, cp.court-hearings-subdomain.* {
             color secondary
         }
 	}
-	
+
 
     view scheduling-and-listing-system-container-view of cp.scheduling-and-listing-system {
         title '[Container View] Scheduling and Listing System'
         include *
-        // include cp.court-hearings-subdomain.hearing-system
         include cp.opami-subdomain._
         include cp.shared-components-subdomain._
         include cp.court-hearings-subdomain.hearing-system.staging-darts.*
+        exclude * <-> *
+            where kind is mi
         // include * <-> cp.scheduling-and-listing-subdomain.scheduling-and-listing-system.*
     }
 

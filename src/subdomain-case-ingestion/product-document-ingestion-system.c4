@@ -15,6 +15,7 @@ model {
                 link https://github.com/hmcts/cpp-context-staging-bulkscan 'Repository'
 
                 this -> staging-bulkscan-database
+                this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
             }
 
             staging-bulkscan-database = datastore {

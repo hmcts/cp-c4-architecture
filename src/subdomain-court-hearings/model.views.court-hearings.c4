@@ -7,12 +7,13 @@ views {
         include cp.court-hearings-subdomain._
         include cp.scheduling-and-listing-subdomain._
         include cp.case-administration-subdomain._
-        include cp.opami-subdomain._
         include cp.case-ingestion-subdomain._
         exclude * -> *
         include * <-> cp.hearing-system
+        exclude * <-> *
+            where kind is mi
 
-        style cp.case-administration-subdomain.*, cp.scheduling-and-listing-subdomain.*, cp.opami-subdomain.*, cp.case-ingestion-subdomain.* {
+        style cp.case-administration-subdomain.*, cp.scheduling-and-listing-subdomain.*, cp.case-ingestion-subdomain.* {
             color secondary
         }
     }
@@ -24,6 +25,8 @@ views {
         include cp.scheduling-and-listing-subdomain.scheduling-and-listing-system
         exclude * -> *
         include * <-> cp.hearing-system._
+        exclude * <-> *
+            where kind is mi
     }
 
     view results-distribution-system-context of cp.results-distribution-system {
@@ -35,6 +38,8 @@ views {
         include cp.case-ingestion-subdomain._
         exclude * -> *
         include * <-> cp.results-distribution-system
+        exclude * <-> *
+            where kind is mi
     }
 
     view results-distribution-system-container-view of cp.results-distribution-system {
@@ -47,6 +52,8 @@ views {
         exclude * -> *
         include * <-> cp.results-distribution-system._
         include cp.results-distribution-system._ <-> cp.results-distribution-system._
+        exclude * <-> *
+            where kind is mi
         // include cp.court-hearings-subdomain.hearing-system.staging-darts.*
         // include * <-> cp.scheduling-and-listing-subdomain.scheduling-and-listing-system.*
     }

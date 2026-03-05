@@ -36,6 +36,7 @@ model {
                 this -> cp.reference-data-offences 'Retrieves offence particular information related to offences the defence client is being charged with'
                 this -> cp.users-and-groups 'Used for RBAC controls'                
                 this -> defence-database
+                this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
 
                 // TODO @Matthew.Rich - Needs to be removed from code then updated here
                 this -> cp.document-generator 'Used for OPA (Online Plea/Allocation) which is believed to have been descoped and needs to be removed, along with File Service usage'

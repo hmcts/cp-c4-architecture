@@ -5,7 +5,7 @@ model {
             description 'Manages cases'
 
             this -> cp.scheduling-and-listing-system 'requests listings for hearings using'
-            this -> cp.management-information-system 'sends data to'
+
 
             subscriptions-ui = user-interface {
                 title 'Subscriptions UI'
@@ -92,6 +92,8 @@ model {
                 }
                 link https://github.com/hmcts/cpp-context-progression 'Repository'
                 this -> progression-database
+                this -[mi]-> cp.management-information-system.mi-system-data-service 'sends data to'
+                this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
             }
 
             progression-database = datastore {
@@ -113,6 +115,7 @@ model {
                 link https://github.com/hmcts/cpp-context-prosecution-casefile 'Repository'
 
                 this -> prosecution-case-file-database
+                this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
             }
 
             prosecution-case-file-database = datastore {
@@ -133,6 +136,8 @@ model {
                 }
                 link https://github.com/hmcts/cpp-context-sjp 'Repository'
                 this -> sjp-database
+                this -[mi]-> cp.management-information-system.mi-system-data-service 'sends data to'
+                this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
             }
 
             sjp-database = datastore {
@@ -313,6 +318,7 @@ model {
                 link https://github.com/hmcts/cpp-context-correspondence 'Repository'
 
                 this -> correspondence-database
+                this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
             }
 
             correspondence-database = datastore {

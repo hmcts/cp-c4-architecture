@@ -1,0 +1,2449 @@
+{
+  _type: 'element',
+  tags: null,
+  links: null,
+  viewOf: 'cp.opami-subdomain.management-information-system',
+  _stage: 'layouted',
+  sourcePath: 'src/subdomain-opami/model.views.opami.c4',
+  description: null,
+  title: '[Container View] Management Information System',
+  id: 'management-information-system-container-view',
+  autoLayout: {
+    direction: 'TB',
+  },
+  notation: {
+    nodes: [
+      {
+        title: 'User Interface',
+        shape: 'browser',
+        color: 'primary',
+        kinds: [
+          'user-interface',
+        ],
+      },
+      {
+        title: 'External Software System',
+        shape: 'rectangle',
+        color: 'muted',
+        kinds: [
+          'external-system',
+        ],
+      },
+      {
+        title: 'Microservice',
+        shape: 'rectangle',
+        color: 'primary',
+        kinds: [
+          'microservice',
+        ],
+      },
+      {
+        title: 'Product',
+        shape: 'rectangle',
+        color: 'primary',
+        kinds: [
+          'product',
+        ],
+      },
+      {
+        title: 'Shared Component',
+        shape: 'rectangle',
+        color: 'indigo',
+        kinds: [
+          'shared-component',
+        ],
+      },
+      {
+        title: 'Subdomain',
+        shape: 'rectangle',
+        color: 'pale-yellow',
+        kinds: [
+          'subdomain',
+        ],
+      },
+      {
+        title: 'Subdomain',
+        shape: 'rectangle',
+        color: 'pale-blue',
+        kinds: [
+          'subdomain',
+        ],
+      },
+      {
+        title: 'Subdomain',
+        shape: 'rectangle',
+        color: 'pale-purple',
+        kinds: [
+          'subdomain',
+        ],
+      },
+      {
+        title: 'Subdomain',
+        shape: 'rectangle',
+        color: 'pale-green',
+        kinds: [
+          'subdomain',
+        ],
+      },
+      {
+        title: 'Subdomain',
+        shape: 'rectangle',
+        color: 'pale-grey',
+        kinds: [
+          'subdomain',
+        ],
+      },
+      {
+        title: 'Datastore',
+        shape: 'storage',
+        color: 'primary',
+        kinds: [
+          'datastore',
+        ],
+      },
+    ],
+  },
+  hash: 'fpZyibkmoer0v_U6b-UD6OJzhOjcTEu1venYLfbfEOw',
+  bounds: {
+    x: 928,
+    y: -20,
+    width: 2665,
+    height: 1554,
+  },
+  nodes: [
+    {
+      id: 'cp.case-administration-subdomain',
+      parent: null,
+      level: 0,
+      children: [],
+      inEdges: [],
+      outEdges: [
+        '1fkclq4',
+        '1ac3htj',
+      ],
+      title: 'Case Administration',
+      modelRef: 'cp.case-administration-subdomain',
+      shape: 'rectangle',
+      color: 'pale-yellow',
+      style: {
+        opacity: 20,
+        size: 'md',
+      },
+      tags: [],
+      notation: 'Subdomain',
+      technology: 'Subdomain',
+      kind: 'subdomain',
+      navigateTo: '__cp_case-administration-subdomain',
+      x: 3248,
+      y: 287,
+      width: 320,
+      height: 180,
+      labelBBox: {
+        x: 69,
+        y: 64,
+        width: 183,
+        height: 46,
+      },
+      links: null,
+    },
+    {
+      id: 'cp.case-ingestion-subdomain',
+      parent: null,
+      level: 0,
+      children: [],
+      inEdges: [],
+      outEdges: [
+        'xka4z',
+      ],
+      title: 'Case and Material Ingestion',
+      modelRef: 'cp.case-ingestion-subdomain',
+      shape: 'rectangle',
+      color: 'pale-blue',
+      style: {
+        opacity: 20,
+        size: 'md',
+      },
+      tags: [],
+      notation: 'Subdomain',
+      technology: 'Subdomain',
+      kind: 'subdomain',
+      navigateTo: '__cp_case-ingestion-subdomain',
+      x: 3253,
+      y: 507,
+      width: 320,
+      height: 180,
+      labelBBox: {
+        x: 33,
+        y: 64,
+        width: 253,
+        height: 46,
+      },
+      links: null,
+    },
+    {
+      id: 'cp.court-hearings-subdomain',
+      parent: null,
+      level: 0,
+      children: [],
+      inEdges: [],
+      outEdges: [
+        '1x9pevo',
+        'r0e9en',
+      ],
+      title: 'Court Hearings',
+      modelRef: 'cp.court-hearings-subdomain',
+      shape: 'rectangle',
+      color: 'pale-purple',
+      style: {
+        opacity: 20,
+        size: 'md',
+      },
+      tags: [],
+      notation: 'Subdomain',
+      technology: 'Subdomain',
+      kind: 'subdomain',
+      navigateTo: '__cp_court-hearings-subdomain',
+      x: 3242,
+      y: 763,
+      width: 320,
+      height: 180,
+      labelBBox: {
+        x: 91,
+        y: 64,
+        width: 139,
+        height: 46,
+      },
+      links: null,
+    },
+    {
+      id: 'cp.scheduling-and-listing-subdomain',
+      parent: null,
+      level: 0,
+      children: [],
+      inEdges: [
+        '1cdjwo9',
+      ],
+      outEdges: [
+        '17cm3xl',
+      ],
+      title: 'Scheduling and Listing',
+      modelRef: 'cp.scheduling-and-listing-subdomain',
+      shape: 'rectangle',
+      color: 'pale-green',
+      style: {
+        opacity: 20,
+        size: 'md',
+      },
+      tags: [],
+      notation: 'Subdomain',
+      technology: 'Subdomain',
+      kind: 'subdomain',
+      navigateTo: '__cp_scheduling-and-listing-subdomain',
+      x: 3246,
+      y: 1103,
+      width: 320,
+      height: 180,
+      labelBBox: {
+        x: 57,
+        y: 64,
+        width: 205,
+        height: 46,
+      },
+      links: null,
+    },
+    {
+      id: 'cp.shared-components-subdomain',
+      parent: null,
+      level: 0,
+      children: [
+        'cp.shared-components-subdomain.reference-data-system',
+        'cp.shared-components-subdomain.users-and-groups-system',
+        'cp.shared-components-subdomain.scheduling-system',
+        'cp.shared-components-subdomain.notify-system',
+      ],
+      inEdges: [
+        '1p0hxns',
+        'y4ov7h',
+      ],
+      outEdges: [
+        '6fs3fn',
+        '2fakiw',
+        '1afrt68',
+        'blqvej',
+        'lx3q0u',
+        '99k1bj',
+      ],
+      title: 'Shared Components',
+      modelRef: 'cp.shared-components-subdomain',
+      shape: 'rectangle',
+      color: 'pale-grey',
+      style: {
+        opacity: 20,
+        size: 'md',
+      },
+      tags: [],
+      notation: 'Subdomain',
+      technology: 'Subdomain',
+      kind: 'subdomain',
+      depth: 1,
+      navigateTo: '__cp_shared-components-subdomain',
+      x: 1338,
+      y: 272,
+      width: 426,
+      height: 981,
+      labelBBox: {
+        x: 6,
+        y: 0,
+        width: 132,
+        height: 15,
+      },
+      links: null,
+    },
+    {
+      id: 'mi_user',
+      parent: null,
+      level: 0,
+      children: [],
+      inEdges: [],
+      outEdges: [
+        '1pc38kf',
+      ],
+      title: 'MI User',
+      modelRef: 'mi_user',
+      shape: 'person',
+      color: 'green',
+      style: {
+        opacity: 15,
+        size: 'md',
+      },
+      description: {
+        txt: 'Users of the operational management information dashboards and reports',
+      },
+      tags: [],
+      technology: 'Person',
+      kind: 'actor',
+      navigateTo: '__mi_user',
+      x: 2497,
+      y: 0,
+      width: 320,
+      height: 180,
+      labelBBox: {
+        x: 33,
+        y: 44,
+        width: 255,
+        height: 85,
+      },
+      links: null,
+    },
+    {
+      id: 'cp.shared-components-subdomain.reference-data-system',
+      parent: 'cp.shared-components-subdomain',
+      level: 1,
+      children: [],
+      inEdges: [
+        '1p0hxns',
+      ],
+      outEdges: [
+        '6fs3fn',
+        '2fakiw',
+      ],
+      title: 'Reference Data System',
+      modelRef: 'cp.shared-components-subdomain.reference-data-system',
+      shape: 'rectangle',
+      color: 'primary',
+      style: {
+        opacity: 20,
+        size: 'md',
+      },
+      description: {
+        txt: 'Holds reference data used by the rest of the common platform',
+      },
+      tags: [],
+      notation: 'Product',
+      technology: 'Product',
+      kind: 'product',
+      navigateTo: 'reference-data-system-context',
+      x: 1384,
+      y: 804,
+      width: 331,
+      height: 180,
+      labelBBox: {
+        x: 18,
+        y: 44,
+        width: 296,
+        height: 85,
+      },
+      links: null,
+    },
+    {
+      id: 'cp.shared-components-subdomain.users-and-groups-system',
+      parent: 'cp.shared-components-subdomain',
+      level: 1,
+      children: [],
+      inEdges: [],
+      outEdges: [
+        '1afrt68',
+        'blqvej',
+      ],
+      title: 'Users and Groups System',
+      modelRef: 'cp.shared-components-subdomain.users-and-groups-system',
+      shape: 'rectangle',
+      color: 'primary',
+      style: {
+        opacity: 20,
+        size: 'md',
+      },
+      description: {
+        txt: 'Manages users, groups, organisations, roles and permissions',
+      },
+      tags: [],
+      notation: 'Product',
+      technology: 'Product',
+      kind: 'product',
+      navigateTo: 'users-and-groups-system-context',
+      x: 1380,
+      y: 583,
+      width: 335,
+      height: 180,
+      labelBBox: {
+        x: 18,
+        y: 44,
+        width: 299,
+        height: 85,
+      },
+      links: null,
+    },
+    {
+      id: 'cp.shared-components-subdomain.scheduling-system',
+      parent: 'cp.shared-components-subdomain',
+      level: 1,
+      children: [],
+      inEdges: [],
+      outEdges: [
+        'lx3q0u',
+      ],
+      title: 'Scheduling System',
+      modelRef: 'cp.shared-components-subdomain.scheduling-system',
+      shape: 'rectangle',
+      color: 'indigo',
+      style: {
+        opacity: 20,
+        size: 'md',
+      },
+      description: {
+        txt: 'Shared system for scheduling jobs to send commands to other systems at specific times',
+      },
+      tags: [],
+      notation: 'Shared Component',
+      technology: 'Shared Component',
+      kind: 'shared-component',
+      navigateTo: '__cp_shared-components-subdomain_scheduling-system',
+      x: 1384,
+      y: 332,
+      width: 338,
+      height: 180,
+      labelBBox: {
+        x: 18,
+        y: 44,
+        width: 302,
+        height: 85,
+      },
+      links: null,
+    },
+    {
+      id: 'cp.opami-subdomain.management-information-system',
+      parent: null,
+      level: 0,
+      children: [
+        'cp.opami-subdomain.management-information-system.opami-ui',
+        'cp.opami-subdomain.management-information-system.mi-system-data-service',
+        'cp.opami-subdomain.management-information-system.mi-report-data-service',
+        'cp.opami-subdomain.management-information-system.mi-system-data-database',
+        'cp.opami-subdomain.management-information-system.mi-report-data-database',
+        'cp.opami-subdomain.management-information-system.mi-extract-blob-storage',
+      ],
+      inEdges: [
+        '1fkclq4',
+        '1ac3htj',
+        'xka4z',
+        '1x9pevo',
+        'r0e9en',
+        '17cm3xl',
+        '6fs3fn',
+        '2fakiw',
+        '1afrt68',
+        'blqvej',
+        'lx3q0u',
+        '1pc38kf',
+      ],
+      outEdges: [
+        '1cdjwo9',
+        'and8dj',
+        '1p0hxns',
+        'y4ov7h',
+      ],
+      title: 'Management Information System',
+      modelRef: 'cp.opami-subdomain.management-information-system',
+      shape: 'rectangle',
+      color: 'primary',
+      style: {
+        opacity: 20,
+        size: 'md',
+      },
+      description: {
+        txt: 'Listens to events from major services and creates a standard SQL model of CP data for operational reports and statistics',
+      },
+      tags: [],
+      notation: 'Product',
+      technology: 'Product',
+      kind: 'product',
+      depth: 1,
+      navigateTo: 'management-information-system-context',
+      x: 1810,
+      y: 272,
+      width: 1365,
+      height: 961,
+      labelBBox: {
+        x: 6,
+        y: 0,
+        width: 213,
+        height: 15,
+      },
+      links: null,
+    },
+    {
+      id: 'cp.opami-subdomain.management-information-system.opami-ui',
+      parent: 'cp.opami-subdomain.management-information-system',
+      level: 1,
+      children: [],
+      inEdges: [
+        '1pc38kf',
+      ],
+      outEdges: [
+        'daof34',
+        'jhdtgr',
+      ],
+      title: 'OPAMI UI',
+      modelRef: 'cp.opami-subdomain.management-information-system.opami-ui',
+      shape: 'browser',
+      color: 'primary',
+      icon: 'tech:angular',
+      style: {
+        opacity: 15,
+        size: 'md',
+      },
+      description: {
+        txt: 'Provides reporting dashboards for operational management information',
+      },
+      tags: [],
+      notation: 'User Interface',
+      links: [
+        {
+          url: 'https://github.com/hmcts/cpp-ui-opami',
+          title: 'Repository',
+        },
+      ],
+      technology: 'Angular',
+      kind: 'user-interface',
+      navigateTo: '__cp_opami-subdomain_management-information-system_opami-ui',
+      x: 2473,
+      y: 332,
+      width: 368,
+      height: 180,
+      labelBBox: {
+        x: 46,
+        y: 44,
+        width: 306,
+        height: 85,
+      },
+    },
+    {
+      id: 'cp.opami-subdomain.management-information-system.mi-system-data-service',
+      parent: 'cp.opami-subdomain.management-information-system',
+      level: 1,
+      children: [],
+      inEdges: [
+        '1fkclq4',
+        '1x9pevo',
+        '6fs3fn',
+        '1afrt68',
+        'daof34',
+      ],
+      outEdges: [
+        '1bfxmwi',
+      ],
+      title: 'MI System Data Service',
+      modelRef: 'cp.opami-subdomain.management-information-system.mi-system-data-service',
+      shape: 'rectangle',
+      color: 'primary',
+      icon: 'file://./icons/java-ee.svg',
+      style: {
+        opacity: 15,
+        size: 'md',
+      },
+      description: {
+        txt: 'Listens to events from services like progression and hearing and creates a standard SQL model of the CP data as it changes during each day',
+      },
+      tags: [],
+      notation: 'Microservice',
+      links: [
+        {
+          url: 'https://github.com/hmcts/cpp-context-mi-systemdata',
+          title: 'Repository',
+        },
+      ],
+      technology: 'Java EE',
+      kind: 'microservice',
+      navigateTo: '__cp_opami-subdomain_management-information-system_mi-system-data-service',
+      x: 2658,
+      y: 664,
+      width: 369,
+      height: 180,
+      labelBBox: {
+        x: 46,
+        y: 17,
+        width: 308,
+        height: 139,
+      },
+    },
+    {
+      id: 'cp.opami-subdomain.management-information-system.mi-report-data-service',
+      parent: 'cp.opami-subdomain.management-information-system',
+      level: 1,
+      children: [],
+      inEdges: [
+        '1ac3htj',
+        'xka4z',
+        'r0e9en',
+        '17cm3xl',
+        '2fakiw',
+        'blqvej',
+        'lx3q0u',
+        'jhdtgr',
+      ],
+      outEdges: [
+        '1cdjwo9',
+        '1p0hxns',
+        'y4ov7h',
+        '73slf6',
+        'le6fry',
+      ],
+      title: 'MI Report Data Service',
+      modelRef: 'cp.opami-subdomain.management-information-system.mi-report-data-service',
+      shape: 'rectangle',
+      color: 'primary',
+      icon: 'file://./icons/java-ee.svg',
+      style: {
+        opacity: 15,
+        size: 'md',
+      },
+      description: {
+        txt: 'Generates MI extracts and reports, serves live operational dashboards, and sends NCES extracts via Notify',
+      },
+      tags: [],
+      notation: 'Microservice',
+      links: [
+        {
+          url: 'https://github.com/hmcts/cpp-context-mi-reportdata',
+          title: 'Repository',
+        },
+      ],
+      technology: 'Java EE',
+      kind: 'microservice',
+      navigateTo: '__cp_opami-subdomain_management-information-system_mi-report-data-service',
+      x: 2131,
+      y: 660,
+      width: 361,
+      height: 180,
+      labelBBox: {
+        x: 46,
+        y: 35,
+        width: 300,
+        height: 103,
+      },
+    },
+    {
+      id: 'cp.opami-subdomain.management-information-system.mi-system-data-database',
+      parent: 'cp.opami-subdomain.management-information-system',
+      level: 1,
+      children: [],
+      inEdges: [
+        '1bfxmwi',
+      ],
+      outEdges: [],
+      title: 'MI System Data Database',
+      modelRef: 'cp.opami-subdomain.management-information-system.mi-system-data-database',
+      shape: 'storage',
+      color: 'primary',
+      icon: 'tech:postgresql',
+      style: {
+        opacity: 30,
+        size: 'md',
+      },
+      description: {
+        txt: 'Stores MI system data model',
+      },
+      tags: [],
+      notation: 'Datastore',
+      technology: 'PostgreSQL',
+      kind: 'datastore',
+      navigateTo: '__cp_opami-subdomain_management-information-system_mi-system-data-database',
+      x: 2776,
+      y: 1011,
+      width: 357,
+      height: 180,
+      labelBBox: {
+        x: 46,
+        y: 53,
+        width: 296,
+        height: 68,
+      },
+      links: null,
+    },
+    {
+      id: 'cp.shared-components-subdomain.notify-system',
+      parent: 'cp.shared-components-subdomain',
+      level: 1,
+      children: [],
+      inEdges: [
+        'y4ov7h',
+      ],
+      outEdges: [
+        '99k1bj',
+      ],
+      title: 'Notify System',
+      modelRef: 'cp.shared-components-subdomain.notify-system',
+      shape: 'rectangle',
+      color: 'indigo',
+      style: {
+        opacity: 20,
+        size: 'md',
+      },
+      description: {
+        txt: 'Provides email and letter sending services to the rest of the common platform',
+      },
+      tags: [],
+      notation: 'Shared Component',
+      technology: 'Shared Component',
+      kind: 'shared-component',
+      navigateTo: 'notify-system-context',
+      x: 1385,
+      y: 1031,
+      width: 337,
+      height: 180,
+      labelBBox: {
+        x: 18,
+        y: 44,
+        width: 302,
+        height: 85,
+      },
+      links: null,
+    },
+    {
+      id: 'cp.opami-subdomain.management-information-system.mi-report-data-database',
+      parent: 'cp.opami-subdomain.management-information-system',
+      level: 1,
+      children: [],
+      inEdges: [
+        '73slf6',
+      ],
+      outEdges: [],
+      title: 'MI Report Data Database',
+      modelRef: 'cp.opami-subdomain.management-information-system.mi-report-data-database',
+      shape: 'storage',
+      color: 'primary',
+      icon: 'tech:postgresql',
+      style: {
+        opacity: 30,
+        size: 'md',
+      },
+      description: {
+        txt: 'Stores MI report data for export',
+      },
+      tags: [],
+      notation: 'Datastore',
+      technology: 'PostgreSQL',
+      kind: 'datastore',
+      navigateTo: '__cp_opami-subdomain_management-information-system_mi-report-data-database',
+      x: 2316,
+      y: 1011,
+      width: 350,
+      height: 180,
+      labelBBox: {
+        x: 46,
+        y: 53,
+        width: 288,
+        height: 68,
+      },
+      links: null,
+    },
+    {
+      id: 'cp.opami-subdomain.management-information-system.mi-extract-blob-storage',
+      parent: 'cp.opami-subdomain.management-information-system',
+      level: 1,
+      children: [],
+      inEdges: [
+        'le6fry',
+      ],
+      outEdges: [
+        'and8dj',
+      ],
+      title: 'MI Extract Blob Storage',
+      modelRef: 'cp.opami-subdomain.management-information-system.mi-extract-blob-storage',
+      shape: 'storage',
+      color: 'primary',
+      icon: 'tech:azure',
+      style: {
+        opacity: 30,
+        size: 'md',
+      },
+      description: {
+        txt: 'Stages MI extract CSV files for the Strategic Data Platform',
+      },
+      tags: [],
+      notation: 'Datastore',
+      technology: 'Azure Blob Storage',
+      kind: 'datastore',
+      navigateTo: '__cp_opami-subdomain_management-information-system_mi-extract-blob-storage',
+      x: 1852,
+      y: 1011,
+      width: 353,
+      height: 180,
+      labelBBox: {
+        x: 46,
+        y: 44,
+        width: 292,
+        height: 86,
+      },
+      links: null,
+    },
+    {
+      id: 'nces_recipients',
+      parent: null,
+      level: 0,
+      children: [],
+      inEdges: [
+        '99k1bj',
+      ],
+      outEdges: [],
+      title: 'NCES Recipients',
+      modelRef: 'nces_recipients',
+      shape: 'person',
+      color: 'green',
+      style: {
+        opacity: 15,
+        size: 'md',
+      },
+      description: {
+        txt: 'Recipients of the NCES MI extract emails',
+      },
+      tags: [],
+      technology: 'Person',
+      kind: 'actor',
+      navigateTo: '__nces_recipients',
+      x: 948,
+      y: 1034,
+      width: 320,
+      height: 180,
+      labelBBox: {
+        x: 20,
+        y: 53,
+        width: 279,
+        height: 67,
+      },
+      links: null,
+    },
+    {
+      id: 'sdp',
+      parent: null,
+      level: 0,
+      children: [],
+      inEdges: [
+        'and8dj',
+      ],
+      outEdges: [],
+      title: 'Strategic Data Platform (SDP)',
+      modelRef: 'sdp',
+      shape: 'rectangle',
+      color: 'muted',
+      style: {
+        opacity: 20,
+        size: 'md',
+      },
+      description: {
+        txt: 'MOJ data platform for operational reports and statistics',
+      },
+      tags: [],
+      notation: 'External Software System',
+      technology: 'External System',
+      kind: 'external-system',
+      navigateTo: '__sdp',
+      x: 1857,
+      y: 1334,
+      width: 343,
+      height: 180,
+      labelBBox: {
+        x: 18,
+        y: 44,
+        width: 307,
+        height: 85,
+      },
+      links: null,
+    },
+  ],
+  edges: [
+    {
+      id: '1fkclq4',
+      source: 'cp.case-administration-subdomain',
+      target: 'cp.opami-subdomain.management-information-system.mi-system-data-service',
+      label: 'sends data to',
+      points: [
+        [
+          3326,
+          512,
+        ],
+        [
+          3302,
+          546,
+        ],
+        [
+          3272,
+          583,
+        ],
+        [
+          3239,
+          612,
+        ],
+        [
+          3212,
+          635,
+        ],
+        [
+          3180,
+          656,
+        ],
+        [
+          3149,
+          674,
+        ],
+      ],
+      labelBBox: {
+        x: 3156,
+        y: 545,
+        width: 88,
+        height: 18,
+      },
+      parent: null,
+      relations: [
+        '1wk809b',
+        'f8e3b8',
+      ],
+      color: 'gray',
+      line: 'dashed',
+      head: 'normal',
+      kind: 'mi',
+      controlPoints: [
+        {
+          x: 3156,
+          y: 545,
+        },
+        {
+          x: 3095,
+          y: 585,
+        },
+      ],
+      navigateTo: null,
+      tags: null,
+    },
+    {
+      id: '1ac3htj',
+      source: 'cp.case-administration-subdomain',
+      target: 'cp.opami-subdomain.management-information-system.mi-report-data-service',
+      label: 'sends data to',
+      points: [
+        [
+          3275,
+          512,
+        ],
+        [
+          3253,
+          527,
+        ],
+        [
+          3230,
+          541,
+        ],
+        [
+          3207,
+          552,
+        ],
+        [
+          3172,
+          568,
+        ],
+        [
+          3159,
+          560,
+        ],
+        [
+          3122,
+          572,
+        ],
+        [
+          3078,
+          586,
+        ],
+        [
+          3071,
+          598,
+        ],
+        [
+          3027,
+          612,
+        ],
+        [
+          2892,
+          652,
+        ],
+        [
+          2851,
+          633,
+        ],
+        [
+          2715,
+          672,
+        ],
+        [
+          2700,
+          676,
+        ],
+        [
+          2686,
+          680,
+        ],
+        [
+          2671,
+          685,
+        ],
+      ],
+      labelBBox: {
+        x: 2941,
+        y: 535,
+        width: 88,
+        height: 18,
+      },
+      parent: null,
+      relations: [
+        'c77m01',
+        'itcvd3',
+        '1th85wc',
+        'v4ysi4',
+        'qp820w',
+        '1hkywav',
+      ],
+      color: 'gray',
+      line: 'dashed',
+      head: 'normal',
+      kind: 'mi',
+      controlPoints: [
+        {
+          x: 2941,
+          y: 535,
+        },
+        {
+          x: 2803,
+          y: 583,
+        },
+      ],
+      navigateTo: null,
+      tags: null,
+    },
+    {
+      id: 'xka4z',
+      source: 'cp.case-ingestion-subdomain',
+      target: 'cp.opami-subdomain.management-information-system.mi-report-data-service',
+      label: 'sends data to',
+      points: [
+        [
+          3673,
+          512,
+        ],
+        [
+          3648,
+          527,
+        ],
+        [
+          3621,
+          541,
+        ],
+        [
+          3595,
+          552,
+        ],
+        [
+          3234,
+          711,
+        ],
+        [
+          3100,
+          583,
+        ],
+        [
+          2715,
+          672,
+        ],
+        [
+          2700,
+          675,
+        ],
+        [
+          2685,
+          679,
+        ],
+        [
+          2670,
+          684,
+        ],
+      ],
+      labelBBox: {
+        x: 2866,
+        y: 616,
+        width: 88,
+        height: 18,
+      },
+      parent: null,
+      relations: [
+        '1l33cvm',
+        '1jjnmbg',
+      ],
+      color: 'gray',
+      line: 'dashed',
+      head: 'normal',
+      kind: 'mi',
+      controlPoints: [
+        {
+          x: 3007,
+          y: 611,
+        },
+        {
+          x: 2816,
+          y: 620,
+        },
+      ],
+      navigateTo: null,
+      tags: null,
+    },
+    {
+      id: '1x9pevo',
+      source: 'cp.court-hearings-subdomain',
+      target: 'cp.opami-subdomain.management-information-system.mi-system-data-service',
+      label: 'sends data to',
+      points: [
+        [
+          4205,
+          512,
+        ],
+        [
+          4185,
+          549,
+        ],
+        [
+          4158,
+          588,
+        ],
+        [
+          4121,
+          612,
+        ],
+        [
+          3964,
+          712,
+        ],
+        [
+          3439,
+          745,
+        ],
+        [
+          3150,
+          756,
+        ],
+      ],
+      labelBBox: {
+        x: 3150,
+        y: 808,
+        width: 88,
+        height: 18,
+      },
+      parent: null,
+      relations: [
+        '9zqzr3',
+      ],
+      color: 'gray',
+      line: 'dashed',
+      head: 'normal',
+      kind: 'mi',
+      controlPoints: [
+        {
+          x: 3150,
+          y: 808,
+        },
+        {
+          x: 3125,
+          y: 804,
+        },
+      ],
+      navigateTo: null,
+      tags: null,
+    },
+    {
+      id: 'r0e9en',
+      source: 'cp.court-hearings-subdomain',
+      target: 'cp.opami-subdomain.management-information-system.mi-report-data-service',
+      label: 'sends data to',
+      points: [
+        [
+          4110,
+          512,
+        ],
+        [
+          4083,
+          527,
+        ],
+        [
+          4054,
+          542,
+        ],
+        [
+          4025,
+          552,
+        ],
+        [
+          3866,
+          610,
+        ],
+        [
+          3817,
+          593,
+        ],
+        [
+          3649,
+          612,
+        ],
+        [
+          3236,
+          658,
+        ],
+        [
+          3122,
+          584,
+        ],
+        [
+          2715,
+          672,
+        ],
+        [
+          2700,
+          675,
+        ],
+        [
+          2685,
+          679,
+        ],
+        [
+          2670,
+          683,
+        ],
+      ],
+      labelBBox: {
+        x: 2860,
+        y: 880,
+        width: 88,
+        height: 18,
+      },
+      parent: null,
+      relations: [
+        '1ieh7cx',
+        '1y7n507',
+        'ph2ggx',
+      ],
+      color: 'gray',
+      line: 'dashed',
+      head: 'normal',
+      kind: 'mi',
+      controlPoints: [
+        {
+          x: 2952,
+          y: 877,
+        },
+        {
+          x: 2676,
+          y: 871,
+        },
+      ],
+      navigateTo: null,
+      tags: null,
+    },
+    {
+      id: '17cm3xl',
+      source: 'cp.scheduling-and-listing-subdomain',
+      target: 'cp.opami-subdomain.management-information-system.mi-report-data-service',
+      label: 'sends data to',
+      points: [
+        [
+          3287,
+          1011,
+        ],
+        [
+          3231,
+          975,
+        ],
+        [
+          3163,
+          936,
+        ],
+        [
+          3096,
+          912,
+        ],
+        [
+          2935,
+          853,
+        ],
+        [
+          2881,
+          896,
+        ],
+        [
+          2715,
+          852,
+        ],
+        [
+          2700,
+          848,
+        ],
+        [
+          2685,
+          843,
+        ],
+        [
+          2670,
+          838,
+        ],
+      ],
+      labelBBox: {
+        x: 2966,
+        y: 930,
+        width: 88,
+        height: 18,
+      },
+      parent: null,
+      relations: [
+        'z6ft7m',
+      ],
+      color: 'gray',
+      line: 'dashed',
+      head: 'normal',
+      kind: 'mi',
+      controlPoints: [
+        {
+          x: 3349,
+          y: 1009,
+        },
+        {
+          x: 2832,
+          y: 909,
+        },
+      ],
+      navigateTo: null,
+      tags: null,
+    },
+    {
+      id: '1cdjwo9',
+      source: 'cp.opami-subdomain.management-information-system.mi-report-data-service',
+      target: 'cp.scheduling-and-listing-subdomain',
+      label: 'queries court schedule, judiciary and \nallocated listings data from',
+      points: [
+        [
+          2661,
+          836,
+        ],
+        [
+          2679,
+          842,
+        ],
+        [
+          2697,
+          847,
+        ],
+        [
+          2715,
+          852,
+        ],
+        [
+          2841,
+          881,
+        ],
+        [
+          3185,
+          842,
+        ],
+        [
+          3295,
+          912,
+        ],
+        [
+          3329,
+          933,
+        ],
+        [
+          3354,
+          968,
+        ],
+        [
+          3372,
+          1002,
+        ],
+      ],
+      labelBBox: {
+        x: 2905,
+        y: 963,
+        width: 231,
+        height: 35,
+      },
+      parent: null,
+      relations: [
+        '162ghfz',
+      ],
+      color: 'gray',
+      line: 'dashed',
+      head: 'normal',
+      controlPoints: [
+        {
+          x: 2829,
+          y: 946,
+        },
+        {
+          x: 3248,
+          y: 1033,
+        },
+      ],
+      navigateTo: null,
+      tags: null,
+    },
+    {
+      id: 'and8dj',
+      source: 'cp.opami-subdomain.management-information-system.mi-extract-blob-storage',
+      target: 'sdp',
+      label: 'provides MI extract files to',
+      points: [
+        [
+          2029,
+          1192,
+        ],
+        [
+          2029,
+          1233,
+        ],
+        [
+          2029,
+          1282,
+        ],
+        [
+          2029,
+          1324,
+        ],
+      ],
+      labelBBox: {
+        x: 2030,
+        y: 1251,
+        width: 167,
+        height: 18,
+      },
+      parent: null,
+      relations: [
+        '1tlm29',
+      ],
+      color: 'gray',
+      line: 'dashed',
+      head: 'normal',
+      controlPoints: null,
+      navigateTo: null,
+      tags: null,
+    },
+    {
+      id: '6fs3fn',
+      source: 'cp.shared-components-subdomain.reference-data-system',
+      target: 'cp.opami-subdomain.management-information-system.mi-system-data-service',
+      label: 'sends data to',
+      points: [
+        [
+          790,
+          512,
+        ],
+        [
+          819,
+          528,
+        ],
+        [
+          851,
+          543,
+        ],
+        [
+          883,
+          552,
+        ],
+        [
+          1004,
+          587,
+        ],
+        [
+          1325,
+          546,
+        ],
+        [
+          1448,
+          572,
+        ],
+        [
+          1495,
+          582,
+        ],
+        [
+          1502,
+          601,
+        ],
+        [
+          1549,
+          612,
+        ],
+        [
+          2057,
+          721,
+        ],
+        [
+          2207,
+          566,
+        ],
+        [
+          2716,
+          672,
+        ],
+        [
+          2731,
+          675,
+        ],
+        [
+          2746,
+          678,
+        ],
+        [
+          2761,
+          683,
+        ],
+      ],
+      labelBBox: {
+        x: 2190,
+        y: 874,
+        width: 88,
+        height: 18,
+      },
+      parent: null,
+      relations: [
+        '1ochi3l',
+      ],
+      color: 'gray',
+      line: 'dashed',
+      head: 'normal',
+      kind: 'mi',
+      controlPoints: [
+        {
+          x: 2089,
+          y: 873,
+        },
+        {
+          x: 2575,
+          y: 867,
+        },
+      ],
+      navigateTo: null,
+      tags: null,
+    },
+    {
+      id: '2fakiw',
+      source: 'cp.shared-components-subdomain.reference-data-system',
+      target: 'cp.opami-subdomain.management-information-system.mi-report-data-service',
+      label: 'sends data to',
+      points: [
+        [
+          792,
+          512,
+        ],
+        [
+          821,
+          528,
+        ],
+        [
+          852,
+          543,
+        ],
+        [
+          883,
+          552,
+        ],
+        [
+          1015,
+          592,
+        ],
+        [
+          1057,
+          549,
+        ],
+        [
+          1194,
+          572,
+        ],
+        [
+          1258,
+          583,
+        ],
+        [
+          1271,
+          599,
+        ],
+        [
+          1335,
+          612,
+        ],
+        [
+          1667,
+          680,
+        ],
+        [
+          2060,
+          723,
+        ],
+        [
+          2289,
+          744,
+        ],
+      ],
+      labelBBox: {
+        x: 1876,
+        y: 831,
+        width: 88,
+        height: 18,
+      },
+      parent: null,
+      relations: [
+        '1mwcizt',
+      ],
+      color: 'gray',
+      line: 'dashed',
+      head: 'normal',
+      kind: 'mi',
+      controlPoints: [
+        {
+          x: 1876,
+          y: 831,
+        },
+        {
+          x: 1972,
+          y: 814,
+        },
+      ],
+      navigateTo: null,
+      tags: null,
+    },
+    {
+      id: '1p0hxns',
+      source: 'cp.opami-subdomain.management-information-system.mi-report-data-service',
+      target: 'cp.shared-components-subdomain.reference-data-system',
+      label: '[...]',
+      points: [
+        [
+          2299,
+          747,
+        ],
+        [
+          2041,
+          727,
+        ],
+        [
+          1552,
+          682,
+        ],
+        [
+          1140,
+          612,
+        ],
+        [
+          1111,
+          607,
+        ],
+        [
+          910,
+          563,
+        ],
+        [
+          883,
+          552,
+        ],
+        [
+          858,
+          542,
+        ],
+        [
+          833,
+          530,
+        ],
+        [
+          809,
+          517,
+        ],
+      ],
+      labelBBox: {
+        x: 1972,
+        y: 814,
+        width: 25,
+        height: 18,
+      },
+      parent: null,
+      relations: [
+        '1ifo4v8',
+        '1mdih2x',
+      ],
+      color: 'gray',
+      line: 'dashed',
+      head: 'normal',
+      kind: 'shared',
+      controlPoints: [
+        {
+          x: 1972,
+          y: 814,
+        },
+        {
+          x: 1876,
+          y: 831,
+        },
+      ],
+      navigateTo: null,
+      tags: null,
+    },
+    {
+      id: '1afrt68',
+      source: 'cp.shared-components-subdomain.users-and-groups-system',
+      target: 'cp.opami-subdomain.management-information-system.mi-system-data-service',
+      label: 'sends data to',
+      points: [
+        [
+          1235,
+          512,
+        ],
+        [
+          1265,
+          528,
+        ],
+        [
+          1297,
+          543,
+        ],
+        [
+          1329,
+          552,
+        ],
+        [
+          1446,
+          586,
+        ],
+        [
+          1758,
+          545,
+        ],
+        [
+          1877,
+          572,
+        ],
+        [
+          1920,
+          582,
+        ],
+        [
+          1925,
+          601,
+        ],
+        [
+          1968,
+          612,
+        ],
+        [
+          2291,
+          693,
+        ],
+        [
+          2390,
+          599,
+        ],
+        [
+          2716,
+          672,
+        ],
+        [
+          2731,
+          675,
+        ],
+        [
+          2746,
+          679,
+        ],
+        [
+          2761,
+          683,
+        ],
+      ],
+      labelBBox: {
+        x: 2188,
+        y: 626,
+        width: 88,
+        height: 18,
+      },
+      parent: null,
+      relations: [
+        'jr98dp',
+      ],
+      color: 'gray',
+      line: 'dashed',
+      head: 'normal',
+      kind: 'mi',
+      controlPoints: [
+        {
+          x: 2084,
+          y: 629,
+        },
+        {
+          x: 2612,
+          y: 644,
+        },
+      ],
+      navigateTo: null,
+      tags: null,
+    },
+    {
+      id: 'blqvej',
+      source: 'cp.shared-components-subdomain.users-and-groups-system',
+      target: 'cp.opami-subdomain.management-information-system.mi-report-data-service',
+      label: 'sends data to',
+      points: [
+        [
+          1237,
+          512,
+        ],
+        [
+          1266,
+          528,
+        ],
+        [
+          1298,
+          543,
+        ],
+        [
+          1329,
+          552,
+        ],
+        [
+          1473,
+          595,
+        ],
+        [
+          1520,
+          539,
+        ],
+        [
+          1666,
+          572,
+        ],
+        [
+          1712,
+          582,
+        ],
+        [
+          1719,
+          598,
+        ],
+        [
+          1764,
+          612,
+        ],
+        [
+          1939,
+          665,
+        ],
+        [
+          2144,
+          705,
+        ],
+        [
+          2289,
+          731,
+        ],
+      ],
+      labelBBox: {
+        x: 1876,
+        y: 705,
+        width: 88,
+        height: 18,
+      },
+      parent: null,
+      relations: [
+        'oc8cit',
+      ],
+      color: 'gray',
+      line: 'dashed',
+      head: 'normal',
+      kind: 'mi',
+      controlPoints: [
+        {
+          x: 1876,
+          y: 705,
+        },
+        {
+          x: 1972,
+          y: 715,
+        },
+      ],
+      navigateTo: null,
+      tags: null,
+    },
+    {
+      id: 'lx3q0u',
+      source: 'cp.shared-components-subdomain.scheduling-system',
+      target: 'cp.opami-subdomain.management-information-system.mi-report-data-service',
+      label: 'triggers nightly MI extract',
+      points: [
+        [
+          1690,
+          512,
+        ],
+        [
+          1720,
+          528,
+        ],
+        [
+          1753,
+          542,
+        ],
+        [
+          1785,
+          552,
+        ],
+        [
+          1913,
+          590,
+        ],
+        [
+          1956,
+          538,
+        ],
+        [
+          2085,
+          572,
+        ],
+        [
+          2166,
+          593,
+        ],
+        [
+          2250,
+          631,
+        ],
+        [
+          2319,
+          667,
+        ],
+      ],
+      labelBBox: {
+        x: 2086,
+        y: 571,
+        width: 160,
+        height: 18,
+      },
+      parent: null,
+      relations: [
+        '1i9hmq6',
+      ],
+      color: 'gray',
+      line: 'dashed',
+      head: 'normal',
+      kind: 'shared',
+      controlPoints: [
+        {
+          x: 1700,
+          y: 531,
+        },
+        {
+          x: 1867,
+          y: 558,
+        },
+        {
+          x: 2090,
+          y: 604,
+        },
+      ],
+      navigateTo: null,
+      tags: null,
+    },
+    {
+      id: 'y4ov7h',
+      source: 'cp.opami-subdomain.management-information-system.mi-report-data-service',
+      target: 'cp.shared-components-subdomain.notify-system',
+      label: 'sends NCES extract emails via',
+      points: [
+        [
+          2299,
+          752,
+        ],
+        [
+          1982,
+          735,
+        ],
+        [
+          1305,
+          692,
+        ],
+        [
+          739,
+          612,
+        ],
+        [
+          605,
+          593,
+        ],
+        [
+          567,
+          600,
+        ],
+        [
+          441,
+          552,
+        ],
+        [
+          415,
+          542,
+        ],
+        [
+          389,
+          530,
+        ],
+        [
+          365,
+          517,
+        ],
+      ],
+      labelBBox: {
+        x: 1975,
+        y: 914,
+        width: 196,
+        height: 18,
+      },
+      parent: null,
+      relations: [
+        '1nhz3tv',
+      ],
+      color: 'gray',
+      line: 'dashed',
+      head: 'normal',
+      kind: 'notify',
+      controlPoints: [
+        {
+          x: 1975,
+          y: 914,
+        },
+        {
+          x: 1880,
+          y: 960,
+        },
+      ],
+      navigateTo: null,
+      tags: null,
+    },
+    {
+      id: '1pc38kf',
+      source: 'mi_user',
+      target: 'cp.opami-subdomain.management-information-system.opami-ui',
+      label: 'views dashboards and reports',
+      points: [
+        [
+          2657,
+          180,
+        ],
+        [
+          2657,
+          224,
+        ],
+        [
+          2657,
+          277,
+        ],
+        [
+          2657,
+          322,
+        ],
+      ],
+      labelBBox: {
+        x: 2658,
+        y: 240,
+        width: 191,
+        height: 18,
+      },
+      parent: null,
+      relations: [
+        '1iaqayy',
+      ],
+      color: 'gray',
+      line: 'dashed',
+      head: 'normal',
+      controlPoints: null,
+      navigateTo: null,
+      tags: null,
+    },
+    {
+      id: '1bfxmwi',
+      source: 'cp.opami-subdomain.management-information-system.mi-system-data-service',
+      target: 'cp.opami-subdomain.management-information-system.mi-system-data-database',
+      label: 'reads and writes data',
+      points: [
+        [
+          2940,
+          851,
+        ],
+        [
+          2937,
+          871,
+        ],
+        [
+          2935,
+          892,
+        ],
+        [
+          2933,
+          912,
+        ],
+        [
+          2931,
+          940,
+        ],
+        [
+          2933,
+          972,
+        ],
+        [
+          2936,
+          1000,
+        ],
+      ],
+      labelBBox: {
+        x: 2717,
+        y: 934,
+        width: 138,
+        height: 18,
+      },
+      parent: 'cp.opami-subdomain.management-information-system',
+      relations: [
+        '8rhuu8',
+      ],
+      color: 'gray',
+      line: 'dashed',
+      head: 'normal',
+      controlPoints: [
+        {
+          x: 2720,
+          y: 912,
+        },
+        {
+          x: 2731,
+          y: 988,
+        },
+      ],
+      navigateTo: null,
+      tags: null,
+    },
+    {
+      id: 'daof34',
+      source: 'cp.opami-subdomain.management-information-system.opami-ui',
+      target: 'cp.opami-subdomain.management-information-system.mi-system-data-service',
+      label: 'queries dashboard data from',
+      points: [
+        [
+          2732,
+          512,
+        ],
+        [
+          2759,
+          543,
+        ],
+        [
+          2790,
+          579,
+        ],
+        [
+          2819,
+          612,
+        ],
+        [
+          2834,
+          629,
+        ],
+        [
+          2851,
+          647,
+        ],
+        [
+          2867,
+          665,
+        ],
+      ],
+      labelBBox: {
+        x: 2763,
+        y: 575,
+        width: 183,
+        height: 18,
+      },
+      parent: 'cp.opami-subdomain.management-information-system',
+      relations: [
+        '1yoel2s',
+      ],
+      color: 'gray',
+      line: 'dashed',
+      head: 'normal',
+      controlPoints: [
+        {
+          x: 2721,
+          y: 543,
+        },
+        {
+          x: 2772,
+          y: 633,
+        },
+      ],
+      navigateTo: null,
+      tags: null,
+    },
+    {
+      id: '73slf6',
+      source: 'cp.opami-subdomain.management-information-system.mi-report-data-service',
+      target: 'cp.opami-subdomain.management-information-system.mi-report-data-database',
+      label: 'reads and writes data',
+      points: [
+        [
+          2483,
+          851,
+        ],
+        [
+          2484,
+          897,
+        ],
+        [
+          2486,
+          953,
+        ],
+        [
+          2488,
+          1000,
+        ],
+      ],
+      labelBBox: {
+        x: 2397,
+        y: 913,
+        width: 138,
+        height: 18,
+      },
+      parent: 'cp.opami-subdomain.management-information-system',
+      relations: [
+        'hbzlgi',
+      ],
+      color: 'gray',
+      line: 'dashed',
+      head: 'normal',
+      controlPoints: [
+        {
+          x: 2397,
+          y: 918,
+        },
+      ],
+      navigateTo: null,
+      tags: null,
+    },
+    {
+      id: 'le6fry',
+      source: 'cp.opami-subdomain.management-information-system.mi-report-data-service',
+      target: 'cp.opami-subdomain.management-information-system.mi-extract-blob-storage',
+      label: 'uploads MI extract CSV files to',
+      points: [
+        [
+          2345,
+          852,
+        ],
+        [
+          2317,
+          871,
+        ],
+        [
+          2287,
+          892,
+        ],
+        [
+          2261,
+          912,
+        ],
+        [
+          2221,
+          941,
+        ],
+        [
+          2179,
+          974,
+        ],
+        [
+          2142,
+          1005,
+        ],
+      ],
+      labelBBox: {
+        x: 2174,
+        y: 913,
+        width: 195,
+        height: 18,
+      },
+      parent: 'cp.opami-subdomain.management-information-system',
+      relations: [
+        'kek44v',
+      ],
+      color: 'gray',
+      line: 'dashed',
+      head: 'normal',
+      controlPoints: [
+        {
+          x: 2197,
+          y: 873,
+        },
+        {
+          x: 2133,
+          y: 952,
+        },
+      ],
+      navigateTo: null,
+      tags: null,
+    },
+    {
+      id: 'jhdtgr',
+      source: 'cp.opami-subdomain.management-information-system.opami-ui',
+      target: 'cp.opami-subdomain.management-information-system.mi-report-data-service',
+      label: 'generates and retrieves operational \nreports from',
+      points: [
+        [
+          2511,
+          512,
+        ],
+        [
+          2492,
+          529,
+        ],
+        [
+          2476,
+          549,
+        ],
+        [
+          2465,
+          572,
+        ],
+        [
+          2451,
+          599,
+        ],
+        [
+          2450,
+          632,
+        ],
+        [
+          2453,
+          662,
+        ],
+      ],
+      labelBBox: {
+        x: 2369,
+        y: 565,
+        width: 224,
+        height: 34,
+      },
+      parent: 'cp.opami-subdomain.management-information-system',
+      relations: [
+        '1ul9yws',
+      ],
+      color: 'gray',
+      line: 'dashed',
+      head: 'normal',
+      controlPoints: [
+        {
+          x: 2404,
+          y: 533,
+        },
+        {
+          x: 2335,
+          y: 606,
+        },
+      ],
+      navigateTo: null,
+      tags: null,
+    },
+    {
+      id: '99k1bj',
+      source: 'cp.shared-components-subdomain.notify-system',
+      target: 'nces_recipients',
+      label: 'sends NCES extract emails to',
+      points: [
+        [
+          217,
+          512,
+        ],
+        [
+          217,
+          558,
+        ],
+        [
+          217,
+          614,
+        ],
+        [
+          217,
+          661,
+        ],
+      ],
+      labelBBox: {
+        x: 1339,
+        y: 1122,
+        width: 190,
+        height: 18,
+      },
+      parent: null,
+      relations: [
+        '1h40rch',
+      ],
+      color: 'gray',
+      line: 'dashed',
+      head: 'normal',
+      kind: 'notify',
+      controlPoints: [
+        {
+          x: 1339,
+          y: 1122,
+        },
+        {
+          x: 1315,
+          y: 1123,
+        },
+      ],
+      navigateTo: null,
+      tags: null,
+    },
+  ],
+  _layout: 'manual',
+}

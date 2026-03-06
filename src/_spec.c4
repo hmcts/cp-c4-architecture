@@ -114,6 +114,7 @@ specification {
     relationship audit
     relationship auth
     relationship mi
+    relationship notify
     relationship shared
 
     relationship solid {

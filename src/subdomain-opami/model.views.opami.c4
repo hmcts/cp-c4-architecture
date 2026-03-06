@@ -12,6 +12,8 @@ views {
             where kind is product
         exclude * -> *
         include * <-> cp.management-information-system
+        exclude * <-> *
+            where kind is notify
 
         style cp.case-administration-subdomain.*, cp.scheduling-and-listing-subdomain.*, cp.case-ingestion-subdomain.*, cp.court-hearings-subdomain.*, cp.shared-components-subdomain.* {
             color secondary
@@ -22,20 +24,21 @@ views {
         title '[Container View] Management Information System'
         include
             *
-        include cp.case-administration-subdomain.case-management-system
-        include cp.case-administration-subdomain.advocate-portal
-        include cp.case-administration-subdomain.work-management-system
-        include cp.court-hearings-subdomain.hearing-system
-        include cp.court-hearings-subdomain.results-distribution-system
-        include cp.scheduling-and-listing-subdomain.scheduling-and-listing-system
-        include cp.case-ingestion-subdomain.spi
-        include cp.case-ingestion-subdomain.document-ingestion-system
+        include cp.case-administration-subdomain
+        include cp.court-hearings-subdomain
+        include cp.scheduling-and-listing-subdomain
+        include cp.case-ingestion-subdomain
         include cp.shared-components-subdomain.reference-data-system
         include cp.shared-components-subdomain.users-and-groups-system
         include cp.shared-components-subdomain.scheduling-system
+        include cp.shared-components-subdomain.notify-system
+        include nces_recipients
         exclude * -> *
         include * <-> cp.management-information-system._
         include cp.management-information-system._ <-> cp.management-information-system._
+        include cp.management-information-system.mi-report-data-service <-> cp.shared-components-subdomain.notify-system
+        include cp.shared-components-subdomain.notify-system <-> nces_recipients
+        exclude cp.management-information-system -> nces_recipients
     }
 
     view audit-system-context of cp.audit-system {

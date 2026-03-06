@@ -4,6 +4,8 @@ model {
             title 'Management Information System'
             description 'Listens to events from major services and creates a standard SQL model of CP data for operational reports and statistics'
 
+            this -> nces_recipients 'sends NCES extract emails to'
+
             mi-system-data-service = microservice {
                 title 'MI System Data Service'
                 technology 'Java EE'
@@ -29,7 +31,21 @@ model {
             mi-report-data-service = microservice {
                 title 'MI Report Data Service'
                 technology 'Java EE'
-                summary 'Generates nightly MI extracts as CSV files and uploads them to Azure Blob Storage for the SDP'
+                summary 'Generates MI extracts and reports, serves live operational dashboards, and sends NCES extracts via Notify'
+                description """
+**Extracts (uploaded to blob storage or emailed):**
+- **SDP MI Extract** — GPG-encrypted zip of CSVs covering cases, persons, offences, hearings, sessions, applications, bulk scan, SPI errors, reference data, and S&L data. Triggered nightly by System Scheduling.
+- **NCES MI Extract** — CSV filtered by OU codes, emailed to configured recipients via GOV.UK Notify.
+- **Live Reports** — Warrant and Cumulative Fixtures (CFIX) Excel spreadsheets, uploaded to blob storage with time-limited download links.
+
+**Reports served via OPAMI UI:**
+- **Live Dashboard** — case counts by channel, SPI errors, ejected cases, unallocated hearings
+- **Case counts** — by court, by prosecutor, filtered, resulted cases
+- **Court Hearings Report** — JSON and Excel download
+- **Press Report / Criminal Court Media Report** — zip downloads
+- **Case Export** — JSON or CSV of resulted cases
+- **TfL Case Report** and **Plea Digital Take-Up Report**
+"""
                 metadata {
                     language 'Java'
                     software-framework 'Java EE 8'
@@ -39,6 +55,9 @@ model {
                 this -> mi-report-data-database 'reads and writes data'
                 this -> mi-extract-blob-storage 'uploads MI extract CSV files to'
                 this -> cp.scheduling-and-listing-system.court-scheduler-service 'queries court schedule, judiciary and allocated listings data from'
+                this -[notify]-> cp.notification-notify 'sends NCES extract emails via'
+                this -[shared]-> cp.reference-data 'fetches reference data for MI extracts from'
+                this -[shared]-> cp.reference-data-offences 'fetches offence reference data for MI extracts from'
                 cp.system-scheduling -[shared]-> this 'triggers nightly MI extract'
             }
 
@@ -51,6 +70,17 @@ model {
                 }
             }
 
+            mi-extract-blob-storage = datastore {
+                title 'MI Extract Blob Storage'
+                technology 'Azure Blob Storage'
+                summary 'Stages MI extract CSV files for the Strategic Data Platform'
+                style {
+                    icon tech:azure
+                }
+
+                this -> sdp 'provides MI extract files to'
+            }
+
             opami-ui = user-interface {
                 title 'OPAMI UI'
                 technology 'Angular'
@@ -60,6 +90,7 @@ model {
                 }
                 link https://github.com/hmcts/cpp-ui-opami 'Repository'
 
+                mi_user -> this 'views dashboards and reports'
                 this -> mi-system-data-service 'queries dashboard data from'
                 this -> mi-report-data-service 'generates and retrieves operational reports from'
             }

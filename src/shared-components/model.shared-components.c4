@@ -14,8 +14,10 @@ model {
                     }
 
                     link https://github.com/hmcts/cpp-context-notification-notify 'Repository'
+
+                    this -[notify]-> nces_recipients 'sends NCES extract emails to'
             }
-        }   
+        }
 
         id-mapper-system = shared-component {
             title 'Id Mapper System'

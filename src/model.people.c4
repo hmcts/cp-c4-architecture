@@ -10,4 +10,6 @@ model {
     court_admin = actor "Court Administrator" "Manages court operations"
     ctsc_staff = actor "CTSC Staff" "Courts and Tribunals Service Centre staff"
     ctsc_manager = actor "CTSC Manager" "Courts and Tribunals Service Centre Manager"
+    mi_user = actor "MI User" "Users of the operational management information dashboards and reports"
+    nces_recipients = actor "NCES Recipients" "Recipients of the NCES MI extract emails"
 }

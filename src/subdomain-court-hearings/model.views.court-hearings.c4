@@ -1,4 +1,4 @@
-views {
+views 'Court Hearings' {
     view hearing-system-context of cp.hearing-system {
         title '[System Context] Hearing System'
         include *

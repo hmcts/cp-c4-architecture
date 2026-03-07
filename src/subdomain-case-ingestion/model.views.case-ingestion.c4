@@ -1,4 +1,4 @@
-views {
+views 'Case Ingestion' {
     view spi-system-context of cp.spi {
         title '[System Context] SPI'
         include *

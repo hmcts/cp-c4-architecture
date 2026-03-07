@@ -1,4 +1,4 @@
-views {
+views 'OPAMI' {
     view management-information-system-context of cp.management-information-system {
         title '[System Context] Management Information System'
         include *

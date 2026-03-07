@@ -1,4 +1,4 @@
-views {
+views 'Shared Components' {
 
     // view shared-components-system-landscape of cp.shared-components-subdomain {
     //     title '[System Landscape] Users and Groups System'

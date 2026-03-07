@@ -1,7 +1,7 @@
-views {
+views 'System Landscape' {
 
     view index {
-        title '[System Landscape] Common Platform'
+        title 'Common Platform'
         include *
 
         style cp {
@@ -10,7 +10,7 @@ views {
     }
 
     view common-platform-subdomains of cp {
-        title '[System Landscape] Common Platform Subdomains and Products'
+        title 'Subdomains and Products'
         include
             cp,
             cp.court-hearings-subdomain.*,
@@ -32,7 +32,7 @@ views {
     }
 
     view common-platform of cp {
-        title '[System Landscape] Common Platform Products and Components'
+        title 'Products and Components'
         include
             cp,
             cp.court-hearings-subdomain.*,

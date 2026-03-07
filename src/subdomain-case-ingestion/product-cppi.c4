@@ -17,6 +17,10 @@ model {
                 link https://github.com/hmcts/cpp-context-staging-prosecutors 'Repository'
 
                 this -> staging-prosecutors-database
+                this -> cp.shared-components-subdomain.file-service-system.file-service-database {
+                    title 'stores CPS prosecution documents'
+                    description 'Stores binary prosecution documents (evidence, witness statements) extracted from CPS CP20 XML case submissions'
+                }
             }
 
             staging-prosecutors-database = datastore {

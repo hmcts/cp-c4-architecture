@@ -38,6 +38,10 @@ model {
                 link https://github.com/hmcts/cpp-context-prosecution-documentqueue 'Repository'
 
                 this -> prosecution-documentqueue-database
+                this -> cp.shared-components-subdomain.file-service-system.file-service-database {
+                    title 'manages CPS document lifecycle'
+                    description 'Manages the lifecycle of CPS prosecution documents, orchestrating attachment to case materials and deletion of expired or completed documents'
+                }
             }
 
             prosecution-documentqueue-database = datastore {

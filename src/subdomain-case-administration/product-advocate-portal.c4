@@ -36,6 +36,10 @@ model {
                 this -> cp.reference-data-offences 'Retrieves offence particular information related to offences the defence client is being charged with'
                 this -> cp.users-and-groups 'Used for RBAC controls'                
                 this -> defence-database
+                this -> cp.shared-components-subdomain.file-service-system.file-service-database {
+                    title 'stores OPA documents'
+                    description 'Stores PDF documents generated for Online Plea and Allocation (OPA) proceedings, linked as case materials'
+                }
                 this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
 
                 // TODO @Matthew.Rich - Needs to be removed from code then updated here

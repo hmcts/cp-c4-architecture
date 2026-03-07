@@ -16,6 +16,10 @@ model {
                     link https://github.com/hmcts/cpp-context-notification-notify 'Repository'
 
                     this -[notify]-> nces_recipients 'sends NCES extract emails to'
+                this -> cp.shared-components-subdomain.file-service-system.file-service-database {
+                    title 'retrieves email attachments'
+                    description 'Retrieves file attachments (informant register CSVs, notification PDFs) for inclusion in emails sent via GOV.UK Notify'
+                }
             }
         }
 
@@ -109,6 +113,11 @@ model {
                     software-framework 'Java EE 8'
                 }
                 link https://github.com/hmcts/cpp-context-system-doc-generator 'Repository'
+
+                this -> cp.shared-components-subdomain.file-service-system.file-service-database {
+                    title 'reads and writes generated documents'
+                    description 'Retrieves JSON template payloads for document rendering, and stores rendered output documents (PDF, CSV, HTML) produced by Docmosis, Thymeleaf, or CSV rendering engines'
+                }
             }
         }
 
@@ -143,6 +152,7 @@ model {
                 link https://github.com/hmcts/cpp-context-users-groups 'Repository'
 
                 this -> users-and-groups-database 'stores user and group data in'
+                this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-5 'caches user, group and permission data in'
                 this -[mi]-> cp.management-information-system.mi-system-data-service 'sends data to'
                 this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
             }
@@ -249,6 +259,11 @@ model {
                 link https://github.com/hmcts/cpp-context-reference-data 'Repository'
 
                 this -> reference-data-database
+                this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-0 'caches reference data query responses in'
+                this -> cp.shared-components-subdomain.file-service-system.file-service-database {
+                    title 'retrieves uploaded data files'
+                    description 'Retrieves uploaded CSV files containing judiciary reference data (judges, magistrates, LJA mappings) for validation and import'
+                }
                 this -[mi]-> cp.management-information-system.mi-system-data-service 'sends data to'
                 this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
             }
@@ -293,6 +308,10 @@ model {
                 link https://github.com/hmcts/cpp-context-staging-pnld-offences 'Repository'
 
                 this -> pnld-offences-database
+                this -> cp.shared-components-subdomain.file-service-system.file-service-database {
+                    title 'retrieves offence data files'
+                    description 'Retrieves uploaded ZIP files containing PNLD offence definition XMLs for batch validation and import into offences reference data'
+                }
             }
 
             pnld-offences-database = datastore {
@@ -316,6 +335,71 @@ model {
 
                 track-a-case -[api-marketplace]-> this 'gets courthouse data'
                 this -> reference-data 'fetches courthouse data from'
+            }
+        }
+
+        redis-cache-system = shared-component {
+            title 'Redis Cache'
+            summary 'Shared Azure Cache for Redis instance used across multiple products, with logical databases for isolation'
+
+            redis-cache = datastore {
+                title 'Redis Cache'
+                technology 'Redis'
+                summary 'Shared Azure Cache for Redis instance'
+                style {
+                    icon tech:redis
+                }
+
+                redis-db-0 = component {
+                    title 'Shared Cache (DB 0)'
+                    technology 'Redis Database 0'
+                    summary 'Caches reference data query responses, hearing results for Azure Functions, court scheduling data, and enforcement SOAP responses'
+                    style {
+                        icon tech:redis
+                    }
+                }
+
+                redis-db-1 = component {
+                    title 'MI Reference Data Cache (DB 1)'
+                    technology 'Redis Database 1'
+                    summary 'Caches reference data fetched from the Reference Data API for MI report generation and event processing'
+                    style {
+                        icon tech:redis
+                    }
+                }
+
+                redis-db-2 = component {
+                    title 'Material Cache (DB 2)'
+                    technology 'Redis Database 2'
+                    summary 'Caches material query API responses'
+                    style {
+                        icon tech:redis
+                    }
+                }
+
+                redis-db-5 = component {
+                    title 'Users and Groups Cache (DB 5)'
+                    technology 'Redis Database 5'
+                    summary 'Caches user details, groups, permissions, and roles with event-driven invalidation'
+                    style {
+                        icon tech:redis
+                    }
+                }
+            }
+        }
+
+        file-service-system = shared-component {
+            title 'File Service'
+            summary 'Shared library and database for storing and retrieving binary files in PostgreSQL'
+            link https://github.com/hmcts/cp-file-service 'Repository'
+
+            file-service-database = datastore {
+                title 'File Service Database'
+                technology 'PostgreSQL'
+                summary 'Stores binary files for all consuming microservices'
+                style {
+                    icon tech:postgresql
+                }
             }
         }
 

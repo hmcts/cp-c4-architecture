@@ -14,7 +14,11 @@ model {
                 link https://github.com/hmcts/cpp-context-results 'Repository'
 
                 this -> results-database
-                this -> results-cache 'stores results in'
+                this -> cp.shared-components-subdomain.file-service-system.file-service-database {
+                    title 'stores result notification files'
+                    description 'Stores NCES enforcement notification payloads for PDF generation, email notification template payloads, and informant register CSVs for distribution to prosecution authorities'
+                }
+                this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-0 'caches hearing results for Azure Functions in'
                 this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
                 this -> laa-result-functions 'sends results to'
                 this -> nows-result-functions 'sends results to'
@@ -36,15 +40,6 @@ model {
                 }
             }
 
-            results-cache = datastore {
-                title 'Results Cache'
-                technology 'Redis'
-                summary 'Stores results temporarily for Azure Functions'
-                style {
-                    icon tech:redis
-                }
-            }
-
             laa-result-functions = functions {
                 title 'LAA Result Functions'
                 technology 'Azure Functions'
@@ -55,6 +50,7 @@ model {
                 }
                 link https://github.com/hmcts/cpp-context-azure-legalaidagency 'Repository'
 
+                this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-0 'reads cached hearing results from'
                 this -> laa 'sends results to'
             }
             
@@ -69,7 +65,7 @@ model {
                 link https://github.com/hmcts/cpp-context-azure-legalaidagency 'Repository'
 
                 this -> hearing-nows-service 'triggers generation of NOWs documents'
-                this -> results-cache
+                this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-0 'reads cached hearing results from'
             }
 
             probation-result-functions = functions {
@@ -82,7 +78,7 @@ model {
                 }
                 link https://github.com/hmcts/cpp-context-azure-legalaidagency 'Repository'
 
-                this -> results-cache
+                this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-0 'reads cached hearing results from'
                 this -> hmpps 'sends results to'
             }
             
@@ -96,7 +92,7 @@ model {
                 }
                 link https://github.com/hmcts/cpp-context-azure-legalaidagency 'Repository'
 
-                this -> results-cache
+                this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-0 'reads cached hearing results from'
                 this -> cp.case-administration-subdomain.application-court-orders-service
             }
             
@@ -110,7 +106,7 @@ model {
                 }
                 link https://github.com/hmcts/cpp-context-azure-legalaidagency 'Repository'
 
-                this -> results-cache
+                this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-0 'reads cached hearing results from'
                 this -> cp.case-administration-subdomain.progression-service 'adds results to court register'
             }
             
@@ -124,7 +120,7 @@ model {
                 }
                 link https://github.com/hmcts/cpp-context-azure-legalaidagency 'Repository'
 
-                this -> results-cache
+                this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-0 'reads cached hearing results from'
                 this -> cp.case-administration-subdomain.progression-service
             }
 
@@ -138,7 +134,7 @@ model {
                 }
                 link https://github.com/hmcts/cpp-context-azure-legalaidagency 'Repository'
 
-                this -> results-cache
+                this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-0 'reads cached hearing results from'
                 this -> results-service 'updates the informant register'
             }
 
@@ -152,7 +148,7 @@ model {
                 }
                 link https://github.com/hmcts/cpp-context-azure-legalaidagency 'Repository'
 
-                this -> results-cache
+                this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-0 'reads cached hearing results from'
             }
 
             staging-enforcement-service = microservice {
@@ -165,6 +161,7 @@ model {
                 link https://github.com/hmcts/cpp-context-staging-enforcement 'Repository'
 
                 this -> staging-enforcement-database
+                this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-0 'caches enforcement SOAP responses in'
             }
 
             staging-enforcement-database = datastore {
@@ -186,6 +183,10 @@ model {
                 link https://github.com/hmcts/cpp-context-staging-dvla 'Repository'
 
                 this -> staging-dvla-database
+                this -> cp.shared-components-subdomain.file-service-system.file-service-database {
+                    title 'stores DVLA notification payloads'
+                    description 'Stores JSON payloads for DVLA driver notification PDFs (SJP D20 letters) and driver search audit report data for CSV generation'
+                }
             }
 
             staging-dvla-database = datastore {

@@ -92,6 +92,10 @@ model {
                 }
                 link https://github.com/hmcts/cpp-context-progression 'Repository'
                 this -> progression-database
+                this -> cp.shared-components-subdomain.file-service-system.file-service-database {
+                    title 'stores court document payloads'
+                    description 'Stores JSON template payloads for PDF generation and generated court documents including NOWs, court registers, trial record sheets, summons, and online plea documents'
+                }
                 this -[mi]-> cp.management-information-system.mi-system-data-service 'sends data to'
                 this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
             }
@@ -115,6 +119,10 @@ model {
                 link https://github.com/hmcts/cpp-context-prosecution-casefile 'Repository'
 
                 this -> prosecution-case-file-database
+                this -> cp.shared-components-subdomain.file-service-system.file-service-database {
+                    title 'stores prosecution case files'
+                    description 'Stores generated respondent list PDFs and manages prosecution evidence file references from CPS, IDPC, and bulk scan uploads'
+                }
                 this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
             }
 
@@ -136,6 +144,10 @@ model {
                 }
                 link https://github.com/hmcts/cpp-context-sjp 'Repository'
                 this -> sjp-database
+                this -> cp.shared-components-subdomain.file-service-system.file-service-database {
+                    title 'stores SJP report payloads'
+                    description 'Stores JSON template payloads for SJP transparency reports (public and press), enforcement notification attachments, and DVLA endorsement removal notifications'
+                }
                 this -[mi]-> cp.management-information-system.mi-system-data-service 'sends data to'
                 this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
             }
@@ -252,6 +264,11 @@ model {
                 link https://github.com/hmcts/cpp-context-material 'Repository'
 
                 this -> material-database
+                this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-2 'caches material query responses in'
+                this -> cp.shared-components-subdomain.file-service-system.file-service-database {
+                    title 'retrieves files for upload'
+                    description 'Retrieves stored binary files (prosecution evidence, court documents, generated PDFs) for Alfresco upload, PDF conversion, and Azure blob archiving'
+                }
             }
 
             material-database = datastore {
@@ -274,6 +291,10 @@ model {
                 link https://github.com/hmcts/cpp-context-archiving 'Repository'
 
                 this -> archiving-database
+                this -> cp.shared-components-subdomain.file-service-system.file-service-database {
+                    title 'stores case archive payloads'
+                    description 'Stores prosecution case JSON for archive PDF generation by the document generator, and raw case detail JSON for inclusion in archived case ZIP bundles'
+                }
             }
 
             archiving-database = datastore {

@@ -53,6 +53,7 @@ model {
                 link https://github.com/hmcts/cpp-context-mi-reportdata 'Repository'
 
                 this -> mi-report-data-database 'reads and writes data'
+                this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-1 'caches reference data in'
                 this -> mi-extract-blob-storage 'uploads MI extract CSV files to'
                 this -> cp.scheduling-and-listing-system.court-scheduler-service 'queries court schedule, judiciary and allocated listings data from'
                 this -[notify]-> cp.notification-notify 'sends NCES extract emails via'

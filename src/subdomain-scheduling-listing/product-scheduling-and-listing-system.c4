@@ -96,9 +96,10 @@ model {
                 link https://github.com/hmcts/cpp-context-listing-courtscheduler 'Repository'
 
                 this -> scsl-database
+                this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-0 'caches scheduling reference data in'
                 this -[auth]-> cp.users-and-groups 'makes authorisation decisions using'
                 this -[shared]-> cp.reference-data 'gets reference data from'
-                
+
                 api = component {
                     title 'Court Scheduler API'
                     technology 'Java Component'

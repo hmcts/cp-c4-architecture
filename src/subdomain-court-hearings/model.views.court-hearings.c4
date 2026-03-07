@@ -49,6 +49,7 @@ views {
         include cp.case-administration-subdomain._
         include cp.court-hearings-subdomain._
         include cp.case-administration-subdomain.case-management-system
+        include cp.shared-components-subdomain.redis-cache-system
         exclude * -> *
         include * <-> cp.results-distribution-system._
         include cp.results-distribution-system._ <-> cp.results-distribution-system._

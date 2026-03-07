@@ -31,6 +31,7 @@ views {
         // include cp.case-administration-subdomain.case-management-system
         // include cp.court-hearings-subdomain.hearing-system
         include cp.scheduling-and-listing-subdomain.scheduling-and-listing-system
+        include cp.shared-components-subdomain.redis-cache-system
         // exclude * -> *
         // include * <-> cp.users-and-groups-system
         exclude * <-> *
@@ -49,6 +50,7 @@ views {
         title '[Container View] Reference Data System'
         include
             *
+        include cp.shared-components-subdomain.redis-cache-system
         // include cp.court-hearings-subdomain.hearing-system
         // include cp.court-hearings-subdomain.hearing-system.staging-darts.*
         // include * <-> cp.scheduling-and-listing-subdomain.scheduling-and-listing-system.*
@@ -59,5 +61,63 @@ views {
     view notify-system-context of cp.notify-system {
         title '[System Context] Notify System'
         include *
+    }
+
+    view redis-cache-system-context of cp.redis-cache-system {
+        title '[System Context] Redis Cache'
+        include *
+        where
+            not (kind is application or kind is microservice or kind is functions or kind is datastore or kind is user-interface)
+        include cp.court-hearings-subdomain._
+        include cp.case-administration-subdomain._
+        include cp.scheduling-and-listing-subdomain._
+        include cp.opami-subdomain._
+        include cp.shared-components-subdomain._
+        exclude * -> *
+        include * <-> cp.redis-cache-system
+        exclude * <-> *
+            where kind is mi
+    }
+
+    view redis-cache-system-container-view of cp.redis-cache-system {
+        title '[Container View] Redis Cache'
+        include *
+        include cp.court-hearings-subdomain.results-distribution-system
+        include cp.case-administration-subdomain.case-management-system
+        include cp.scheduling-and-listing-subdomain.scheduling-and-listing-system
+        include cp.opami-subdomain.management-information-system
+        include cp.shared-components-subdomain.reference-data-system
+        include cp.shared-components-subdomain.users-and-groups-system
+        exclude * -> *
+        include * <-> cp.redis-cache-system._
+    }
+
+    view file-service-system-context of cp.file-service-system {
+        title '[System Context] File Service'
+        include *
+        where
+            not (kind is application or kind is microservice or kind is functions or kind is datastore or kind is user-interface)
+        include cp.court-hearings-subdomain._
+        include cp.case-administration-subdomain._
+        include cp.case-ingestion-subdomain._
+        include cp.shared-components-subdomain._
+        exclude * -> *
+        include * <-> cp.file-service-system
+        exclude * <-> *
+            where kind is mi
+    }
+
+    view file-service-system-container-view of cp.file-service-system {
+        title '[Container View] File Service'
+        include *
+        include cp.court-hearings-subdomain.results-distribution-system
+        include cp.case-administration-subdomain.case-management-system
+        include cp.case-administration-subdomain.advocate-portal
+        include cp.case-ingestion-subdomain._
+        include cp.shared-components-subdomain.document-generation-system
+        include cp.shared-components-subdomain.reference-data-system
+        include cp.shared-components-subdomain.notify-system
+        exclude * -> *
+        include * <-> cp.file-service-system._
     }
 }

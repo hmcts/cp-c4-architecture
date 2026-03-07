@@ -1,9 +1,4 @@
-views 'Shared Components' {
-
-    // view shared-components-system-landscape of cp.shared-components-subdomain {
-    //     title '[System Landscape] Users and Groups System'
-    //     include *
-    // }
+views 'Shared Components / Users and Groups' {
 
     view users-and-groups-system-context of cp.users-and-groups-system {
         title '[System Context] Users and Groups System'
@@ -38,6 +33,9 @@ views 'Shared Components' {
         exclude * <-> *
             where kind is mi
     }
+}
+
+views 'Shared Components / Reference Data' {
 
     view reference-data-system-context of cp.reference-data-system {
         title '[System Context] Reference Data System'
@@ -58,11 +56,17 @@ views 'Shared Components' {
         exclude * <-> *
             where kind is mi
     }
+}
+
+views 'Shared Components / Notify' {
 
     view notify-system-context of cp.notify-system {
         title '[System Context] Notify System'
         include *
     }
+}
+
+views 'Shared Components / Redis Cache' {
 
     view redis-cache-system-context of cp.redis-cache-system {
         title '[System Context] Redis Cache'
@@ -92,6 +96,9 @@ views 'Shared Components' {
         exclude * -> *
         include * <-> cp.redis-cache-system._
     }
+}
+
+views 'Shared Components / File Service' {
 
     view file-service-system-context of cp.file-service-system {
         title '[System Context] File Service'
@@ -121,6 +128,9 @@ views 'Shared Components' {
         exclude * -> *
         include * <-> cp.file-service-system._
     }
+}
+
+views 'Shared Components / Document Generation' {
 
     view document-generation-system-context of cp.document-generation-system {
         title '[System Context] Document Generation System'
@@ -138,6 +148,9 @@ views 'Shared Components' {
             color secondary
         }
     }
+}
+
+views 'Shared Components / Id Mapper' {
 
     view id-mapper-system-context of cp.id-mapper-system {
         title '[System Context] Id Mapper System'
@@ -147,6 +160,9 @@ views 'Shared Components' {
         exclude * -> *
         include * <-> cp.id-mapper-system
     }
+}
+
+views 'Shared Components / Scheduling' {
 
     view scheduling-system-context of cp.scheduling-system {
         title '[System Context] Scheduling System'
@@ -156,6 +172,9 @@ views 'Shared Components' {
         exclude * -> *
         include * <-> cp.scheduling-system
     }
+}
+
+views 'Shared Components / UI Notification' {
 
     view ui-notification-system-context of cp.ui-notification-system {
         title '[System Context] UI Notification System'
@@ -165,6 +184,9 @@ views 'Shared Components' {
         exclude * -> *
         include * <-> cp.ui-notification-system
     }
+}
+
+views 'Shared Components / Support' {
 
     view support-system-context of cp.support-system {
         title '[System Context] Support System'
@@ -174,6 +196,9 @@ views 'Shared Components' {
         exclude * -> *
         include * <-> cp.support-system
     }
+}
+
+views 'Shared Components / System Announcement' {
 
     view system-announcement-system-context of cp.ssystem-announcement-system {
         title '[System Context] System Announcement System'
@@ -183,6 +208,9 @@ views 'Shared Components' {
         exclude * -> *
         include * <-> cp.ssystem-announcement-system
     }
+}
+
+views 'Shared Components / Common Platform UI' {
 
     view cp-user-interface-context of cp.cp-user-interface {
         title '[System Context] Common Platform User Interface'

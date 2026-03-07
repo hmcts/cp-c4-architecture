@@ -1,4 +1,4 @@
-views 'Court Hearings' {
+views 'Court Hearings / Hearing System' {
     view hearing-system-context of cp.hearing-system {
         title '[System Context] Hearing System'
         include *
@@ -28,7 +28,9 @@ views 'Court Hearings' {
         exclude * <-> *
             where kind is mi
     }
+}
 
+views 'Court Hearings / Results Distribution' {
     view results-distribution-system-context of cp.results-distribution-system {
         title '[System Context] Results Distribution System'
         include *
@@ -58,7 +60,9 @@ views 'Court Hearings' {
         // include cp.court-hearings-subdomain.hearing-system.staging-darts.*
         // include * <-> cp.scheduling-and-listing-subdomain.scheduling-and-listing-system.*
     }
+}
 
+views 'Court Hearings / Online Plea' {
     view online-plea-system-context of cp.online-plea {
         title '[System Context] Online Plea'
         include *

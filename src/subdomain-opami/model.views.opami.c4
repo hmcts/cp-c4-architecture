@@ -1,4 +1,4 @@
-views 'OPAMI' {
+views 'OPAMI / Management Information System' {
     view management-information-system-context of cp.management-information-system {
         title '[System Context] Management Information System'
         include *
@@ -41,7 +41,9 @@ views 'OPAMI' {
         include cp.shared-components-subdomain.notify-system <-> nces_recipients
         exclude cp.management-information-system -> nces_recipients
     }
+}
 
+views 'OPAMI / Audit System' {
     view audit-system-context of cp.audit-system {
         title '[System Context] Audit System'
         include *

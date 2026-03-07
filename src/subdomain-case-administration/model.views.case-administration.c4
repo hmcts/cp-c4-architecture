@@ -1,4 +1,4 @@
-views 'Case Administration' {
+views 'Case Administration / Case Management System' {
 
     view case-management-system-context of cp.case-management-system {
         title '[System Context] Case Management System'
@@ -36,6 +36,9 @@ views 'Case Administration' {
             color secondary
         }
     }
+}
+
+views 'Case Administration / Work Management System' {
 
     view work-management-system-context of cp.work-management-system {
         title '[System Context] Work Management System'
@@ -70,6 +73,9 @@ views 'Case Administration' {
         title '[Component View] Work Management System'
         include *
     }
+}
+
+views 'Case Administration / Advocate Portal' {
 
     view advocate-portal-system-context of cp.advocate-portal {
         title '[System Context] Advocate Portal'

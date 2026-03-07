@@ -1,4 +1,4 @@
-views 'Scheduling and Listing' {
+views 'Scheduling and Listing / Scheduling and Listing System' {
 
 
      view scheduling-and-listing-system-context of cp.scheduling-and-listing-system {

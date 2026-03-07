@@ -1,4 +1,4 @@
-views 'Case Ingestion' {
+views 'Case Ingestion / SPI' {
     view spi-system-context of cp.spi {
         title '[System Context] SPI'
         include *
@@ -31,7 +31,9 @@ views 'Case Ingestion' {
             color secondary
         }
     }
+}
 
+views 'Case Ingestion / CPPI' {
     view cppi-system-context of cp.cppi {
         title '[System Context] CPPI'
         include *
@@ -48,7 +50,9 @@ views 'Case Ingestion' {
             color secondary
         }
     }
+}
 
+views 'Case Ingestion / CPCI' {
     view cpci-system-context of cp.cpci {
         title '[System Context] CPCI'
         include *
@@ -59,7 +63,9 @@ views 'Case Ingestion' {
         exclude * <-> *
             where kind is mi
     }
+}
 
+views 'Case Ingestion / Document Ingestion' {
     view document-ingestion-system-context of cp.document-ingestion-system {
         title '[System Context] Document Ingestion System'
         include *

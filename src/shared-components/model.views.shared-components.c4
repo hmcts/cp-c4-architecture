@@ -96,6 +96,19 @@ views 'Shared Components / Redis Cache' {
         exclude * -> *
         include * <-> cp.redis-cache-system._
     }
+
+    view redis-cache-system-component-view of cp.redis-cache-system.redis-cache {
+        title '[Component View] Redis Cache'
+        include *
+        include cp.court-hearings-subdomain.results-distribution-system._
+        include cp.case-administration-subdomain.case-management-system._
+        include cp.scheduling-and-listing-subdomain.scheduling-and-listing-system._
+        include cp.opami-subdomain.management-information-system._
+        include cp.shared-components-subdomain.reference-data-system._
+        include cp.shared-components-subdomain.users-and-groups-system._
+        exclude * -> *
+        include * <-> cp.redis-cache-system.redis-cache._
+    }
 }
 
 views 'Shared Components / File Service' {

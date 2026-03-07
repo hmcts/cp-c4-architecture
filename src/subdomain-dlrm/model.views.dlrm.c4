@@ -20,7 +20,8 @@ views {
     view legacy-case-migration-system-container-view of cp.legacy-case-migration-system {
         title '[Container View] Legacy Case Migration System'
         include *
-        // exclude * -> *
-        // include * <-> cp.legacy-case-migration-system._
+        exclude * -> *
+        include * <-> cp.legacy-case-migration-system._
+        include cp.legacy-case-migration-system._ <-> cp.legacy-case-migration-system._
     }
 }

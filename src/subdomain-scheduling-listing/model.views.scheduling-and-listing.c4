@@ -24,9 +24,11 @@ views {
         include *
         include cp.shared-components-subdomain._
         include cp.court-hearings-subdomain.hearing-system.staging-darts.*
+        exclude * -> *
+        include * <-> cp.scheduling-and-listing-system._
+        include cp.scheduling-and-listing-system._ <-> cp.scheduling-and-listing-system._
         exclude * <-> *
             where kind is mi
-        // include * <-> cp.scheduling-and-listing-subdomain.scheduling-and-listing-system.*
     }
 
     view court-scheduler-service-component-view of cp.scheduling-and-listing-system.court-scheduler-service {

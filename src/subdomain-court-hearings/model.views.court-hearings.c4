@@ -58,4 +58,13 @@ views {
         // include cp.court-hearings-subdomain.hearing-system.staging-darts.*
         // include * <-> cp.scheduling-and-listing-subdomain.scheduling-and-listing-system.*
     }
+
+    view online-plea-system-context of cp.online-plea {
+        title '[System Context] Online Plea'
+        include *
+        where
+            not (kind is application or kind is microservice or kind is functions or kind is datastore or kind is user-interface)
+        exclude * -> *
+        include * <-> cp.online-plea
+    }
 }

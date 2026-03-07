@@ -32,8 +32,9 @@ views {
         // include cp.court-hearings-subdomain.hearing-system
         include cp.scheduling-and-listing-subdomain.scheduling-and-listing-system
         include cp.shared-components-subdomain.redis-cache-system
-        // exclude * -> *
-        // include * <-> cp.users-and-groups-system
+        exclude * -> *
+        include * <-> cp.users-and-groups-system._
+        include cp.users-and-groups-system._ <-> cp.users-and-groups-system._
         exclude * <-> *
             where kind is mi
     }
@@ -51,9 +52,9 @@ views {
         include
             *
         include cp.shared-components-subdomain.redis-cache-system
-        // include cp.court-hearings-subdomain.hearing-system
-        // include cp.court-hearings-subdomain.hearing-system.staging-darts.*
-        // include * <-> cp.scheduling-and-listing-subdomain.scheduling-and-listing-system.*
+        exclude * -> *
+        include * <-> cp.reference-data-system._
+        include cp.reference-data-system._ <-> cp.reference-data-system._
         exclude * <-> *
             where kind is mi
     }
@@ -119,5 +120,76 @@ views {
         include cp.shared-components-subdomain.notify-system
         exclude * -> *
         include * <-> cp.file-service-system._
+    }
+
+    view document-generation-system-context of cp.document-generation-system {
+        title '[System Context] Document Generation System'
+        include *
+        where
+            not (kind is application or kind is microservice or kind is functions or kind is datastore or kind is user-interface)
+        include cp.shared-components-subdomain._
+        include cp.case-administration-subdomain._
+        exclude * -> *
+        include * <-> cp.document-generation-system
+        exclude * <-> *
+            where kind is mi
+
+        style cp.case-administration-subdomain.* {
+            color secondary
+        }
+    }
+
+    view id-mapper-system-context of cp.id-mapper-system {
+        title '[System Context] Id Mapper System'
+        include *
+        where
+            not (kind is application or kind is microservice or kind is functions or kind is datastore or kind is user-interface)
+        exclude * -> *
+        include * <-> cp.id-mapper-system
+    }
+
+    view scheduling-system-context of cp.scheduling-system {
+        title '[System Context] Scheduling System'
+        include *
+        where
+            not (kind is application or kind is microservice or kind is functions or kind is datastore or kind is user-interface)
+        exclude * -> *
+        include * <-> cp.scheduling-system
+    }
+
+    view ui-notification-system-context of cp.ui-notification-system {
+        title '[System Context] UI Notification System'
+        include *
+        where
+            not (kind is application or kind is microservice or kind is functions or kind is datastore or kind is user-interface)
+        exclude * -> *
+        include * <-> cp.ui-notification-system
+    }
+
+    view support-system-context of cp.support-system {
+        title '[System Context] Support System'
+        include *
+        where
+            not (kind is application or kind is microservice or kind is functions or kind is datastore or kind is user-interface)
+        exclude * -> *
+        include * <-> cp.support-system
+    }
+
+    view system-announcement-system-context of cp.ssystem-announcement-system {
+        title '[System Context] System Announcement System'
+        include *
+        where
+            not (kind is application or kind is microservice or kind is functions or kind is datastore or kind is user-interface)
+        exclude * -> *
+        include * <-> cp.ssystem-announcement-system
+    }
+
+    view cp-user-interface-context of cp.cp-user-interface {
+        title '[System Context] Common Platform User Interface'
+        include *
+        where
+            not (kind is application or kind is microservice or kind is functions or kind is datastore or kind is user-interface)
+        exclude * -> *
+        include * <-> cp.cp-user-interface
     }
 }

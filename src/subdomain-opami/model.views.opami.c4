@@ -49,10 +49,9 @@ views {
 
     view audit-system-container-view of cp.audit-system {
         title '[Container View] Audit System'
-        include
-            *
-        // include cp.court-hearings-subdomain.hearing-system
-        // include cp.court-hearings-subdomain.hearing-system.staging-darts.*
-        // include * <-> cp.scheduling-and-listing-subdomain.scheduling-and-listing-system.*
+        include *
+        exclude * -> *
+        include * <-> cp.audit-system._
+        include cp.audit-system._ <-> cp.audit-system._
     }
 }

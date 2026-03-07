@@ -22,12 +22,56 @@ views {
         include cp.case-management-system
         include cp.court-hearings-subdomain.hearing-system
         exclude * -> *
-        include * <-> cp.spi
-        include cp.spi <-> cp.spi
+        include * <-> cp.spi._
+        include cp.spi._ <-> cp.spi._
         exclude * <-> *
             where kind is mi
 
         style cp.case-administration-subdomain.*, cp.court-hearings-subdomain.* {
+            color secondary
+        }
+    }
+
+    view cppi-system-context of cp.cppi {
+        title '[System Context] CPPI'
+        include *
+        where
+            not (kind is application or kind is microservice or kind is functions or kind is datastore or kind is user-interface)
+        include cp.case-administration-subdomain._
+        include cp.shared-components-subdomain._
+        exclude * -> *
+        include * <-> cp.cppi
+        exclude * <-> *
+            where kind is mi
+
+        style cp.case-administration-subdomain.*, cp.shared-components-subdomain.* {
+            color secondary
+        }
+    }
+
+    view cpci-system-context of cp.cpci {
+        title '[System Context] CPCI'
+        include *
+        where
+            not (kind is application or kind is microservice or kind is functions or kind is datastore or kind is user-interface)
+        exclude * -> *
+        include * <-> cp.cpci
+        exclude * <-> *
+            where kind is mi
+    }
+
+    view document-ingestion-system-context of cp.document-ingestion-system {
+        title '[System Context] Document Ingestion System'
+        include *
+        where
+            not (kind is application or kind is microservice or kind is functions or kind is datastore or kind is user-interface)
+        include cp.shared-components-subdomain._
+        exclude * -> *
+        include * <-> cp.document-ingestion-system
+        exclude * <-> *
+            where kind is mi
+
+        style cp.shared-components-subdomain.* {
             color secondary
         }
     }

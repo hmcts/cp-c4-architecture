@@ -25,8 +25,8 @@ views {
         include cp.hearing-system
         include cp.scheduling-and-listing-system
         exclude * -> *
-        include * <-> cp.case-management-system
-        include cp.case-management-system <-> cp.case-management-system
+        include * <-> cp.case-management-system._
+        include cp.case-management-system._ <-> cp.case-management-system._
         include cp.court-hearings-subdomain.hearing-system.*
         exclude * <-> *
             where kind is mi
@@ -59,6 +59,9 @@ views {
         include cp.case-management-system.prosecution-case-file-service
         include cp.case-management-system.sjp-service
         include cp.advocate-portal.defence-service
+        exclude * -> *
+        include * <-> cp.work-management-system._
+        include cp.work-management-system._ <-> cp.work-management-system._
         exclude * <-> *
             where kind is mi
     }
@@ -66,6 +69,24 @@ views {
     view work-management-system-component-view of cp.work-management-system {
         title '[Component View] Work Management System'
         include *
+    }
+
+    view advocate-portal-system-context of cp.advocate-portal {
+        title '[System Context] Advocate Portal'
+        include *
+        where
+            not (kind is application or kind is microservice or kind is functions or kind is datastore or kind is user-interface)
+        include cp.case-administration-subdomain._
+        include cp.court-hearings-subdomain._
+        include cp.shared-components-subdomain._
+        exclude * -> *
+        include * <-> cp.advocate-portal
+        exclude * <-> *
+            where kind is mi
+
+        style cp.court-hearings-subdomain.*, cp.shared-components-subdomain.* {
+            color secondary
+        }
     }
 
     view advocate-portal-container-view of cp.advocate-portal {
@@ -81,6 +102,9 @@ views {
         include cp.reference-data-system.reference-data
         include cp.reference-data-system.reference-data-offences
         include cp.document-generation-system.document-generator
+        exclude * -> *
+        include * <-> cp.advocate-portal._
+        include cp.advocate-portal._ <-> cp.advocate-portal._
         exclude * <-> *
             where kind is mi
 

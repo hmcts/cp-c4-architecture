@@ -4,47 +4,10 @@ model {
             title 'Hearing System'
             summary 'Manages the lifecycle of hearings and records what happens in them'
 
-            defendant -> hearing-system "enters plea using"
-            judge_or_magestrate -> hearing-system "accesses hearing lists and boxwork using"
-            recorder -> hearing-system "records events during hearings using"
-            listing_officer -> hearing-system "manages court schedule and allocates hearings using"
-            court_clerk -> hearing-system "runs court room logistics on hearing day using"
-            legal_advisor -> hearing-system "manages hearins in court and advises magistrates using"
-            court_admin -> hearing-system "administrates hearsing and manages documenation using"
-
-
-            hearing-system -> darts "posts hearing events to"
-            hearing-system -> hmpps "posts hearing events to"
-            hearing-system -> laa "posts hearing events to"
-            hearing-system -> cp.scheduling-and-listing-system "hearing deatils changed"
-            hearing-system -> cp.case-management-system "shares case markers and case status changes with, creates hearings using"
-            // hearing-system -> ref_data "hearing deatils changed"
-
-
-            notepad-parsing-ui = user-interface {
-                title 'Notepad Parsing UI'
-                technology 'Angular'
-                summary 'Converts entered shorthand text into result definitions and prompts'
-                metadata {
-                    language 'TypeScript'
-                    software-framework 'Angular'
-                }
-                style {
-                    icon tech:angular
-                }
-
-                this -> cp.reference-data-system.reference-data 'obtains result definition data from' {
-                    technology 'JSON/HTTPS'
-                }
-
-                court_clerk -> this 'records hearing using'
-
-            }
-
             court-hearing-ui = user-interface {
                 title 'Court Hearing UI'
                 technology 'Angular'
-                summary 'Providdes functionality for managing hearings'
+                summary 'Provides functionality for managing hearings'
                 metadata {
                     language 'TypeScript'
                     software-framework 'Angular'
@@ -53,28 +16,43 @@ model {
                     icon tech:angular
                 }
                 link https://github.com/hmcts/cpp-ui-hearing 'Repository'
-             }
 
-            staging-darts = microservice {
-                title 'Staging DARTS'
-                technology 'Java EE'
-                metadata {
-                    language 'Java'
-                    software-framework 'Java EE 8'
-                }
-                link https://github.com/hmcts/cpp-context-staging-darts 'Repository'
+                // Actor relationships (section 8)
+                defendant -> this 'enters plea using'
+                judge_or_magestrate -> this 'accesses hearing lists and boxwork using'
+                recorder -> this 'records events during hearings using'
+                listing_officer -> this 'manages court schedule and allocates hearings using'
+                court_clerk -> this 'runs court room logistics on hearing day using'
+                legal_advisor -> this 'manages hearings in court and advises magistrates using'
+                court_admin -> this 'administrates hearings and manages documentation using'
 
-                this -> staging-darts-database
-                cp.listing-service -> this 'listens to daily court list published by'
+                // Container relationships (section 2)
+                this -> hearing-service 'manages hearings using'
+                this -> cp.reference-data-system.reference-data 'looks up reference data from'
+                this -> cp.reference-data-system.reference-data-offences 'looks up offence definitions from'
+                this -> cp.case-management-system.progression-service 'downloads court documents and submits breach applications using'
+                this -> cp.case-management-system.application-court-orders-service 'retrieves court orders from'
+                this -> cp.case-management-system.sjp-service 'retrieves outstanding fines from'
+                this -[auth]-> cp.users-and-groups 'validates user permissions using'
+                this -> cp.results-distribution-system.results-service 'checks defendant tracking status using'
+                this -> cp.scheduling-and-listing-system.listing-service 'searches for available hearings in'
             }
 
-            staging-darts-database = datastore {
-                title 'Staging DARTS Database'
-                technology 'PostgreSQL'
-                summary 'Stores events and entities'
+            external-services-ui = user-interface {
+                title 'External Services UI'
+                technology 'Angular'
+                summary 'Provides interface for querying DVLA driver records during hearings'
                 style {
-                    icon tech:postgresql
+                    icon tech:angular
                 }
+                link https://github.com/hmcts/cpp-ui-external-services 'Repository'
+
+                // Existing relationship
+                this -> results-distribution-system.staging-dvla-service 'queries driver records using'
+
+                // New relationships (section 6)
+                this -> cp.reference-data-system.reference-data 'looks up reference data from'
+                this -[auth]-> cp.users-and-groups 'validates user permissions using'
             }
 
             hearing-service = microservice {
@@ -86,9 +64,26 @@ model {
                 }
                 link https://github.com/hmcts/cpp-context-hearing 'Repository'
 
+                // Existing relationships
                 this -> hearing-database
-                this -> results-distribution-system.results-service "distributes results using"
+                this -> results-distribution-system.results-service 'distributes results using'
                 this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
+
+                // New relationships (section 3)
+                this -> cp.reference-data-system.reference-data 'looks up reference data from'
+                this -> cp.case-management-system.progression-service 'updates case progression using'
+                this -> cp.case-management-system.material-service 'manages case material using'
+                this -[notify]-> cp.notification-notify 'sends notifications using'
+                this -> cp.results-distribution-system.staging-enforcement-service 'sends and retrieves enforcement data using'
+                this -[auth]-> cp.users-and-groups 'makes authorisation decisions using'
+                this -> cp.id-mapper-system.system-id-mapper 'looks up IDs using'
+                this -> cp.document-generation-system.document-generator 'generates documents using'
+                this -> cp.file-service-system 'stores and retrieves files using'
+                this -> xhibit 'publishes hearing events to'
+                this -[audit]-> cp.audit-system 'sends data to'
+
+                // Product-level relationship moved to container (section 7.4)
+                this -> cp.scheduling-and-listing-system.listing-service 'publishes hearing changes to'
             }
 
             resulting-service = microservice {
@@ -101,9 +96,43 @@ model {
                 }
                 link https://github.com/hmcts/cpp-context-resulting 'Repository'
 
+                // Existing relationships
                 this -> resulting-database
                 this -[mi]-> cp.management-information-system.mi-system-data-service 'sends data to'
                 this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
+
+                // New relationships (section 4)
+                this -> cp.reference-data-system.reference-data 'looks up reference data from'
+                this -> cp.reference-data-system.reference-data-offences 'looks up offence definitions from'
+                this -> cp.case-management-system.sjp-service 'retrieves SJP case details from'
+                this -> cp.case-management-system.prosecution-case-file-service 'retrieves prosecution case details from'
+                this -> cp.document-generation-system.document-generator 'generates documents using'
+                this -[notify]-> cp.notification-notify 'sends letter notifications using'
+                this -> cp.file-service-system 'stores and retrieves files using'
+                this -> cp.id-mapper-system.system-id-mapper 'looks up IDs using'
+                this -> cp.case-management-system.material-service 'retrieves case material from'
+                this -[auth]-> cp.users-and-groups 'makes authorisation decisions using'
+                this -[audit]-> cp.audit-system 'sends data to'
+            }
+
+            staging-darts = microservice {
+                title 'Staging DARTS'
+                technology 'Java EE'
+                metadata {
+                    language 'Java'
+                    software-framework 'Java EE 8'
+                }
+                link https://github.com/hmcts/cpp-context-staging-darts 'Repository'
+
+                // Existing relationships
+                this -> staging-darts-database
+                cp.listing-service -> this 'listens to daily court list published by'
+
+                // New relationships (section 5)
+                this -> cp.reference-data-system.reference-data 'looks up reference data from'
+                this -> darts 'sends hearing events and court lists to'
+                this -[auth]-> cp.users-and-groups 'makes authorisation decisions using'
+                this -[audit]-> cp.audit-system 'sends data to'
             }
 
             hearing-database = datastore {
@@ -124,16 +153,13 @@ model {
                 }
             }
 
-            external-services-ui = user-interface {
-                title 'External Services UI'
-                technology 'Angular'
-                summary 'Provides interface for querying DVLA driver records during hearings'
+            staging-darts-database = datastore {
+                title 'Staging DARTS Database'
+                technology 'PostgreSQL'
+                summary 'Stores events and entities'
                 style {
-                    icon tech:angular
+                    icon tech:postgresql
                 }
-                link https://github.com/hmcts/cpp-ui-external-services 'Repository'
-
-                this -> results-distribution-system.staging-dvla-service 'queries driver records using'
             }
         }
     }

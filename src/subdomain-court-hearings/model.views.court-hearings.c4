@@ -25,6 +25,7 @@ views 'Court Hearings / Hearing System' {
         include cp.scheduling-and-listing-subdomain.scheduling-and-listing-system
         exclude * -> *
         include * <-> cp.hearing-system._
+        include cp.hearing-system._ <-> cp.hearing-system._
         exclude * <-> *
             where kind is mi
     }

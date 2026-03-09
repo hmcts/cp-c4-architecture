@@ -229,6 +229,18 @@ npm run build    # Build static site — checks for syntax errors
 npm run test     # Run model validation tests
 ```
 
+### Fixing layout drift
+
+When adding new elements or relationships, affected views will show a "layout drift detected" warning during build. This means the view's saved layout is out of date and new elements won't appear on the diagram until re-laid out.
+
+**Before committing**, ask the user to:
+1. Open the dev server (`npm run dev`)
+2. Navigate to each affected view
+3. Re-layout the diagram so new elements are positioned correctly
+4. Save the updated layout
+
+This is especially important when adding new elements (datastores, microservices, etc.) — they will be invisible on the published site until the layout is updated.
+
 ## Common Mistakes
 
 | Mistake | Fix |

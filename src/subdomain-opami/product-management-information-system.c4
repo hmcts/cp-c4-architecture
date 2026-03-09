@@ -55,6 +55,7 @@ model {
                 this -> mi-report-data-database 'reads and writes data'
                 this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-1 'caches reference data in'
                 this -> mi-extract-blob-storage 'uploads MI extract CSV files to'
+                this -> mi-live-report-blob-storage 'uploads Warrant and CFIX Excel reports to'
                 this -> cp.scheduling-and-listing-system.court-scheduler-service 'queries court schedule, judiciary and allocated listings data from'
                 this -[notify]-> cp.notification-notify 'sends NCES extract emails via'
                 this -[shared]-> cp.reference-data 'fetches reference data for MI extracts from'
@@ -68,6 +69,15 @@ model {
                 summary 'Stores MI report data for export'
                 style {
                     icon tech:postgresql
+                }
+            }
+
+            mi-live-report-blob-storage = datastore {
+                title 'MI Live Report Blob Storage'
+                technology 'Azure Blob Storage'
+                summary 'Stores Warrant and CFIX Excel spreadsheets with time-limited SAS download links for OPAMI UI users'
+                style {
+                    icon tech:azure
                 }
             }
 
@@ -94,6 +104,7 @@ model {
                 mi_user -> this 'views dashboards and reports'
                 this -> mi-system-data-service 'queries dashboard data from'
                 this -> mi-report-data-service 'generates and retrieves operational reports from'
+                this -> mi-live-report-blob-storage 'downloads Warrant and CFIX Excel reports from'
             }
         }
     }

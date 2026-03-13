@@ -4,26 +4,74 @@ model {
             title 'Audit System'
             description 'Stores audit logs and enables querying of audit data for forensic audit purposes'
 
+            audit-message-broker = component {
+                title 'Audit Message Broker'
+                technology 'Apache ActiveMQ Artemis'
+                summary 'Dedicated audit message broker; receives audit events from CP microservices via JMS'
+
+                this -> audit2dls-service 'delivers audit events via JMS to'
+            }
+
             audit2dls-service = microservice {
                 title 'Audit2DLS Service'
-                technology 'Java EE'
+                technology 'Java EE / WildFly'
                 summary 'Transfers audit data to the Data Lake Store for long-term storage and analysis'
                 metadata {
                     language 'Java'
-                    software-framework 'Java EE 8'
+                    software-framework 'Java EE / WildFly'
                 }
                 link https://github.com/hmcts/cpp-context-audit2dls 'Repository'
+
+                this -> audit-blob-storage 'writes audit JSON files to'
+            }
+
+            audit-blob-storage = datastore {
+                title 'Audit Blob Storage'
+                technology 'Azure Blob Storage'
+                summary 'Stores audit event JSON files; source data for Fabric ingestion'
+                style {
+                    icon tech:azure
+                }
+            }
+
+            fabric-data-pipeline = component {
+                title 'Fabric Ingestion Pipeline'
+                technology 'Microsoft Fabric Data Pipelines / Spark Notebooks'
+                summary 'Ingests audit JSON from blob storage, filters, converts to Parquet, and loads into Delta tables in the Lakehouse'
+                style {
+                    icon tech:azure
+                }
+
+                this -> audit-blob-storage 'reads audit JSON files from'
+                this -> fabric-lakehouse 'writes processed audit data to'
+            }
+
+            fabric-lakehouse = datastore {
+                title 'Fabric Lakehouse'
+                technology 'Microsoft Fabric Lakehouse (Delta)'
+                summary 'Stores processed audit events as Delta tables partitioned by year, month, and day; provides SQL endpoint for querying'
+                style {
+                    icon tech:azure
+                }
             }
 
             audit-reports-service = microservice {
                 title 'Audit Reports Service'
                 technology 'Spring Boot'
-                summary 'Provides self-service audit reports'
+                summary 'Backend-for-Frontend API that triggers report generation via Fabric and orchestrates case, material, and user lookups across CP services'
                 metadata {
                     language 'Java'
                     software-framework 'Spring Boot'
                 }
                 link https://github.com/hmcts/cp-audit-reports-service-v2 'Repository'
+
+                this -> fabric-data-pipeline 'triggers report generation via' {
+                    technology 'JSON/HTTPS (Fabric REST API)'
+                }
+                this -> cp.id-mapper-system.system-id-mapper 'resolves case URNs to case IDs using'
+                this -> cp.case-management-system.progression-service 'resolves material IDs to cases using'
+                this -> cp.users-and-groups-system.users-and-groups 'searches users by IDs and emails using'
+                this -[auth]-> cp.users-and-groups 'makes authorisation decisions using'
             }
 
             audit-reports-ui = user-interface {
@@ -34,6 +82,8 @@ model {
                     icon tech:angular
                 }
                 link https://github.com/hmcts/cpp-ui-audit-reports 'Repository'
+
+                this -> audit-reports-service 'searches and retrieves audit data using'
             }
         }
     }

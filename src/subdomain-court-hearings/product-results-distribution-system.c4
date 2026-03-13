@@ -28,6 +28,7 @@ model {
                 this -> prison-court-record-result-functions 'sends results to'
                 this -> informant-register-result-functions 'sends results to'
                 this -> sjp-result-functions 'sends results to'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
 
             }
 
@@ -162,6 +163,7 @@ model {
 
                 this -> staging-enforcement-database
                 this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-0 'caches enforcement SOAP responses in'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             staging-enforcement-database = datastore {
@@ -187,6 +189,7 @@ model {
                     title 'stores DVLA notification payloads'
                     description 'Stores JSON payloads for DVLA driver notification PDFs (SJP D20 letters) and driver search audit report data for CSV generation'
                 }
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             staging-dvla-database = datastore {
@@ -208,6 +211,7 @@ model {
                 link https://github.com/hmcts/cpp-context-hearing-nows 'Repository'
 
                 this -> hearing-nows-database
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             hearing-nows-database = datastore {

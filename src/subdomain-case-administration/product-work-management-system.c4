@@ -36,6 +36,7 @@ model {
                 }
                 link https://github.com/hmcts/cpp-context-work-management-proxy 'Repository'
                 this -> business-process-service 'makes API calls to'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
 
@@ -49,6 +50,7 @@ model {
                 link https://github.com/hmcts/cpp-context-businessprocesses 'Repository'
                 this -> camunda 'makes API calls to'
                 this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
                 cp.hearing-service -> this 'Sends hearing outcome updates to update business process activities'
                 cp.prosecution-case-file-service -> this 'Sends case creation failures to update business process activities'
                 cp.progression-service -> this 'Sends case record updates to update business process activities'

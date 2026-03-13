@@ -21,6 +21,7 @@ model {
                     title 'stores CPS prosecution documents'
                     description 'Stores binary prosecution documents (evidence, witness statements) extracted from CPS CP20 XML case submissions'
                 }
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             staging-prosecutors-database = datastore {

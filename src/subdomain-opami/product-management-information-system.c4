@@ -17,6 +17,7 @@ model {
                 link https://github.com/hmcts/cpp-context-mi-systemdata 'Repository'
 
                 this -> mi-system-data-database 'reads and writes data'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             mi-system-data-database = datastore {
@@ -61,6 +62,7 @@ model {
                 this -[shared]-> cp.reference-data 'fetches reference data for MI extracts from'
                 this -[shared]-> cp.reference-data-offences 'fetches offence reference data for MI extracts from'
                 cp.system-scheduling -[shared]-> this 'triggers nightly MI extract'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             mi-report-data-database = datastore {

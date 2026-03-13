@@ -98,6 +98,7 @@ model {
                 }
                 this -[mi]-> cp.management-information-system.mi-system-data-service 'sends data to'
                 this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             progression-database = datastore {
@@ -124,6 +125,7 @@ model {
                     description 'Stores generated respondent list PDFs and manages prosecution evidence file references from CPS, IDPC, and bulk scan uploads'
                 }
                 this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             prosecution-case-file-database = datastore {
@@ -150,6 +152,7 @@ model {
                 }
                 this -[mi]-> cp.management-information-system.mi-system-data-service 'sends data to'
                 this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             sjp-database = datastore {
@@ -170,6 +173,7 @@ model {
                 }
                 link https://github.com/hmcts/cpp-context-subscriptions 'Repository'
                 this -> subscriptions-database
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             subscriptions-database = datastore {
@@ -189,6 +193,7 @@ model {
                     software-framework 'Java EE 8'
                 }
                 this -> assignment-database
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             assignment-database = datastore {
@@ -209,6 +214,7 @@ model {
                 }
                 link https://github.com/hmcts/cpp-context-applications-courtorders 'Repository'
                 this -> application-court-orders-database
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             application-court-orders-database = datastore {
@@ -229,6 +235,7 @@ model {
                     software-framework 'Java EE 8'
                 }
                 link https://github.com/hmcts/cpp-context-boxworkmanagement 'Repository'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             unified-search-query-service = microservice {
@@ -242,6 +249,7 @@ model {
                 link https://github.com/hmcts/cpp-context-unifiedsearch-query 'Repository'
 
                 this -> unified-search-datastore
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             unified-search-datastore = datastore {
@@ -269,6 +277,7 @@ model {
                     title 'retrieves files for upload'
                     description 'Retrieves stored binary files (prosecution evidence, court documents, generated PDFs) for Alfresco upload, PDF conversion, and Azure blob archiving'
                 }
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             material-database = datastore {
@@ -295,6 +304,7 @@ model {
                     title 'stores case archive payloads'
                     description 'Stores prosecution case JSON for archive PDF generation by the document generator, and raw case detail JSON for inclusion in archived case ZIP bundles'
                 }
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             archiving-database = datastore {
@@ -317,6 +327,7 @@ model {
                 link https://github.com/hmcts/cpp-context-staging-dcs 'Repository'
 
                 this -> staging-dcs-database
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             staging-dcs-database = datastore {
@@ -340,6 +351,7 @@ model {
 
                 this -> correspondence-database
                 this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             correspondence-database = datastore {

@@ -52,6 +52,9 @@ views 'OPAMI / Audit System' {
     view audit-system-container-view of cp.audit-system {
         title '[Container View] Audit System'
         include *
+        include cp.shared-components-subdomain.users-and-groups-system
+        include cp.shared-components-subdomain.id-mapper-system
+        include cp.case-administration-subdomain.case-management-system
         exclude * -> *
         include * <-> cp.audit-system._
         include cp.audit-system._ <-> cp.audit-system._

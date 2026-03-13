@@ -51,6 +51,7 @@ model {
                 this -> cp.case-management-system.prosecution-case-file-service 'sends cases to'
                 this -> staging-spi-database
                 this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
                 cp.results-distribution-system.results-service -> this 'sends results to police using'
                 this -> cjse 'sends case results to police'
             }

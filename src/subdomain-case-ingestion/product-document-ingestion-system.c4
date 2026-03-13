@@ -16,6 +16,7 @@ model {
 
                 this -> staging-bulkscan-database
                 this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             staging-bulkscan-database = datastore {
@@ -42,6 +43,7 @@ model {
                     title 'manages CPS document lifecycle'
                     description 'Manages the lifecycle of CPS prosecution documents, orchestrating attachment to case materials and deletion of expired or completed documents'
                 }
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             prosecution-documentqueue-database = datastore {

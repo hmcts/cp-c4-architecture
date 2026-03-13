@@ -47,16 +47,41 @@ views 'OPAMI / Audit System' {
     view audit-system-context of cp.audit-system {
         title '[System Context] Audit System'
         include *
+        where
+            not (kind is application or kind is microservice or kind is functions or kind is datastore or kind is user-interface or kind is component)
+        include cp.opami-subdomain._
+        include cp.court-hearings-subdomain._
+        include cp.scheduling-and-listing-subdomain._
+        include cp.case-administration-subdomain._
+        include cp.case-ingestion-subdomain._
+        include cp.dlrm-subdomain._
+        include cp.shared-components-subdomain._
+            where kind is product
+        exclude * -> *
+        include * <-> cp.audit-system
+        exclude * <-> *
+            where kind is mi or kind is auth or kind is shared
+
+        style cp.court-hearings-subdomain.*, cp.scheduling-and-listing-subdomain.*, cp.case-administration-subdomain.*, cp.case-ingestion-subdomain.*, cp.dlrm-subdomain.*, cp.shared-components-subdomain.* {
+            color secondary
+        }
     }
 
     view audit-system-container-view of cp.audit-system {
         title '[Container View] Audit System'
         include *
-        include cp.shared-components-subdomain.users-and-groups-system
-        include cp.shared-components-subdomain.id-mapper-system
-        include cp.case-administration-subdomain.case-management-system
+        include cp.opami-subdomain._
+        include cp.court-hearings-subdomain._
+        include cp.scheduling-and-listing-subdomain._
+        include cp.case-administration-subdomain._
+        include cp.case-ingestion-subdomain._
+        include cp.dlrm-subdomain._
+        include cp.shared-components-subdomain._
+            where kind is product
         exclude * -> *
         include * <-> cp.audit-system._
         include cp.audit-system._ <-> cp.audit-system._
+        exclude * <-> *
+            where kind is mi or kind is auth or kind is shared
     }
 }

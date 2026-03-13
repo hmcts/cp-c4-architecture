@@ -7,22 +7,6 @@ model {
             this -> cp.scheduling-and-listing-system 'requests listings for hearings using'
 
 
-            subscriptions-ui = user-interface {
-                title 'Subscriptions UI'
-                technology 'Angular'
-                summary 'Provides ?'
-                metadata {
-                    language 'TypeScript'
-                    software-framework 'Angular'
-                }
-                style {
-                    icon tech:angular
-                }
-                link https://github.com/hmcts/cpp-ui-subscriptions 'Repository'
-
-                this -> subscriptions-service "makes API calls to"
-            }
-
             prosecution-casefile-ui = user-interface {
                 title 'Prosection Case File UI'
                 technology 'Angular'
@@ -157,27 +141,6 @@ model {
 
             sjp-database = datastore {
                 title 'SJP Database'
-                technology 'PostgreSQL'
-                summary 'Stores events and entities'
-                style {
-                    icon tech:postgresql
-                }
-            }
-
-            subscriptions-service = microservice {
-                title 'Subscriptions Service'
-                technology 'Java EE'
-                metadata {
-                    language 'Java'
-                    software-framework 'Java EE 8'
-                }
-                link https://github.com/hmcts/cpp-context-subscriptions 'Repository'
-                this -> subscriptions-database
-                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
-            }
-
-            subscriptions-database = datastore {
-                title 'Subscriptions Database'
                 technology 'PostgreSQL'
                 summary 'Stores events and entities'
                 style {

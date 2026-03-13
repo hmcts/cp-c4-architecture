@@ -2,7 +2,7 @@ model {
     extend cp.court-hearings-subdomain {
         results-distribution-system = product {
             title 'Results Distribution System'
-            description 'Distributes the results of hearings to third parties'
+            description 'Distributes hearing results to criminal justice partners and manages email notification subscriptions for third-party organisations monitoring court events'
 
             results-service = microservice {
                 title 'Results Service'
@@ -150,6 +150,51 @@ model {
                 link https://github.com/hmcts/cpp-context-azure-legalaidagency 'Repository'
 
                 this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-0 'reads cached hearing results from'
+            }
+
+            subscriptions-ui = user-interface {
+                title 'Subscriptions UI'
+                technology 'Angular'
+                summary 'Allows third-party organisations to manage email notification subscriptions for court hearing events'
+                metadata {
+                    language 'TypeScript'
+                    software-framework 'Angular'
+                }
+                style {
+                    icon tech:angular
+                }
+                link https://github.com/hmcts/cpp-ui-subscriptions 'Repository'
+
+                this -> subscriptions-service 'makes API calls to'
+            }
+
+            subscriptions-service = microservice {
+                title 'Subscriptions Service'
+                technology 'Java EE'
+                summary 'Manages email notification subscriptions for hearing events; evaluates subscription rules when results are shared and triggers notifications to subscribed third parties'
+                metadata {
+                    language 'Java'
+                    software-framework 'Java EE 8'
+                }
+                link https://github.com/hmcts/cpp-context-subscriptions 'Repository'
+
+                this -> subscriptions-database
+                this -> cp.users-and-groups-system.users-and-groups 'fetches logged-in user details from'
+                this -> cp.hearing-system.hearing-service 'retrieves hearing details from'
+                this -> cp.case-management-system.material-service 'generates document download URLs using'
+                this -> cp.id-mapper-system.system-id-mapper 'maps internal and external identifiers using'
+                this -[notify]-> cp.notification-notify 'sends email notifications using'
+                this -[auth]-> cp.users-and-groups 'makes authorisation decisions using'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
+            }
+
+            subscriptions-database = datastore {
+                title 'Subscriptions Database'
+                technology 'PostgreSQL'
+                summary 'Stores subscription definitions, subscriber emails, event type filters, and court associations'
+                style {
+                    icon tech:postgresql
+                }
             }
 
             staging-enforcement-service = microservice {

@@ -156,6 +156,29 @@ model {
                 title 'Subscriptions UI'
                 technology 'Angular'
                 summary 'Allows third-party organisations to manage email notification subscriptions for court hearing events'
+                description """
+Provides an interface for creating and managing email subscriptions for court hearing events and result documents.
+
+### User roles
+
+- **Subscription Managers** can create subscriptions on behalf of others, specifying recipient email addresses, and activate or deactivate subscriptions globally
+- **Subscribers** can create subscriptions for themselves and manage their own participation in existing subscriptions
+
+### Creating a subscription
+
+A guided wizard walks users through:
+
+1. Naming the subscription
+2. Adding recipient email addresses (managers only — subscribers are the implicit recipient)
+3. Selecting one or more courts to monitor
+4. Optionally filtering by case reference, defendant, age, gender, or offence
+5. Choosing what to receive — result documents (NOWs/EDTs) and/or event notifications (plea changes, verdicts, remand status changes, trial effectiveness, attendance, pre-sentence reports)
+6. Reviewing and saving
+
+### Managing subscriptions
+
+The main screen lists all subscriptions with the ability to activate, deactivate, or delete them. Each subscription can be expanded to view its courts, filters, and content types.
+"""
                 metadata {
                     language 'TypeScript'
                     software-framework 'Angular'
@@ -172,6 +195,31 @@ model {
                 title 'Subscriptions Service'
                 technology 'Java EE'
                 summary 'Manages email notification subscriptions for hearing events; evaluates subscription rules when results are shared and triggers notifications to subscribed third parties'
+                description """
+Allows third-party organisations (e.g. defence solicitors, probation services) to subscribe to email notifications about court hearing events at specific courts.
+
+### What it does
+
+Organisations create subscriptions through the **Subscriptions UI**, choosing which courts and event types they want to be notified about. Subscriptions can be further narrowed by defendant name, date of birth, gender, age, case reference, or offence type. Subscription definitions and subscriber email addresses are stored in the **Subscriptions Database**.
+
+When a court clerk shares hearing results, the service automatically evaluates all active subscriptions for that court and sends email notifications to subscribers whose rules match. Emails are delivered via GOV.UK Notify through the **Notification Notify** service.
+
+### Events that trigger notifications
+
+- Plea entered or changed
+- Verdict entered
+- Remand status changed (e.g. bail to custody)
+- Defendant or appellant attendance recorded
+- Trial cracked, ineffective, or vacated
+- Pre-sentence report requested
+
+### Other service interactions
+
+- Retrieves the logged-in user organisation from **Users and Groups** to scope subscription management to the correct organisation
+- Fetches hearing details from the **Hearing Service** to compare current and previous bail status for remand change detection
+- Generates document download URLs via the **Material Service** for inclusion in notification emails
+- Uses the **ID Mapper** to translate between internal and external case identifiers
+"""
                 metadata {
                     language 'Java'
                     software-framework 'Java EE 8'
@@ -192,6 +240,15 @@ model {
                 title 'Subscriptions Database'
                 technology 'PostgreSQL'
                 summary 'Stores subscription definitions, subscriber emails, event type filters, and court associations'
+                description """
+Stores all data needed to evaluate and deliver subscription notifications.
+
+- **Subscriptions** — name, owning organisation, and active/inactive status
+- **Subscribers** — email addresses of individuals receiving notifications for each subscription
+- **Event types** — which hearing events the subscription monitors (e.g. plea changes, verdicts, remand status)
+- **Filters** — optional narrowing criteria such as defendant name, case reference, age, gender, or offence
+- **Courts** — which court locations the subscription applies to
+"""
                 style {
                     icon tech:postgresql
                 }

@@ -99,16 +99,19 @@ model {
             
             court-register-result-functions = functions {
                 title 'Court Register Result Functions'
-                technology 'Azure Functions'
-                summary 'Updates the register of court events'
+                technology 'Azure Durable Functions'
+                description 'Triggered by hearing resulted events, one per hearing. Retrieves hearing details from Redis cache (or Results Service on cache miss), builds court register fragments for youth defendants only, and matches against distribution subscription rules from Reference Data to identify recipient Youth Offending Teams. Submits each hearing\'s youth defendant data to Progression, which aggregates all submissions for the same court centre and date into a single PDF (Docmosis template OEE_Layout5) and emails it to matched YOTs via GOV.UK Notify.'
+                summary 'Generates youth court register entries from hearing results for aggregation into a daily per-court PDF distributed to Youth Offending Teams'
                 metadata {
-                    language 'TypeScript'
+                    language 'JavaScript'
                     software-framework 'Node.js 20.9.0'
                 }
                 link https://github.com/hmcts/cpp-context-azure-legalaidagency 'Repository'
 
                 this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-0 'reads cached hearing results from'
-                this -> cp.case-administration-subdomain.progression-service 'adds results to court register'
+                this -> results-service 'queries hearing details on cache miss from'
+                this -> cp.reference-data-system.reference-data 'looks up NOW subscription metadata from'
+                this -> cp.case-administration-subdomain.progression-service 'submits youth court register entries to'
             }
             
             prison-court-record-result-functions = functions {

@@ -70,6 +70,11 @@ model {
             progression-service = microservice {
                 title 'Case Progression Service'
                 technology 'Java EE'
+                summary 'Manages case progression, court document generation, and distribution of court registers, NOWs, and other documents'
+                description """
+**Documented functionality (incomplete):**
+- **Youth Court Register** — Aggregates court register submissions per court centre per day into a single PDF (Docmosis template OEE_Layout5) and distributes it to Youth Offending Teams via Notification Notify and GOV.UK Notify.
+"""
                 metadata {
                     language 'Java'
                     software-framework 'Java EE 8'
@@ -80,6 +85,8 @@ model {
                     title 'stores court document payloads'
                     description 'Stores JSON template payloads for PDF generation and generated court documents including NOWs, court registers, trial record sheets, summons, and online plea documents'
                 }
+                this -> cp.shared-components-subdomain.document-generation-system.document-generator 'requests PDF generation from'
+                this -[notify]-> cp.notification-notify 'sends court register and other document emails via'
                 this -[mi]-> cp.management-information-system.mi-system-data-service 'sends data to'
                 this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
                 this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'

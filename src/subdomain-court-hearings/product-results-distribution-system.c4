@@ -127,16 +127,19 @@ Manages hearing results and coordinates their distribution to criminal justice p
             
             prison-court-record-result-functions = functions {
                 title 'Prison Court Record Result Functions'
-                technology 'Azure Functions'
-                summary 'Notifies prison services of court results for inmates, supporting prisoner management and release planning'
+                technology 'Azure Durable Functions'
+                description 'Triggered by hearing resulted events, one per hearing. Retrieves hearing details from Redis cache (or Results Service on cache miss), builds one prison court register fragment per defendant, and matches against distribution subscription rules from Reference Data to identify recipients. Recipients are resolved from three sources: the defendant\'s custodial establishment details (cross-referenced with prisons and custody suites from Reference Data), judicial result prompts containing prison organisation details, or static subscription configuration. Submits each defendant\'s prison court register individually to Progression for document generation and email distribution. Group proceedings are excluded.'
+                summary 'Generates per-defendant prison court registers from hearing results and submits to Progression for document generation and distribution to prisons and custody suites'
                 metadata {
-                    language 'TypeScript'
+                    language 'JavaScript'
                     software-framework 'Node.js 20.9.0'
                 }
                 link https://github.com/hmcts/cpp-context-azure-legalaidagency 'Repository'
 
                 this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-0 'reads cached hearing results from'
-                this -> cp.case-administration-subdomain.progression-service
+                this -> results-service 'queries hearing details on cache miss from'
+                this -> cp.reference-data-system.reference-data 'looks up NOW subscription rules and prison/custody suite details from'
+                this -> cp.case-administration-subdomain.progression-service 'submits per-defendant prison court registers to'
             }
 
             informant-register-result-functions = functions {

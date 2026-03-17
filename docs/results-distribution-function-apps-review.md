@@ -16,7 +16,7 @@ All 8 function apps live in a single monorepo: [hmcts/cpp-context-azure-legalaid
 |------|-------------|-----------|----------------------|--------|
 | 1 | Court Register | `courtregister-azure-functions/` | 4 (Redis, Results Service, Reference Data, Progression) | **Done** |
 | 2 | Informant Register | `informantregister-azure-functions/` | 4 (Redis, Results Service, Reference Data, Results Service write) | **Done** |
-| 3 | Prison Court Record | `prisoncourtregister-azure-functions/` | 4 (Redis, Results Service, Reference Data, Progression) | Todo |
+| 3 | Prison Court Record | `prisoncourtregister-azure-functions/` | 4 (Redis, Results Service, Reference Data, Progression) | **Done** |
 | 4 | Probation | `probation-azure-functions/` | 4 (Redis, Results Service, Users & Groups, HMPPS, VEP) | Todo |
 | 5 | Court Order | `courtorders-azure-functions/` | 3 services but complex business logic (Redis, Results Service, Court Orders Service with read+write) | Todo |
 | 6 | LAA | `legalaidagency-azure-functions/` | 7 (Redis, Results Service, Unified Search, Progression, Hearing Service, LAA, Blob Storage + VEP) | Todo |
@@ -39,12 +39,20 @@ All 8 function apps live in a single monorepo: [hmcts/cpp-context-azure-legalaid
 - **Key detail**: Function app determines recipients via subscription matching; Results Service batches by prosecution authority + date, generates CSV (InformantRegister_{authorityCode}_{date}.csv), stores in File Service, and emails to recipients via GOV.UK Notify. For group cases, Results Service looks up member defendants from Progression Service.
 - **Also updated**: Results Service — added summary, description (documenting result storage/caching, result distribution, and informant register lifecycle), and relationships to Progression Service and Notification Notify
 
-### 3. Prison Court Record Result Functions
+### 3. Prison Court Record Result Functions (DONE)
 
-- **What it does**: Processes hearing results for defendants in custody and sends prison court register data to Progression
-- **Missing relationships**: Results Service (cache fallback), Reference Data (subscriptions + prisons/custody suites)
-- **Key detail**: Unlike the Youth Court Register, Prison Court Registers are NOT aggregated — each produces a separate PDF per defendant/hearing (`PrisonCourtRegister_{timestamp}.pdf`)
-- **Current summary is misleading**: Says "notifies prison services" but it actually sends to Progression Service, which handles downstream distribution
+- **What it does**: Generates per-defendant prison court registers from hearing results and submits to Progression for document generation and distribution to prisons and custody suites
+- **Relationships updated**: Redis (cache read), Results Service (cache fallback), Reference Data (NOW subscription rules + prisons/custody suites), Progression Service (per-defendant submission)
+- **Key details**:
+  - 5-step orchestrator pipeline: HearingResultedCacheQuery → SetPrisonCourtRegister → PrisonCourtRegisterSubscriptions → OutboundPrisonCourtRegister → ProcessOutboundPrisonCourtRegister
+  - Group proceedings are excluded entirely
+  - Unlike Court Register (youth only, aggregated per court/day), Prison Court Register processes all defendants matching subscription rules and produces one register per defendant
+  - Subscription matching uses `isPrisonCourtRegisterSubscription` flag and checks vocabulary rules: custody status, attendance type, defendant type (youth/adult), court type (English/Welsh), custodial results
+  - Three recipient sources: (1) defendant's custodial establishment cross-referenced with Reference Data prisons/custody suites, (2) judicial result prompts containing prison organisation details, (3) static subscription configuration
+  - Reference Data is called twice: once for NOW subscriptions, once for prisons and custody suites
+  - Result filtering: includes results where `publishedForNows !== true` (differs from Court Register which also requires `isAvailableForCourtExtract`)
+- **Also updated**: Progression Service — added prison court register documentation to its description
+- **Fixed**: technology (Azure Functions → Azure Durable Functions), language (TypeScript → JavaScript), summary rewritten to accurately describe the function
 
 ### 4. Probation Result Functions
 

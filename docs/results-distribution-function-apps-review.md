@@ -15,7 +15,7 @@ All 8 function apps live in a single monorepo: [hmcts/cpp-context-azure-legalaid
 | Rank | Function App | Directory | Outbound Relationships | Status |
 |------|-------------|-----------|----------------------|--------|
 | 1 | Court Register | `courtregister-azure-functions/` | 4 (Redis, Results Service, Reference Data, Progression) | **Done** |
-| 2 | Informant Register | `informantregister-azure-functions/` | 4 (Redis, Results Service, Reference Data, Results Service write) | Todo |
+| 2 | Informant Register | `informantregister-azure-functions/` | 4 (Redis, Results Service, Reference Data, Results Service write) | **Done** |
 | 3 | Prison Court Record | `prisoncourtregister-azure-functions/` | 4 (Redis, Results Service, Reference Data, Progression) | Todo |
 | 4 | Probation | `probation-azure-functions/` | 4 (Redis, Results Service, Users & Groups, HMPPS, VEP) | Todo |
 | 5 | Court Order | `courtorders-azure-functions/` | 3 services but complex business logic (Redis, Results Service, Court Orders Service with read+write) | Todo |
@@ -32,12 +32,12 @@ All 8 function apps live in a single monorepo: [hmcts/cpp-context-azure-legalaid
 - **Document output**: Progression aggregates submissions per court centre per day into a single PDF (Docmosis template `OEE_Layout5`) emailed to YOTs via GOV.UK Notify
 - **Relationships updated**: Redis, Results Service (cache fallback), Reference Data (NOW subscriptions), Progression Service
 
-### 2. Informant Register Result Functions
+### 2. Informant Register Result Functions (DONE)
 
-- **What it does**: Generates informant registers grouped by prosecution authority from hearing results
-- **Missing relationships**: Results Service (cache fallback + command write), Reference Data (subscription metadata)
-- **Key detail**: Submits informant registers to Results Command API (not Progression), grouped by prosecution authority. Output is a CSV (`InformantRegister_{prosecutionAuthorityCode}_{date}.csv`)
-- **Recipients**: Prosecution authorities, matched via NOW subscription rules
+- **What it does**: Assembles informant register data grouped by prosecution authority from hearing results, matches recipients via NOW subscription rules from Reference Data, and submits to the Results Service for CSV generation and email distribution
+- **Relationships updated**: Redis (cache read), Results Service (cache fallback read + informant register write), Reference Data (NOW subscription metadata)
+- **Key detail**: Function app determines recipients via subscription matching; Results Service batches by prosecution authority + date, generates CSV (InformantRegister_{authorityCode}_{date}.csv), stores in File Service, and emails to recipients via GOV.UK Notify. For group cases, Results Service looks up member defendants from Progression Service.
+- **Also updated**: Results Service — added summary, description (documenting result storage/caching, result distribution, and informant register lifecycle), and relationships to Progression Service and Notification Notify
 
 ### 3. Prison Court Record Result Functions
 

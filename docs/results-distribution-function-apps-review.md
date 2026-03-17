@@ -8,7 +8,7 @@ All 8 function apps live in a single monorepo: [hmcts/cpp-context-azure-legalaid
 - **Node.js version is 20.9.0** — pinned in `azure-functions/pom.xml` via `frontend-maven-plugin`
 - **All use Azure Durable Functions** — not plain Azure Functions
 - **All have a Redis cache-miss fallback** to the Results Service query API — this relationship is missing from every function app in the current model
-- **VEP (Victim Enforcement Portal)** is referenced by LAA and Probation functions but doesn't exist as an external system in the model yet
+- **VEP (Video Enabled Policing)** is referenced by LAA and Probation functions but doesn't exist as an external system in the model yet
 
 ## Complexity Ranking (simplest → most complex)
 
@@ -17,7 +17,7 @@ All 8 function apps live in a single monorepo: [hmcts/cpp-context-azure-legalaid
 | 1 | Court Register | `courtregister-azure-functions/` | 4 (Redis, Results Service, Reference Data, Progression) | **Done** |
 | 2 | Informant Register | `informantregister-azure-functions/` | 4 (Redis, Results Service, Reference Data, Results Service write) | **Done** |
 | 3 | Prison Court Record | `prisoncourtregister-azure-functions/` | 4 (Redis, Results Service, Reference Data, Progression) | **Done** |
-| 4 | Probation | `probation-azure-functions/` | 4 (Redis, Results Service, Users & Groups, HMPPS, VEP) | Todo |
+| 4 | Probation | `probation-azure-functions/` | 5 (Redis, Results Service, Users & Groups, HMPPS, VEP) | **Done** |
 | 5 | Court Order | `courtorders-azure-functions/` | 3 services but complex business logic (Redis, Results Service, Court Orders Service with read+write) | Todo |
 | 6 | LAA | `legalaidagency-azure-functions/` | 7 (Redis, Results Service, Unified Search, Progression, Hearing Service, LAA, Blob Storage + VEP) | Todo |
 | 7 | NOWs | `nows-azure-functions/` | 8+ (12-step orchestration with extensive Reference Data lookups, Staging Enforcement, feature toggles) | Todo |
@@ -54,12 +54,18 @@ All 8 function apps live in a single monorepo: [hmcts/cpp-context-azure-legalaid
 - **Also updated**: Progression Service — added prison court register documentation to its description
 - **Fixed**: technology (Azure Functions → Azure Durable Functions), language (TypeScript → JavaScript), summary rewritten to accurately describe the function
 
-### 4. Probation Result Functions
+### 4. Probation Result Functions (DONE)
 
 - **What it does**: Filters and distributes hearing results to HMPPS (probation) AND VEP (police forces)
-- **Missing relationships**: Results Service (cache fallback), Users & Groups (youth filter feature toggle), VEP (external system)
-- **Key detail**: Dual output — sends to both HMPPS and VEP. Filters out SJP/box hearings, youth defendants (toggle), LAA references, judiciary info
-- **Requires**: VEP to be added as an external system in `model-external-systems.c4`
+- **Relationships updated**: Redis (cache read), Results Service (cache fallback), Users & Groups (youth filter feature toggle), HMPPS (filtered hearing results), VEP (police-case results)
+- **Key details**:
+  - 5-step orchestrator pipeline: HearingResultedCacheQuery → ProbationHearingResultedFilter → HMPPSExternalPublisher → VEPHearingResultedFilter → VEPHearingResultedPublishHandler
+  - VEP steps only run when police-originated prosecution cases exist in the hearing
+  - Probation filter: excludes SJP/box/virtual box hearings, optionally removes youth defendants (controlled by feature toggle in Users & Groups), strips LAA references, judiciary, associated persons, and delegated powers
+  - VEP filter: excludes SJP/box/virtual box hearings, strips LAA references, keeps only police-originated prosecution cases
+  - Both publishers use mTLS client certificates for external HTTPS calls via Azure API Management
+- **Also updated**: Added VEP (Video Enabled Policing) as a new external system in `model-external-systems.c4`
+- **Fixed**: technology (Azure Functions → Azure Durable Functions), language (TypeScript → JavaScript), summary rewritten for dual HMPPS/VEP output
 
 ### 5. Court Order Result Functions
 

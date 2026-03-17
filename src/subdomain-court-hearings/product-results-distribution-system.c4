@@ -82,16 +82,20 @@ Manages hearing results and coordinates their distribution to criminal justice p
 
             probation-result-functions = functions {
                 title 'Probation Result Functions'
-                technology 'Azure Functions'
-                summary 'Distributes hearing results to probation services for offender management, risk assessment, and sentence planning'
+                technology 'Azure Durable Functions'
+                description 'Triggered by hearing resulted events, one per hearing. Retrieves hearing details from Redis cache (or Results Service on cache miss). Filters out SJP hearings, box hearings, and virtual box hearings. Checks a feature toggle in Users & Groups to determine whether to exclude youth defendants. Strips LAA references, judiciary details, associated persons, and delegated powers from the payload before sending filtered results to HMPPS. If the hearing contains police-originated prosecution cases, separately filters to only those police cases and sends them to VEP for distribution to police forces.'
+                summary 'Filters and distributes hearing results to HMPPS for probation services, and police-case results to VEP for police forces'
                 metadata {
-                    language 'TypeScript'
+                    language 'JavaScript'
                     software-framework 'Node.js 20.9.0'
                 }
                 link https://github.com/hmcts/cpp-context-azure-legalaidagency 'Repository'
 
                 this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-0 'reads cached hearing results from'
-                this -> hmpps 'sends results to'
+                this -> results-service 'queries hearing details on cache miss from'
+                this -> cp.users-and-groups-system.users-and-groups 'checks youth filter feature toggle in'
+                this -> hmpps 'sends filtered hearing results to'
+                this -> vep 'sends police-case hearing results to'
             }
             
             court-order-result-functions = functions {

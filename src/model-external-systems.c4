@@ -11,4 +11,5 @@ model {
     dlrm-migration-platform = external-system "DLRM Migration Platform" "Platform for undertaking legacy system migrations"
     sdp = external-system "Strategic Data Platform (SDP)" "MOJ data platform for operational reports and statistics"
     track-a-case = external-system "Track a Case" "Allows citizens to access details of a case, currently in Private Beta"
+    vep = external-system "Video Enabled Policing (VEP)" "Receives hearing results from Common Platform for police forces"
 }

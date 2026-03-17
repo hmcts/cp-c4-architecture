@@ -7,6 +7,15 @@ model {
             results-service = microservice {
                 title 'Results Service'
                 technology 'Java EE'
+                summary 'Stores hearing results, triggers distribution to criminal justice partners via Azure Functions, and generates informant register CSVs for prosecution authorities'
+                description """
+Manages hearing results and coordinates their distribution to criminal justice partners.
+
+**Documented functionality (incomplete):**
+- **Result storage and caching** — Stores hearing results in the Results Database and caches them in Redis so that downstream Azure Functions can retrieve results quickly without repeated database queries
+- **Result distribution** — When hearing results are shared by a court clerk, publishes events that trigger the 8 Azure Durable Functions to distribute results to external partners (LAA, HMPPS, prosecution authorities, etc.)
+- **Informant register** — Receives informant register submissions from the Informant Register Result Functions, grouped by prosecution authority and date. Each submission includes defendant details, results, and the recipients identified by the function app's subscription matching. Batches all submissions for the same prosecution authority and day, then generates a CSV per batch (InformantRegister_{authorityCode}_{date}.csv). For group cases, looks up member defendants from the Progression Service. Stores the generated CSV in the File Service and emails it to the identified recipients via GOV.UK Notify. Only email delivery is supported.
+"""
                 metadata {
                     language 'Java'
                     software-framework 'Java EE 8'
@@ -28,6 +37,8 @@ model {
                 this -> prison-court-record-result-functions 'sends results to'
                 this -> informant-register-result-functions 'sends results to'
                 this -> sjp-result-functions 'sends results to'
+                this -> cp.case-management-system.progression-service 'looks up group case member defendants from'
+                this -[notify]-> cp.notification-notify 'sends informant register CSV emails to prosecution authorities via'
                 this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
 
             }
@@ -130,16 +141,19 @@ model {
 
             informant-register-result-functions = functions {
                 title 'Informant Register Result Functions'
-                technology 'Azure Functions'
-                summary 'Updates the informant register'
+                technology 'Azure Durable Functions'
+                description 'Triggered by hearing resulted events, one per hearing. Retrieves hearing details from Redis cache (or Results Service on cache miss), groups results by prosecution authority, and filters to only results available for court extracts that have not already been published for NOWs. Matches each prosecution authority\'s fragment against distribution subscription rules from Reference Data to identify recipients. Assembles informant register data with defendant details, offences, pleas, verdicts, results, and matched recipients, then submits each to the Results Service grouped by prosecution authority and date for CSV generation and distribution.'
+                summary 'Assembles informant register data grouped by prosecution authority from hearing results and submits to the Results Service for CSV distribution'
                 metadata {
-                    language 'TypeScript'
+                    language 'JavaScript'
                     software-framework 'Node.js 20.9.0'
                 }
                 link https://github.com/hmcts/cpp-context-azure-legalaidagency 'Repository'
 
                 this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-0 'reads cached hearing results from'
-                this -> results-service 'updates the informant register'
+                this -> results-service 'queries hearing details on cache miss from'
+                this -> cp.reference-data-system.reference-data 'looks up NOW subscription metadata from'
+                this -> results-service 'submits informant register entries to'
             }
 
             sjp-result-functions = functions {

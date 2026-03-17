@@ -268,6 +268,23 @@ gh search code "pattern" --repo hmcts/{repo} --json path
 - App routes for feature modules
 - Environment/config files for API base URLs
 
+**For Node.js Azure Functions (Azure Durable Functions), check:**
+- `pom.xml` in the `azure-functions/` directory — `frontend-maven-plugin` pins the Node.js version (`<nodeVersion>`)
+- File extensions (`.js` vs `.ts`) and presence of `tsconfig.json` to determine actual language
+- Orchestrator files (`*Handler/index.js` or `*Orchestrator/index.js`) — these define the activity pipeline and reveal the full sequence of operations
+- Activity files (`*/index.js`) — each activity may make HTTP calls to other services via environment variables like `*_CONTEXT_API_BASE_URI`
+- Shared utilities (e.g. `HearingResultedCacheQuery`) — typically read from Redis first, then fall back to a query API on cache miss
+- `host.json` — Durable Task hub configuration and extension bundles
+- Test fixtures (`test/*.json`) — often reveal payload structures and recipient data that clarify business purpose
+- Note: multiple function apps may live in a single monorepo under separate directories
+
+**Tracing document lifecycle across services:**
+When a function app submits data to a service like Progression for document generation, trace the full chain to understand what happens downstream. The function app's C4 description should capture the end-to-end outcome (e.g. "aggregated into a daily PDF and emailed to YOTs"), not just "sends data to Progression". Check:
+- What the receiving service does with the payload (aggregation? immediate processing?)
+- Whether it calls Document Generator (Docmosis templates) for PDF rendering
+- Whether it calls Notification Notify / GOV.UK Notify for email distribution
+- Who the recipients are (from subscription/test data)
+
 **What to look for:**
 - Database connections (datasource config)
 - REST/HTTP calls to other services

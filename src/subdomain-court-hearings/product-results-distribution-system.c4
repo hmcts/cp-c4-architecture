@@ -54,16 +54,29 @@ Manages hearing results and coordinates their distribution to criminal justice p
 
             laa-result-functions = functions {
                 title 'LAA Result Functions'
-                technology 'Azure Functions'
-                summary 'Distributes hearing results to the Legal Aid Agency to support legal aid funding decisions and case management'
+                technology 'Azure Durable Functions'
+                summary 'Filters and distributes hearing results to the Legal Aid Agency, and provides HTTP query APIs for LAA to retrieve hearing results and event logs on demand'
+                description """
+Triggered by hearing resulted events and also exposes query APIs that LAA calls into directly. Three flows:
+
+1. **Event-driven publishing** — Retrieves hearing details from Redis cache (or Results Service on cache miss). Queries Unified Search by case URN to find prosecution cases with LAA references, and queries Progression by application ID to find court applications with LAA references. Filters the hearing to only defendants and applications that have LAA references. Reads subscriber endpoint configuration from Azure Blob Storage, then publishes the filtered hearing results to LAA.
+
+2. **Hearing result query** — LAA requests hearing results by hearing ID. Retrieves and filters the hearing through the same cache-query and LAA-reference-filter pipeline, returning filtered results.
+
+3. **Event log query** — LAA requests a hearing event log by hearing ID and date. Checks Unified Search for LAA references on the hearing's prosecution cases and court applications. If LAA references exist, queries the Hearing Service for the hearing event log and returns it.
+"""
                 metadata {
-                    language 'TypeScript'
+                    language 'JavaScript'
                     software-framework 'Node.js 20.9.0'
                 }
                 link https://github.com/hmcts/cpp-context-azure-legalaidagency 'Repository'
 
                 this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-0 'reads cached hearing results from'
-                this -> laa 'sends results to'
+                this -> results-service 'queries hearing details on cache miss from'
+                this -> cp.case-administration-subdomain.case-management-system.unified-search-query-service 'checks for LAA references on prosecution cases and court applications using'
+                this -> cp.case-administration-subdomain.case-management-system.progression-service 'queries court application LAA references from'
+                this -> cp.court-hearings-subdomain.hearing-system.hearing-service 'queries hearing event logs from'
+                this -> laa 'sends filtered hearing results to'
             }
             
             nows-result-functions = functions {

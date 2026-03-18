@@ -19,7 +19,7 @@ All 8 function apps live in a single monorepo: [hmcts/cpp-context-azure-legalaid
 | 3 | Prison Court Record | `prisoncourtregister-azure-functions/` | 4 (Redis, Results Service, Reference Data, Progression) | **Done** |
 | 4 | Probation | `probation-azure-functions/` | 5 (Redis, Results Service, Users & Groups, HMPPS, VEP) | **Done** |
 | 5 | Court Order | `courtorders-azure-functions/` | 3 services but complex business logic (Redis, Results Service, Court Orders Service with read+write) | **Done** |
-| 6 | LAA | `legalaidagency-azure-functions/` | 7 (Redis, Results Service, Unified Search, Progression, Hearing Service, LAA, Blob Storage + VEP) | Todo |
+| 6 | LAA | `azure-functions/durable-functions/` (LAA* functions) | 5 (Redis, Results Service, Unified Search, Progression, Hearing Service, LAA) | **Done** |
 | 7 | NOWs | `nows-azure-functions/` | 8+ (12-step orchestration with extensive Reference Data lookups, Staging Enforcement, feature toggles) | Todo |
 | 8 | SJP | `azure-functions/durable-functions/` | 7 (mega-orchestrator: Results Service, SJP Service, Staging Enforcement, Court Orders Service, Reference Data, Results Service write) | Todo |
 
@@ -85,12 +85,22 @@ All 8 function apps live in a single monorepo: [hmcts/cpp-context-azure-legalaid
   - Default end date: 7 years from start; life sentences: 99 years; Youth Offender Panel: 3 years
 - **Fixed**: technology (Azure Functions → Azure Durable Functions), language (TypeScript → JavaScript), summary rewritten, description added, relationship to Court Orders Service given proper description, added missing Results Service cache fallback relationship
 
-### 6. LAA Result Functions
+### 6. LAA Result Functions (DONE)
 
-- **What it does**: Filters and distributes hearing results to LAA, provides on-demand HTTP query APIs for LAA, and distributes police-case results to VEP
-- **Missing relationships**: Results Service (cache fallback), Unified Search Query Service (LAA reference checks), Progression Service (application LAA references), Hearing Service (event logs), Azure Blob Storage (subscriber config)
-- **Key detail**: Bidirectional — LAA calls INTO the function's HTTP endpoints. Also includes VEP publishing for police cases. Three flows: event-driven publishing, HTTP result query, HTTP event log query
-- **Requires**: VEP external system
+- **What it does**: Filters and distributes hearing results to LAA (event-driven), and provides HTTP query APIs for LAA to retrieve hearing results and event logs on demand
+- **Relationships updated**: Redis (cache read), Results Service (cache fallback), Unified Search Query Service (LAA reference checks by case URN and hearing ID), Progression Service (court application LAA references), Hearing Service (event logs), LAA (filtered results via mTLS)
+- **Key details**:
+  - Three flows: (1) event-driven publishing orchestrator, (2) HTTP hearing result query, (3) HTTP event log query
+  - LAA functions live in `azure-functions/durable-functions/` (shared directory), NOT `legalaidagency-azure-functions/` — packaging is via `laa-assembly.xml` exclusion-based assembly
+  - `legalaidagency-azure-functions/` only contains `OutboundComplianceEnforcement` (a separate concern)
+  - Event-driven flow: HearingResultedCacheQuery → LAAHearingResultedFilter → HearingResultedPublisher
+  - LAA filter queries Unified Search for prosecution cases with LAA references (by case URN), and Progression for court applications with LAA references (by application ID). Filters to only defendants/applications with LAA references.
+  - Publisher reads subscriber endpoint config from Azure Blob Storage (`subscribers` container), publishes via mTLS with API Management subscription key
+  - HTTP hearing query: LAA calls in via GET/POST with hearingId, gets filtered results synchronously through same cache + filter pipeline
+  - HTTP event log query (fast version): checks Unified Search for LAA references, then queries Hearing Service for event logs
+  - Also has a slower event log version using durable orchestrator (LAAGetHearingEventLogHttpTrigger → LAAGetHearingEventLogOrchestrator)
+- **Initial research corrections**: VEP is NOT included — explicitly excluded in `laa-assembly.xml`. Only 5 service relationships, not 7. Blob Storage is internal function app storage, not a separate shared component.
+- **Fixed**: technology (Azure Functions → Azure Durable Functions), language (TypeScript → JavaScript), summary rewritten for bidirectional nature, description added with three-flow documentation
 
 ### 7. NOWs Result Functions
 

@@ -15,6 +15,8 @@ Manages hearing results and coordinates their distribution to criminal justice p
 - **Result storage and caching** — Stores hearing results in the Results Database and caches them in Redis so that downstream Azure Functions can retrieve results quickly without repeated database queries
 - **Result distribution** — When hearing results are shared by a court clerk, publishes events that trigger the 8 Azure Durable Functions to distribute results to external partners (LAA, HMPPS, prosecution authorities, etc.)
 - **Informant register** — Receives informant register submissions from the Informant Register Result Functions, grouped by prosecution authority and date. Each submission includes defendant details, results, and the recipients identified by the function app's subscription matching. Batches all submissions for the same prosecution authority and day, then generates a CSV per batch (InformantRegister_{authorityCode}_{date}.csv). For group cases, looks up member defendants from the Progression Service. Stores the generated CSV in the File Service and emails it to the identified recipients via GOV.UK Notify. Only email delivery is supported.
+- **NCES tracking** — Receives NCES (National Compliance and Enforcement Service) hearing result tracking records from the NOWs Result Functions. Each record contains defendant details, enforcement area, offence results, and financial imposition details for compliance tracking.
+- **Defendant account queries** — Provides Libra GoB account information for defendants, used by the NOWs Result Functions to correlate financial enforcement with existing account numbers or correlation IDs.
 """
                 metadata {
                     language 'Java'
@@ -81,16 +83,38 @@ Triggered by hearing resulted events and also exposes query APIs that LAA calls 
             
             nows-result-functions = functions {
                 title 'NOWs Result Functions'
-                technology 'Azure Functions'
-                summary 'Creates and distributes Notices, Orders and Warrants (NOWs) to police forces, DVLA, enforcement agencies, and major creditors for public safety and compliance monitoring'
+                technology 'Azure Durable Functions'
+                summary 'Processes hearing results to generate NOWs documents, NCES enforcement tracking records, and financial enforcement requests for Staging Enforcement'
+                description """
+Triggered by hearing resulted events, one per hearing. The most complex of the 8 result distribution function apps, with a 12-step orchestrator pipeline covering three distinct outputs:
+
+1. **NCES tracking** — For defendants with financial or reportable results, builds NCES (National Compliance and Enforcement Service) hearing result records enriched with defendant details, enforcement area (resolved from defendant postcode or court LJA via Reference Data), and organisation unit details. Submits these to the Results Service for tracking.
+
+2. **NOW document generation** — Determines which Notices, Orders and Warrants (NOWs) to generate by matching each defendant's judicial results against NOW metadata definitions from Reference Data. Each matching NOW definition produces a variant, which is then cloned per user group (public vs restricted), split further by MDE (Multiple Document Edition) rules when result prompts have variant data, and matched against NOW subscription rules from Reference Data to identify recipients. For financial NOWs, enriches payloads with enforcement area and organisation unit details. A feature toggle in Users & Groups controls whether NOW document requests are routed to the Hearing NOWs Service (new path) or the Progression Service (legacy path).
+
+3. **Financial enforcement** — For defendants with financial results (fines, costs, compensation), builds detailed enforcement requests including imposition amounts, payment terms, collection orders, reserve terms, employer details, minor creditors, and parent/guardian details. Looks up major creditors from Reference Data. Submits to the Staging Enforcement Service for compliance enforcement processing.
+
+For complex hearings, intermediate payloads between orchestrator steps are stored in Azure Blob Storage to avoid exceeding durable function size limits.
+"""
                 metadata {
-                    language 'TypeScript'
+                    language 'JavaScript'
                     software-framework 'Node.js 20.9.0'
                 }
                 link https://github.com/hmcts/cpp-context-azure-legalaidagency 'Repository'
 
-                this -> hearing-nows-service 'triggers generation of NOWs documents'
                 this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-0 'reads cached hearing results from'
+                this -> results-service {
+                    title 'queries hearing details, writes NCES tracking records, and queries defendant accounts from'
+                    description 'Cache miss fallback for hearing details. Writes NCES tracking records for defendants with financial or reportable results. Queries Libra GoB account information for defendants with deemed-served amendment results.'
+                }
+                this -> cp.reference-data-system.reference-data {
+                    title 'looks up NOW metadata, subscriptions, and enforcement areas from'
+                    description 'Retrieves NOW definitions (which results trigger which documents), NOW and EDT subscription rules (who receives which documents), organisation units, major creditors, and enforcement areas (by court LJA code and defendant postcode)'
+                }
+                this -> cp.users-and-groups-system.users-and-groups 'checks Hearing NOWs feature toggle in'
+                this -> hearing-nows-service 'submits NOW document requests to'
+                this -> cp.case-administration-subdomain.progression-service 'submits NOW document requests to (legacy path)'
+                this -> staging-enforcement-service 'submits financial enforcement requests to'
             }
 
             probation-result-functions = functions {
@@ -296,6 +320,16 @@ Stores all data needed to evaluate and deliver subscription notifications.
             staging-enforcement-service = microservice {
                 title 'Staging Enforcement Service'
                 technology 'Java EE'
+                summary 'Stages financial enforcement requests, enriches with enforcement area data, exports fine accounts to Libra GoB, and provides outstanding fines queries'
+                description """
+Receives financial enforcement requests from the NOWs and SJP Result Functions and manages the full lifecycle of exporting fine accounts to Libra GoB for enforcement processing.
+
+**Documented functionality (incomplete):**
+- **Enforcement request processing** — Receives financial imposition requests, applies case-level filtering (deduplication by prosecution case reference), enriches with enforcement area details from Reference Data (by defendant postcode or court LJA), and stores in the Staging Enforcement Database. For SJP-originated cases, queries the SJP Service for account notes, defendant NI numbers, and case details.
+- **Libra GoB export** — Batches stored fine accounts into XML (CreateFineAccountsRequest format) and exports to Libra GoB via WebDAV. Uses an Activiti workflow to manage the export lifecycle: selecting requests, generating filenames, batching, sending, and tracking acknowledgements.
+- **Libra acknowledgement processing** — Retrieves acknowledgement response files from Libra GoB, records account numbers, and publishes acknowledgement events consumed by the Results Service for NCES email notification generation.
+- **Outstanding fines query** — Provides a query API for retrieving defendant outstanding fines by searching Libra GoB via SOAP, with Redis caching of responses. Used by the Hearing Service during court hearings.
+"""
                 metadata {
                     language 'Java'
                     software-framework 'Java EE 8'
@@ -303,14 +337,19 @@ Stores all data needed to evaluate and deliver subscription notifications.
                 link https://github.com/hmcts/cpp-context-staging-enforcement 'Repository'
 
                 this -> staging-enforcement-database
-                this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-0 'caches enforcement SOAP responses in'
+                this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-0 'caches Libra GoB outstanding fines query responses in'
+                this -> cp.reference-data-system.reference-data 'looks up enforcement areas, organisation units, and prosecutors from'
+                this -> cp.case-administration-subdomain.case-management-system.sjp-service 'queries SJP case details, account notes, and defendant information from'
+                this -> cp.id-mapper-system.system-id-mapper 'maps export identifiers using'
+                this -> libra 'exports fine accounts to and queries outstanding fines from'
                 this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
+                this -[auth]-> cp.users-and-groups 'makes authorisation decisions using'
             }
 
             staging-enforcement-database = datastore {
                 title 'Staging Enforcement Database'
                 technology 'PostgreSQL'
-                summary 'Stores events and entities'
+                summary 'Stores financial enforcement requests, fine account data, export status, and Libra acknowledgement responses'
                 style {
                     icon tech:postgresql
                 }

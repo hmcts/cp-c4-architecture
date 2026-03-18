@@ -20,7 +20,7 @@ All 8 function apps live in a single monorepo: [hmcts/cpp-context-azure-legalaid
 | 4 | Probation | `probation-azure-functions/` | 5 (Redis, Results Service, Users & Groups, HMPPS, VEP) | **Done** |
 | 5 | Court Order | `courtorders-azure-functions/` | 3 services but complex business logic (Redis, Results Service, Court Orders Service with read+write) | **Done** |
 | 6 | LAA | `azure-functions/durable-functions/` (LAA* functions) | 5 (Redis, Results Service, Unified Search, Progression, Hearing Service, LAA) | **Done** |
-| 7 | NOWs | `nows-azure-functions/` | 8+ (12-step orchestration with extensive Reference Data lookups, Staging Enforcement, feature toggles) | Todo |
+| 7 | NOWs | `nows-azure-functions/` | 8+ (12-step orchestration with extensive Reference Data lookups, Staging Enforcement, feature toggles) | **Done** |
 | 8 | SJP | `azure-functions/durable-functions/` | 7 (mega-orchestrator: Results Service, SJP Service, Staging Enforcement, Court Orders Service, Reference Data, Results Service write) | Todo |
 
 ## Per-Function App Details
@@ -102,11 +102,22 @@ All 8 function apps live in a single monorepo: [hmcts/cpp-context-azure-legalaid
 - **Initial research corrections**: VEP is NOT included — explicitly excluded in `laa-assembly.xml`. Only 5 service relationships, not 7. Blob Storage is internal function app storage, not a separate shared component.
 - **Fixed**: technology (Azure Functions → Azure Durable Functions), language (TypeScript → JavaScript), summary rewritten for bidirectional nature, description added with three-flow documentation
 
-### 7. NOWs Result Functions
+### 7. NOWs Result Functions (DONE)
 
-- **What it does**: Processes hearing results to generate NOWs documents, NCES tracking records, and financial enforcement requests
-- **Missing relationships**: Results Service (cache fallback + NCES tracking writes), Reference Data (NOW metadata, subscriptions, org units, major creditors, enforcement areas), Users & Groups (feature permissions), Staging Enforcement Service (financial enforcement), Progression Service (legacy NOW path), Azure Blob Storage (intermediate payloads)
-- **Key detail**: 12-step orchestration pipeline. Most complex business logic of all function apps. Feature toggle switches between Hearing NOWs Service and Progression Service for NOW document generation
+- **What it does**: Processes hearing results to produce three outputs: NCES enforcement tracking records, NOWs documents (with MDE variant splitting and user group filtering), and financial enforcement requests
+- **Relationships updated**: Redis (cache read), Results Service (cache fallback + NCES tracking writes + defendant GOB account queries), Reference Data (NOW metadata, NOW subscriptions, organisation units, major creditors, enforcement areas by LJA and postcode), Users & Groups (Hearing NOWs feature toggle), Hearing NOWs Service (NOW document requests — new path), Progression Service (NOW document requests — legacy path), Staging Enforcement Service (financial enforcement requests)
+- **Key details**:
+  - 12-step orchestrator pipeline: HearingResultedCacheQuery → SetComplianceEnforcement → SetNcesHearingResults → ProcessOutboundNcesHearingResult → SetNowVariants → CloneNowsForUserGroupVariants → SetMDEVariants → NowsVariantsSubscriptions → OutboundNowsVariants → ProcessOutboundNowVariants → OutboundComplianceEnforcement → ProcessOutboundComplianceEnforcement
+  - Steps 11-12 (compliance enforcement) only run when defendants have financial results
+  - Steps 6-10 (NOW document generation) only run when NOW variants are produced
+  - NCES tracking: builds per-defendant records with enforcement area (resolved from postcode or LJA via Reference Data) and sends to Results Service track-results command API
+  - NOW document generation: matches results against NOW metadata definitions from Reference Data, clones per user group (public vs restricted), applies MDE rules to split by variant prompt data, matches against subscription rules, enriches financial NOWs with enforcement area details
+  - Feature toggle in Users & Groups controls routing: Hearing NOWs Service (new) vs Progression Service (legacy)
+  - Financial enforcement: builds enforcement requests with impositions, payment terms, collection orders, reserve terms, employer/minor creditor/parent-guardian details; looks up major creditors from Reference Data; sends to Staging Enforcement Service
+  - For complex hearings, intermediate payloads are stored in Azure Blob Storage between orchestrator steps (not a separate service relationship — internal infrastructure)
+  - SetNowVariants also queries Results Service for defendant GOB account info for deemed-served amendment results
+- **Also updated**: Results Service — added NCES tracking and defendant account query documentation; Progression Service — added NOW document generation (legacy path) documentation; Staging Enforcement Service — added summary
+- **Fixed**: technology (Azure Functions → Azure Durable Functions), language (TypeScript → JavaScript), summary rewritten, description added, relationships expanded from 2 to 7
 
 ### 8. SJP Result Functions
 

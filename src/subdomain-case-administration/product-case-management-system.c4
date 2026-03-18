@@ -75,6 +75,7 @@ model {
 **Documented functionality (incomplete):**
 - **Youth Court Register** — Aggregates court register submissions per court centre per day into a single PDF (Docmosis template OEE_Layout5) and distributes it to Youth Offending Teams via Notification Notify and GOV.UK Notify.
 - **Prison Court Register** — Receives per-defendant prison court register submissions from the Prison Court Record Result Functions. Each submission includes defendant details, hearing information, offences, results, recipient email addresses (resolved from custodial establishments, judicial result prompts, or subscription configuration), and custody location. Generates a separate PDF per defendant and distributes it to the identified recipients (prisons, custody suites, or subscription-configured addresses) via Notification Notify and GOV.UK Notify.
+- **NOW document generation (legacy path)** — Receives NOW document requests from the NOWs Result Functions when the Hearing NOWs feature toggle is disabled. This is the legacy path; the new path routes requests to the Hearing NOWs Service instead.
 """
                 metadata {
                     language 'Java'

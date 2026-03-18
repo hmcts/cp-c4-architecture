@@ -14,8 +14,8 @@ Manages hearing results and coordinates their distribution to criminal justice p
 **Documented functionality (incomplete):**
 - **Result storage and caching** — Stores hearing results in the Results Database and caches them in Redis so that downstream Azure Functions can retrieve results quickly without repeated database queries
 - **Result distribution** — When hearing results are shared by a court clerk, publishes events that trigger the 8 Azure Durable Functions to distribute results to external partners (LAA, HMPPS, prosecution authorities, etc.)
-- **Informant register** — Receives informant register submissions from the Informant Register Result Functions, grouped by prosecution authority and date. Each submission includes defendant details, results, and the recipients identified by the function app's subscription matching. Batches all submissions for the same prosecution authority and day, then generates a CSV per batch (InformantRegister_{authorityCode}_{date}.csv). For group cases, looks up member defendants from the Progression Service. Stores the generated CSV in the File Service and emails it to the identified recipients via GOV.UK Notify. Only email delivery is supported.
-- **NCES tracking** — Receives NCES (National Compliance and Enforcement Service) hearing result tracking records from the NOWs Result Functions. Each record contains defendant details, enforcement area, offence results, and financial imposition details for compliance tracking.
+- **Informant register** — Receives informant register submissions from the Informant Register and SJP Result Functions, grouped by prosecution authority and date. Each submission includes defendant details, results, and the recipients identified by the function app's subscription matching. Batches all submissions for the same prosecution authority and day, then generates a CSV per batch (InformantRegister_{authorityCode}_{date}.csv). For group cases, looks up member defendants from the Progression Service. Stores the generated CSV in the File Service and emails it to the identified recipients via GOV.UK Notify. Only email delivery is supported.
+- **NCES tracking** — Receives NCES (National Compliance and Enforcement Service) hearing result tracking records from the NOWs and SJP Result Functions. Each record contains defendant details, enforcement area, offence results, and financial imposition details for compliance tracking.
 - **Defendant account queries** — Provides Libra GoB account information for defendants, used by the NOWs Result Functions to correlate financial enforcement with existing account numbers or correlation IDs.
 """
                 metadata {
@@ -204,15 +204,41 @@ For complex hearings, intermediate payloads between orchestrator steps are store
 
             sjp-result-functions = functions {
                 title 'SJP Result Functions'
-                technology 'Azure Functions'
-                summary 'Handles Single Justice Procedure case results'
+                technology 'Azure Durable Functions'
+                summary 'Processes SJP hearing results to manage court orders, generate NCES tracking records, submit financial enforcement requests, store financial imposition correlation IDs, and produce informant registers'
+                description """
+Triggered by hearing resulted events for Single Justice Procedure hearings. The largest orchestrator in the Results Distribution System with a 13-step pipeline that combines court order management, NCES tracking, financial enforcement, SJP-specific financial imposition tracking, and informant register generation — logic that for non-SJP hearings is split across separate function apps.
+
+1. **NCES tracking** — For defendants with financial or reportable results, builds NCES hearing result records enriched with enforcement area (resolved from defendant postcode or court LJA via Reference Data) and organisation unit details. Submits to the Results Service for compliance tracking.
+
+2. **Financial imposition correlation** — For each defendant with financial results, sends a correlation ID to the SJP Service so that financial impositions can be linked back to the originating SJP case. This is the only SJP-specific step not shared with other result pipelines.
+
+3. **Financial enforcement** — For defendants with financial results, builds enforcement requests with imposition amounts, payment terms, collection orders, reserve terms, employer details, minor creditors, and parent/guardian details. Looks up major creditors from Reference Data. Submits to the Staging Enforcement Service with originator set to ATCM (distinguishing SJP from other pipelines which use Courts).
+
+4. **Court order management** — Filters results to those that can be subject of variation or breach. Queries existing court orders from the Application Court Orders Service, then determines the correct operation: create new orders, remove orders (for revocations, amended results with removed offences, or empty after filtering), update validity end dates, or reset validity. Groups court orders by judicial result type per defendant.
+
+5. **Informant register** — Builds informant register fragments grouped by prosecution authority with defendant details and results. Matches against NOW subscription rules from Reference Data to identify recipients. Submits to the Results Service for CSV generation and email distribution.
+
+For reshared results, only amended financial results are reprocessed for enforcement. Uses prosecution case URN from court application cases rather than application reference for SJP case identification.
+"""
                 metadata {
-                    language 'TypeScript'
+                    language 'JavaScript'
                     software-framework 'Node.js 20.9.0'
                 }
                 link https://github.com/hmcts/cpp-context-azure-legalaidagency 'Repository'
 
                 this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-0 'reads cached hearing results from'
+                this -> results-service {
+                    title 'queries hearing details, writes NCES tracking records, and submits informant registers to'
+                    description 'Cache miss fallback for hearing details. Writes NCES tracking records for defendants with financial or reportable results. Submits informant register entries grouped by prosecution authority for CSV generation and distribution.'
+                }
+                this -> cp.reference-data-system.reference-data {
+                    title 'looks up enforcement areas, organisation units, major creditors, and NOW subscriptions from'
+                    description 'Retrieves organisation units by court centre, enforcement areas by court LJA code and defendant postcode, major creditors for financial enforcement enrichment, and NOW subscription rules for informant register recipient matching'
+                }
+                this -> cp.case-administration-subdomain.case-management-system.sjp-service 'sends financial imposition correlation IDs to'
+                this -> staging-enforcement-service 'submits financial enforcement requests to'
+                this -> cp.case-administration-subdomain.application-court-orders-service 'reads existing court orders from and writes create, remove, update, and reset operations to'
             }
 
             subscriptions-ui = user-interface {

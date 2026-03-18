@@ -21,7 +21,7 @@ All 8 function apps live in a single monorepo: [hmcts/cpp-context-azure-legalaid
 | 5 | Court Order | `courtorders-azure-functions/` | 3 services but complex business logic (Redis, Results Service, Court Orders Service with read+write) | **Done** |
 | 6 | LAA | `azure-functions/durable-functions/` (LAA* functions) | 5 (Redis, Results Service, Unified Search, Progression, Hearing Service, LAA) | **Done** |
 | 7 | NOWs | `nows-azure-functions/` | 8+ (12-step orchestration with extensive Reference Data lookups, Staging Enforcement, feature toggles) | **Done** |
-| 8 | SJP | `azure-functions/durable-functions/` | 7 (mega-orchestrator: Results Service, SJP Service, Staging Enforcement, Court Orders Service, Reference Data, Results Service write) | Todo |
+| 8 | SJP | `azure-functions/durable-functions/` | 7 (mega-orchestrator: Results Service, SJP Service, Staging Enforcement, Court Orders Service, Reference Data, Results Service write) | **Done** |
 
 ## Per-Function App Details
 
@@ -119,8 +119,19 @@ All 8 function apps live in a single monorepo: [hmcts/cpp-context-azure-legalaid
 - **Also updated**: Results Service — added NCES tracking and defendant account query documentation; Progression Service — added NOW document generation (legacy path) documentation; Staging Enforcement Service — added summary
 - **Fixed**: technology (Azure Functions → Azure Durable Functions), language (TypeScript → JavaScript), summary rewritten, description added, relationships expanded from 2 to 7
 
-### 8. SJP Result Functions
+### 8. SJP Result Functions (DONE)
 
-- **What it does**: Distributes Single Justice Procedure hearing results to 5 downstream services
-- **Missing relationships**: Results Service (cache fallback + NCES tracking + informant register writes), SJP Service (financial imposition correlation IDs), Staging Enforcement Service (compliance enforcement), Application Court Orders Service (create/update/remove), Reference Data (subscription metadata)
-- **Key detail**: Mega-orchestrator that duplicates logic from Court Order, Informant Register, and NOWs pipelines but for SJP cases specifically. Current model only had 1 relationship (Redis) — actually has 7+
+- **What it does**: Processes SJP hearing results through a 13-step mega-orchestrator combining court order management, NCES tracking, financial enforcement, SJP-specific financial imposition correlation, and informant register generation
+- **Relationships updated**: Redis (cache read), Results Service (cache fallback + NCES tracking writes + informant register writes), Reference Data (enforcement areas by LJA/postcode, organisation units, major creditors, NOW subscriptions), SJP Service (financial imposition correlation IDs), Staging Enforcement Service (financial enforcement requests), Application Court Orders Service (read existing + write create/remove/update/reset)
+- **Key details**:
+  - 13-step orchestrator pipeline: HearingResultedCacheQuery → SetComplianceEnforcement → SetNcesHearingResults → ProcessOutboundNcesHearingResult → ProcessOutboundSJPFinancialImposition → OutboundComplianceEnforcement → ProcessOutboundComplianceEnforcement → OutboundCourtOrder → ProcessOutboundCourtOrder → SetInformantRegister → InformantRegisterSubscriptions → OutboundInformantRegister → ProcessOutboundInformantRegister
+  - Step 4 (NCES tracking write) only runs when NCES hearing results are produced
+  - Steps 5-7 (SJP financial imposition + enforcement) only run when defendants have financial results
+  - Steps 11-13 (informant register) only run when informant register data is produced
+  - Only SJP-specific activity is ProcessOutboundSJPFinancialImposition — sends correlation IDs to SJP Service so financial impositions link back to SJP cases
+  - Financial enforcement uses originator "ATCM" (vs "Courts" in NOWs pipeline)
+  - For reshared results, only amended financial results are reprocessed
+  - Uses prosecution case URN from court application cases rather than application reference for SJP case identification
+  - No separate assembly file — SJP functions share the durable-functions app alongside LAA
+- **Also updated**: Results Service — added SJP as source for NCES tracking and informant register submissions
+- **Fixed**: technology (Azure Functions → Azure Durable Functions), language (TypeScript → JavaScript), summary rewritten, description added, relationships expanded from 1 to 6

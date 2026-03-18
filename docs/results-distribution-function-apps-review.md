@@ -18,7 +18,7 @@ All 8 function apps live in a single monorepo: [hmcts/cpp-context-azure-legalaid
 | 2 | Informant Register | `informantregister-azure-functions/` | 4 (Redis, Results Service, Reference Data, Results Service write) | **Done** |
 | 3 | Prison Court Record | `prisoncourtregister-azure-functions/` | 4 (Redis, Results Service, Reference Data, Progression) | **Done** |
 | 4 | Probation | `probation-azure-functions/` | 5 (Redis, Results Service, Users & Groups, HMPPS, VEP) | **Done** |
-| 5 | Court Order | `courtorders-azure-functions/` | 3 services but complex business logic (Redis, Results Service, Court Orders Service with read+write) | Todo |
+| 5 | Court Order | `courtorders-azure-functions/` | 3 services but complex business logic (Redis, Results Service, Court Orders Service with read+write) | **Done** |
 | 6 | LAA | `legalaidagency-azure-functions/` | 7 (Redis, Results Service, Unified Search, Progression, Hearing Service, LAA, Blob Storage + VEP) | Todo |
 | 7 | NOWs | `nows-azure-functions/` | 8+ (12-step orchestration with extensive Reference Data lookups, Staging Enforcement, feature toggles) | Todo |
 | 8 | SJP | `azure-functions/durable-functions/` | 7 (mega-orchestrator: Results Service, SJP Service, Staging Enforcement, Court Orders Service, Reference Data, Results Service write) | Todo |
@@ -67,11 +67,23 @@ All 8 function apps live in a single monorepo: [hmcts/cpp-context-azure-legalaid
 - **Also updated**: Added VEP (Video Enabled Policing) as a new external system in `model-external-systems.c4`
 - **Fixed**: technology (Azure Functions → Azure Durable Functions), language (TypeScript → JavaScript), summary rewritten for dual HMPPS/VEP output
 
-### 5. Court Order Result Functions
+### 5. Court Order Result Functions (DONE)
 
-- **What it does**: Creates, updates, removes and resets court orders based on hearing results
-- **Missing relationships**: Results Service (cache fallback). Court Orders Service relationship needs description (reads existing orders + writes create/update/remove/reset)
-- **Key detail**: Complex business logic — queries existing court orders to determine create vs update vs remove. Skips group proceedings. Handles OREV (Order Revocation), variations, breaches, amended results
+- **What it does**: Manages court order lifecycle — creates, updates, removes, and resets court orders based on hearing results including revocations, variations, and breaches
+- **Relationships updated**: Redis (cache read), Results Service (cache fallback), Application Court Orders Service (read existing orders + write create/remove/update/reset)
+- **Key details**:
+  - 3-step orchestrator pipeline: HearingResultedCacheQuery → OutboundCourtOrder → ProcessOutboundCourtOrder
+  - Group proceedings are excluded
+  - Filters results to those where `canBeSubjectOfVariation` or `canBeSubjectOfBreach` is true
+  - Queries existing court orders via 3 query endpoints (by case+defendant, by hearing+defendant+sittingDate, by defendant) to determine create vs update vs remove
+  - Four operation types sent to Court Orders Service command API: create, remove, update validity (extend end date), reset end date
+  - OREV (Order Revocation) results trigger removal of existing court orders
+  - Amended results: if offences have been removed compared to what's in the database, affected court orders are removed
+  - `preserveActiveOrder` flag on judicial results controls whether offences are retained or removed from existing orders
+  - `canExtendActiveOrder` results update or reset court order validity periods
+  - Court orders grouped by judicial result type per defendant; start/end dates calculated from judicial result prompts
+  - Default end date: 7 years from start; life sentences: 99 years; Youth Offender Panel: 3 years
+- **Fixed**: technology (Azure Functions → Azure Durable Functions), language (TypeScript → JavaScript), summary rewritten, description added, relationship to Court Orders Service given proper description, added missing Results Service cache fallback relationship
 
 ### 6. LAA Result Functions
 

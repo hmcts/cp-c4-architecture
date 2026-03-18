@@ -100,16 +100,18 @@ Manages hearing results and coordinates their distribution to criminal justice p
             
             court-order-result-functions = functions {
                 title 'Court Order Result Functions'
-                technology 'Azure Functions'
-                summary 'Creates, updates and removes court orders based on hearing results'
+                technology 'Azure Durable Functions'
+                description 'Triggered by hearing resulted events, one per hearing. Retrieves hearing details from Redis cache (or Results Service on cache miss). Skips group proceedings. For each defendant, filters results to those that can be subject of variation or breach proceedings, then determines the correct court order operation by querying existing orders from the Application Court Orders Service. Handles four operation types: creating new court orders, removing orders (for Order Revocation results, when offences are removed via amended results, or when no offences remain after preserve-active-order filtering), updating order validity end dates (for results that extend an active order), and resetting order validity. Court orders are grouped by judicial result type per defendant, with start and end dates calculated from judicial result prompts or defaulting to 7 years (99 years for life sentence result types, 3 years for Youth Offender Panel).'
+                summary 'Manages court order lifecycle — creates, updates, removes, and resets court orders based on hearing results including revocations, variations, and breaches'
                 metadata {
-                    language 'TypeScript'
+                    language 'JavaScript'
                     software-framework 'Node.js 20.9.0'
                 }
                 link https://github.com/hmcts/cpp-context-azure-legalaidagency 'Repository'
 
                 this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-0 'reads cached hearing results from'
-                this -> cp.case-administration-subdomain.application-court-orders-service
+                this -> results-service 'queries hearing details on cache miss from'
+                this -> cp.case-administration-subdomain.application-court-orders-service 'reads existing court orders from and writes create, remove, update, and reset operations to'
             }
             
             court-register-result-functions = functions {

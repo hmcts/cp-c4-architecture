@@ -90,6 +90,7 @@ model {
                 this -[notify]-> cp.notification-notify 'sends court register and other document emails via'
                 this -[mi]-> cp.management-information-system.mi-system-data-service 'sends data to'
                 this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
+                this -> application-court-orders-service 'retrieves active court orders by defendant for prosecution case data from'
                 this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
@@ -179,19 +180,25 @@ model {
             application-court-orders-service = microservice {
                 title 'Application Court Orders Service'
                 technology 'Java EE'
+                summary 'Manages court orders that track active community and custodial sentences for defendants, supporting breach and variation proceedings'
+                description 'Maintains a record of court orders created from hearing results, each linked to a defendant, hearing, and judicial result type. Provides queries for retrieving active orders by defendant, by hearing, by case, or by defendant and offence date — used by the Court Hearing UI to display existing orders during hearings and by the Case Progression Service to include active orders in prosecution case data. Accepts commands to create, remove, update validity, and reset court orders. Also enriches court orders with judicial child results retrieved from the Case Progression Service, and checks result definitions against Reference Data to determine order duration rules. Indexes court order data into Unified Search for case-wide searchability.'
                 metadata {
                     language 'Java'
                     software-framework 'Java EE 8'
                 }
                 link https://github.com/hmcts/cpp-context-applications-courtorders 'Repository'
                 this -> application-court-orders-database
+                this -> unified-search-datastore 'indexes court order data to'
+                this -> progression-service 'retrieves judicial child results from'
+                this -> cp.reference-data-system.reference-data 'looks up result definitions from'
+                this -[auth]-> cp.users-and-groups 'makes authorisation decisions using'
                 this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             application-court-orders-database = datastore {
-                title 'Application Court Orders  Database'
+                title 'Application Court Orders Database'
                 technology 'PostgreSQL'
-                summary 'Stores events and entities'
+                summary 'Stores court order events and a queryable view of active and removed court orders by defendant, hearing, and case'
                 style {
                     icon tech:postgresql
                 }

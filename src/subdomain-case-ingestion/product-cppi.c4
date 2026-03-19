@@ -4,8 +4,6 @@ model {
             title 'Common Platform Prosecutor Interface (CPPI)'
             description 'Enables cases and materials to submitted to the courts by non-police prosecutors'
 
-            this -> cp.case-management-system 'sends cases to'
-
             staging-prosecutors-service = microservice {
                 title 'Staging Prosecutors Service'
                 technology 'Java EE'
@@ -17,10 +15,14 @@ model {
                 link https://github.com/hmcts/cpp-context-staging-prosecutors 'Repository'
 
                 this -> staging-prosecutors-database
-                this -> cp.shared-components-subdomain.file-service-system.file-service-database {
-                    title 'stores CPS prosecution documents'
-                    description 'Stores binary prosecution documents (evidence, witness statements) extracted from CPS CP20 XML case submissions'
-                }
+                this -> cp.reference-data-system.reference-data 'looks up reference data from'
+                this -> cp.case-management-system.prosecution-case-file-service 'sends cases and documents to'
+                this -> cp.case-management-system.progression-service 'finds courts or tribunals'
+                this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
+                this -> cjse 'sends case results to police'
+
+                npp_user -> this 'creates cases using'
+
             }
 
             staging-prosecutors-database = datastore {

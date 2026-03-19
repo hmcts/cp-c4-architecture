@@ -269,6 +269,13 @@ model {
                     title 'retrieves files for upload'
                     description 'Retrieves stored binary files (prosecution evidence, court documents, generated PDFs) for Alfresco upload, PDF conversion, and Azure blob archiving'
                 }
+                this -> archiving-service 'zips material'
+                this -> correspondence-service 'create correspondence log entry'
+                this -> cp.results-distribution-system.hearing-nows-service 'query NOWs by material'
+                this -> cp.results-distribution-system.hearing-nows-service 'upload material to NOW'
+                this -> progression-service 'create/update forms'
+                this -> prosecution-case-file-service 'manage material on case'
+                this -> cp.users-and-groups-system 'get user, group, org and roles'
             }
 
             material-database = datastore {

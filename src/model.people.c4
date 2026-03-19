@@ -8,6 +8,10 @@ model {
     court_clerk = actor "Court Clerk" "Organises physical and electronic case files, ensuring all documents are readily accessible when needed"
     legal_advisor = actor "Legal Advisor" "Manages hearings in court and advises magistrates"
     court_admin = actor "Court Administrator" "Manages court operations"
+    police_admin = actor "Police" "Creates cases" {
+        this -> cjse "creates cases"
+    }
+    npp_user = actor "Non-police Prosecutor"
     ctsc_staff = actor "CTSC Staff" "Courts and Tribunals Service Centre staff"
     ctsc_manager = actor "CTSC Manager" "Courts and Tribunals Service Centre Manager"
     mi_user = actor "MI User" "Users of the operational management information dashboards and reports"

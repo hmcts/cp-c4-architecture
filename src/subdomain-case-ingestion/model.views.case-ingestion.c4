@@ -6,8 +6,10 @@ views 'Case Ingestion / SPI' {
             not (kind is application or kind is microservice or kind is functions or kind is datastore or kind is user-interface)
         include cp.case-administration-subdomain._
         include cp.court-hearings-subdomain._
+        include police_admin
         exclude * -> *
         include * <-> cp.spi
+        include police_admin <-> cjse
         exclude * <-> *
             where kind is mi
 
@@ -58,6 +60,8 @@ views 'Case Ingestion / CPCI' {
         include *
         where
             not (kind is application or kind is microservice or kind is functions or kind is datastore or kind is user-interface)
+        include cp.case-administration-subdomain._
+        include cp.shared-components-subdomain._
         exclude * -> *
         include * <-> cp.cpci
         exclude * <-> *

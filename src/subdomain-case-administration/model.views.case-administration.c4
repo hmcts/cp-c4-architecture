@@ -8,6 +8,8 @@ views 'Case Administration / Case Management System' {
         include cp.court-hearings-subdomain._
         include cp.case-ingestion-subdomain._
         include cp.scheduling-and-listing-subdomain._
+        include cp.results-distribution-system.hearing-nows-service
+        include cp.users-and-groups-system
         exclude * -> *
         include * <-> cp.case-management-system
         exclude * <-> *

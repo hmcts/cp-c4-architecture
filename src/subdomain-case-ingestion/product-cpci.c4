@@ -15,6 +15,10 @@ model {
                 link https://github.com/hmcts/cpp-context-staging-prosecutors-civil 'Repository'
 
                 this -> staging-prosecutors-civil-database
+                this -> cp.case-management-system.prosecution-case-file-service 'sends cases and documents to'
+                this -> cp.reference-data-system.reference-data 'looks up reference data from'
+                this -> libra 'forwards results to'
+                libra -> this 'creates cases'
             }
 
             staging-prosecutors-civil-database = datastore {

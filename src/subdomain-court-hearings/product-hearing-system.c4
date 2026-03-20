@@ -80,7 +80,7 @@ model {
                 this -> cp.document-generation-system.document-generator 'generates documents using'
                 this -> cp.file-service-system 'stores and retrieves files using'
                 this -> xhibit 'publishes hearing events to'
-                this -[audit]-> cp.audit-system 'sends data to'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
 
                 // Product-level relationship moved to container (section 7.4)
                 this -> cp.scheduling-and-listing-system.listing-service 'publishes hearing changes to'
@@ -112,7 +112,7 @@ model {
                 this -> cp.id-mapper-system.system-id-mapper 'looks up IDs using'
                 this -> cp.case-management-system.material-service 'retrieves case material from'
                 this -[auth]-> cp.users-and-groups 'makes authorisation decisions using'
-                this -[audit]-> cp.audit-system 'sends data to'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             staging-darts = microservice {
@@ -132,7 +132,7 @@ model {
                 this -> cp.reference-data-system.reference-data 'looks up reference data from'
                 this -> darts 'sends hearing events and court lists to'
                 this -[auth]-> cp.users-and-groups 'makes authorisation decisions using'
-                this -[audit]-> cp.audit-system 'sends data to'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             hearing-database = datastore {

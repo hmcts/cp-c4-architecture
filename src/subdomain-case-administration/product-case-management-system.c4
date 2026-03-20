@@ -7,22 +7,6 @@ model {
             this -> cp.scheduling-and-listing-system 'requests listings for hearings using'
 
 
-            subscriptions-ui = user-interface {
-                title 'Subscriptions UI'
-                technology 'Angular'
-                summary 'Provides ?'
-                metadata {
-                    language 'TypeScript'
-                    software-framework 'Angular'
-                }
-                style {
-                    icon tech:angular
-                }
-                link https://github.com/hmcts/cpp-ui-subscriptions 'Repository'
-
-                this -> subscriptions-service "makes API calls to"
-            }
-
             prosecution-casefile-ui = user-interface {
                 title 'Prosection Case File UI'
                 technology 'Angular'
@@ -86,6 +70,13 @@ model {
             progression-service = microservice {
                 title 'Case Progression Service'
                 technology 'Java EE'
+                summary 'Manages case progression, court document generation, and distribution of court registers, NOWs, and other documents'
+                description """
+**Documented functionality (incomplete):**
+- **Court Register (Youth?)** — Aggregates court register submissions (pre-filtered to youth defendants by the Court Register Result Functions) per court centre per day into a single PDF (Docmosis template OEE_Layout5) and distributes it to Youth Offending Teams via Notification Notify and GOV.UK Notify. Progression does not apply any youth/adult filtering — it generates a PDF and notifies recipients for whatever data is submitted.
+- **Prison Court Register** — Receives per-defendant prison court register submissions from the Prison Court Record Result Functions. Each submission includes defendant details, hearing information, offences, results, recipient email addresses (resolved from custodial establishments, judicial result prompts, or subscription configuration), and custody location. Generates a separate PDF per defendant and distributes it to the identified recipients (prisons, custody suites, or subscription-configured addresses) via Notification Notify and GOV.UK Notify.
+- **NOW document generation (legacy path)** — Receives NOW document requests from the NOWs Result Functions when the Hearing NOWs feature toggle is disabled. This is the legacy path; the new path routes requests to the Hearing NOWs Service instead.
+"""
                 metadata {
                     language 'Java'
                     software-framework 'Java EE 8'
@@ -96,8 +87,12 @@ model {
                     title 'stores court document payloads'
                     description 'Stores JSON template payloads for PDF generation and generated court documents including NOWs, court registers, trial record sheets, summons, and online plea documents'
                 }
+                this -> cp.shared-components-subdomain.document-generation-system.document-generator 'requests PDF generation from'
+                this -[notify]-> cp.notification-notify 'sends court register and other document emails via'
                 this -[mi]-> cp.management-information-system.mi-system-data-service 'sends data to'
                 this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
+                this -> application-court-orders-service 'retrieves active court orders by defendant for prosecution case data from'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             progression-database = datastore {
@@ -124,6 +119,7 @@ model {
                     description 'Stores generated respondent list PDFs and manages prosecution evidence file references from CPS, IDPC, and bulk scan uploads'
                 }
                 this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             prosecution-case-file-database = datastore {
@@ -150,30 +146,11 @@ model {
                 }
                 this -[mi]-> cp.management-information-system.mi-system-data-service 'sends data to'
                 this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             sjp-database = datastore {
                 title 'SJP Database'
-                technology 'PostgreSQL'
-                summary 'Stores events and entities'
-                style {
-                    icon tech:postgresql
-                }
-            }
-
-            subscriptions-service = microservice {
-                title 'Subscriptions Service'
-                technology 'Java EE'
-                metadata {
-                    language 'Java'
-                    software-framework 'Java EE 8'
-                }
-                link https://github.com/hmcts/cpp-context-subscriptions 'Repository'
-                this -> subscriptions-database
-            }
-
-            subscriptions-database = datastore {
-                title 'Subscriptions Database'
                 technology 'PostgreSQL'
                 summary 'Stores events and entities'
                 style {
@@ -189,6 +166,7 @@ model {
                     software-framework 'Java EE 8'
                 }
                 this -> assignment-database
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             assignment-database = datastore {
@@ -203,18 +181,25 @@ model {
             application-court-orders-service = microservice {
                 title 'Application Court Orders Service'
                 technology 'Java EE'
+                summary 'Manages court orders that track active community and custodial sentences for defendants, supporting breach and variation proceedings'
+                description 'Maintains a record of court orders created from hearing results, each linked to a defendant, hearing, and judicial result type. Provides queries for retrieving active orders by defendant, by hearing, by case, or by defendant and offence date — used by the Court Hearing UI to display existing orders during hearings and by the Case Progression Service to include active orders in prosecution case data. Accepts commands to create, remove, update validity, and reset court orders. Also enriches court orders with judicial child results retrieved from the Case Progression Service, and checks result definitions against Reference Data to determine order duration rules. Indexes court order data into Unified Search for case-wide searchability.'
                 metadata {
                     language 'Java'
                     software-framework 'Java EE 8'
                 }
                 link https://github.com/hmcts/cpp-context-applications-courtorders 'Repository'
                 this -> application-court-orders-database
+                this -> unified-search-datastore 'indexes court order data to'
+                this -> progression-service 'retrieves judicial child results from'
+                this -> cp.reference-data-system.reference-data 'looks up result definitions from'
+                this -[auth]-> cp.users-and-groups 'makes authorisation decisions using'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             application-court-orders-database = datastore {
-                title 'Application Court Orders  Database'
+                title 'Application Court Orders Database'
                 technology 'PostgreSQL'
-                summary 'Stores events and entities'
+                summary 'Stores court order events and a queryable view of active and removed court orders by defendant, hearing, and case'
                 style {
                     icon tech:postgresql
                 }
@@ -229,6 +214,7 @@ model {
                     software-framework 'Java EE 8'
                 }
                 link https://github.com/hmcts/cpp-context-boxworkmanagement 'Repository'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             unified-search-query-service = microservice {
@@ -242,6 +228,7 @@ model {
                 link https://github.com/hmcts/cpp-context-unifiedsearch-query 'Repository'
 
                 this -> unified-search-datastore
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             unified-search-datastore = datastore {
@@ -276,6 +263,7 @@ model {
                 this -> progression-service 'create/update forms'
                 this -> prosecution-case-file-service 'manage material on case'
                 this -> cp.users-and-groups-system 'get user, group, org and roles'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             material-database = datastore {
@@ -302,6 +290,7 @@ model {
                     title 'stores case archive payloads'
                     description 'Stores prosecution case JSON for archive PDF generation by the document generator, and raw case detail JSON for inclusion in archived case ZIP bundles'
                 }
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             archiving-database = datastore {
@@ -324,6 +313,7 @@ model {
                 link https://github.com/hmcts/cpp-context-staging-dcs 'Repository'
 
                 this -> staging-dcs-database
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             staging-dcs-database = datastore {
@@ -347,6 +337,7 @@ model {
 
                 this -> correspondence-database
                 this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             correspondence-database = datastore {

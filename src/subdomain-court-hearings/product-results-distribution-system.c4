@@ -2,11 +2,22 @@ model {
     extend cp.court-hearings-subdomain {
         results-distribution-system = product {
             title 'Results Distribution System'
-            description 'Distributes the results of hearings to third parties'
+            description 'Distributes hearing results to criminal justice partners and manages email notification subscriptions for third-party organisations monitoring court events'
 
             results-service = microservice {
                 title 'Results Service'
                 technology 'Java EE'
+                summary 'Stores hearing results, triggers distribution to criminal justice partners via Azure Functions, and generates informant register CSVs for prosecution authorities'
+                description """
+Manages hearing results and coordinates their distribution to criminal justice partners.
+
+**Documented functionality (incomplete):**
+- **Result storage and caching** — Stores hearing results in the Results Database and caches them in Redis so that downstream Azure Functions can retrieve results quickly without repeated database queries
+- **Result distribution** — When hearing results are shared by a court clerk, publishes events that trigger the 8 Azure Durable Functions to distribute results to external partners (LAA, HMPPS, prosecution authorities, etc.)
+- **Informant register** — Receives informant register submissions from the Informant Register and SJP Result Functions, grouped by prosecution authority and date. Each submission includes defendant details, results, and the recipients identified by the function app's subscription matching. Batches all submissions for the same prosecution authority and day, then generates a CSV per batch (InformantRegister_{authorityCode}_{date}.csv). For group cases, looks up member defendants from the Progression Service. Stores the generated CSV in the File Service and emails it to the identified recipients via GOV.UK Notify. Only email delivery is supported.
+- **NCES tracking** — Receives NCES (National Compliance and Enforcement Service) hearing result tracking records from the NOWs and SJP Result Functions. Each record contains defendant details, enforcement area, offence results, and financial imposition details for compliance tracking.
+- **Defendant account queries** — Provides Libra GoB account information for defendants, used by the NOWs Result Functions to correlate financial enforcement with existing account numbers or correlation IDs.
+"""
                 metadata {
                     language 'Java'
                     software-framework 'Java EE 8'
@@ -28,6 +39,9 @@ model {
                 this -> prison-court-record-result-functions 'sends results to'
                 this -> informant-register-result-functions 'sends results to'
                 this -> sjp-result-functions 'sends results to'
+                this -> cp.case-management-system.progression-service 'looks up group case member defendants from'
+                this -[notify]-> cp.notification-notify 'sends informant register CSV emails to prosecution authorities via'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
 
             }
 
@@ -42,118 +56,306 @@ model {
 
             laa-result-functions = functions {
                 title 'LAA Result Functions'
-                technology 'Azure Functions'
-                summary 'Distributes hearing results to the Legal Aid Agency to support legal aid funding decisions and case management'
+                technology 'Azure Durable Functions'
+                summary 'Filters and distributes hearing results to the Legal Aid Agency, and provides HTTP query APIs for LAA to retrieve hearing results and event logs on demand'
+                description """
+Triggered by hearing resulted events and also exposes query APIs that LAA calls into directly. Three flows:
+
+1. **Event-driven publishing** — Retrieves hearing details from Redis cache (or Results Service on cache miss). Queries Unified Search by case URN to find prosecution cases with LAA references, and queries Progression by application ID to find court applications with LAA references. Filters the hearing to only defendants and applications that have LAA references. Reads subscriber endpoint configuration from Azure Blob Storage, then publishes the filtered hearing results to LAA.
+
+2. **Hearing result query** — LAA requests hearing results by hearing ID. Retrieves and filters the hearing through the same cache-query and LAA-reference-filter pipeline, returning filtered results.
+
+3. **Event log query** — LAA requests a hearing event log by hearing ID and date. Checks Unified Search for LAA references on the hearing's prosecution cases and court applications. If LAA references exist, queries the Hearing Service for the hearing event log and returns it.
+"""
                 metadata {
-                    language 'TypeScript'
+                    language 'JavaScript'
                     software-framework 'Node.js 20.9.0'
                 }
                 link https://github.com/hmcts/cpp-context-azure-legalaidagency 'Repository'
 
                 this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-0 'reads cached hearing results from'
-                this -> laa 'sends results to'
+                this -> results-service 'queries hearing details on cache miss from'
+                this -> cp.case-administration-subdomain.case-management-system.unified-search-query-service 'checks for LAA references on prosecution cases and court applications using'
+                this -> cp.case-administration-subdomain.case-management-system.progression-service 'queries court application LAA references from'
+                this -> cp.court-hearings-subdomain.hearing-system.hearing-service 'queries hearing event logs from'
+                this -> laa 'sends filtered hearing results to'
             }
             
             nows-result-functions = functions {
                 title 'NOWs Result Functions'
-                technology 'Azure Functions'
-                summary 'Creates and distributes Notices, Orders and Warrants (NOWs) to police forces, DVLA, enforcement agencies, and major creditors for public safety and compliance monitoring'
+                technology 'Azure Durable Functions'
+                summary 'Processes hearing results to generate NOWs documents, NCES enforcement tracking records, and financial enforcement requests for Staging Enforcement'
+                description """
+Triggered by hearing resulted events, one per hearing. The most complex of the 8 result distribution function apps, with a 12-step orchestrator pipeline covering three distinct outputs:
+
+1. **NCES tracking** — For defendants with financial or reportable results, builds NCES (National Compliance and Enforcement Service) hearing result records enriched with defendant details, enforcement area (resolved from defendant postcode or court LJA via Reference Data), and organisation unit details. Submits these to the Results Service for tracking.
+
+2. **NOW document generation** — Determines which Notices, Orders and Warrants (NOWs) to generate by matching each defendant's judicial results against NOW metadata definitions from Reference Data. Each matching NOW definition produces a variant, which is then cloned per user group (public vs restricted), split further by MDE (Multiple Document Edition) rules when result prompts have variant data, and matched against NOW subscription rules from Reference Data to identify recipients. For financial NOWs, enriches payloads with enforcement area and organisation unit details. A feature toggle in Users & Groups controls whether NOW document requests are routed to the Hearing NOWs Service (new path) or the Progression Service (legacy path).
+
+3. **Financial enforcement** — For defendants with financial results (fines, costs, compensation), builds detailed enforcement requests including imposition amounts, payment terms, collection orders, reserve terms, employer details, minor creditors, and parent/guardian details. Looks up major creditors from Reference Data. Submits to the Staging Enforcement Service for compliance enforcement processing.
+
+For complex hearings, intermediate payloads between orchestrator steps are stored in Azure Blob Storage to avoid exceeding durable function size limits.
+"""
                 metadata {
-                    language 'TypeScript'
+                    language 'JavaScript'
                     software-framework 'Node.js 20.9.0'
                 }
                 link https://github.com/hmcts/cpp-context-azure-legalaidagency 'Repository'
 
-                this -> hearing-nows-service 'triggers generation of NOWs documents'
                 this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-0 'reads cached hearing results from'
+                this -> results-service {
+                    title 'queries hearing details, writes NCES tracking records, and queries defendant accounts from'
+                    description 'Cache miss fallback for hearing details. Writes NCES tracking records for defendants with financial or reportable results. Queries Libra GoB account information for defendants with deemed-served amendment results.'
+                }
+                this -> cp.reference-data-system.reference-data {
+                    title 'looks up NOW metadata, subscriptions, and enforcement areas from'
+                    description 'Retrieves NOW definitions (which results trigger which documents), NOW and EDT subscription rules (who receives which documents), organisation units, major creditors, and enforcement areas (by court LJA code and defendant postcode)'
+                }
+                this -> cp.users-and-groups-system.users-and-groups 'checks Hearing NOWs feature toggle in'
+                this -> hearing-nows-service 'submits NOW document requests to'
+                this -> cp.case-administration-subdomain.progression-service 'submits NOW document requests to (legacy path)'
+                this -> staging-enforcement-service 'submits financial enforcement requests to'
             }
 
             probation-result-functions = functions {
                 title 'Probation Result Functions'
-                technology 'Azure Functions'
-                summary 'Distributes hearing results to probation services for offender management, risk assessment, and sentence planning'
+                technology 'Azure Durable Functions'
+                description 'Triggered by hearing resulted events, one per hearing. Retrieves hearing details from Redis cache (or Results Service on cache miss). Filters out SJP hearings, box hearings, and virtual box hearings. Checks a feature toggle in Users & Groups to determine whether to exclude youth defendants. Strips LAA references, judiciary details, associated persons, and delegated powers from the payload before sending filtered results to HMPPS. If the hearing contains police-originated prosecution cases, separately filters to only those police cases and sends them to VEP for distribution to police forces.'
+                summary 'Filters and distributes hearing results to HMPPS for probation services, and police-case results to VEP for police forces'
                 metadata {
-                    language 'TypeScript'
+                    language 'JavaScript'
                     software-framework 'Node.js 20.9.0'
                 }
                 link https://github.com/hmcts/cpp-context-azure-legalaidagency 'Repository'
 
                 this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-0 'reads cached hearing results from'
-                this -> hmpps 'sends results to'
+                this -> results-service 'queries hearing details on cache miss from'
+                this -> cp.users-and-groups-system.users-and-groups 'checks youth filter feature toggle in'
+                this -> hmpps 'sends filtered hearing results to'
+                this -> vep 'sends police-case hearing results to'
             }
             
             court-order-result-functions = functions {
                 title 'Court Order Result Functions'
-                technology 'Azure Functions'
-                summary 'Creates, updates and removes court orders based on hearing results'
+                technology 'Azure Durable Functions'
+                description 'Triggered by hearing resulted events, one per hearing. Retrieves hearing details from Redis cache (or Results Service on cache miss). Skips group proceedings. For each defendant, filters results to those that can be subject of variation or breach proceedings, then determines the correct court order operation by querying existing orders from the Application Court Orders Service. Handles four operation types: creating new court orders, removing orders (for Order Revocation results, when offences are removed via amended results, or when no offences remain after preserve-active-order filtering), updating order validity end dates (for results that extend an active order), and resetting order validity. Court orders are grouped by judicial result type per defendant, with start and end dates calculated from judicial result prompts or defaulting to 7 years (99 years for life sentence result types, 3 years for Youth Offender Panel).'
+                summary 'Manages court order lifecycle — creates, updates, removes, and resets court orders based on hearing results including revocations, variations, and breaches'
                 metadata {
-                    language 'TypeScript'
+                    language 'JavaScript'
                     software-framework 'Node.js 20.9.0'
                 }
                 link https://github.com/hmcts/cpp-context-azure-legalaidagency 'Repository'
 
                 this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-0 'reads cached hearing results from'
-                this -> cp.case-administration-subdomain.application-court-orders-service
+                this -> results-service 'queries hearing details on cache miss from'
+                this -> cp.case-administration-subdomain.application-court-orders-service 'reads existing court orders from and writes create, remove, update, and reset operations to'
             }
             
             court-register-result-functions = functions {
                 title 'Court Register Result Functions'
-                technology 'Azure Functions'
-                summary 'Updates the register of court events'
+                technology 'Azure Durable Functions'
+                description 'Triggered by hearing resulted events, one per hearing. Retrieves hearing details from Redis cache (or Results Service on cache miss), builds court register fragments for youth defendants only, and matches against distribution subscription rules from Reference Data to identify recipient Youth Offending Teams. Submits each hearing\'s youth defendant data to Progression, which aggregates all submissions for the same court centre and date into a single PDF (Docmosis template OEE_Layout5) and emails it to matched YOTs via GOV.UK Notify. Despite the generic function app name (courtregister-azure-functions), this function exclusively handles youth cases. The general court register for press/media is not produced through Common Platform\'s results distribution pipeline.'
+                summary 'Generates youth court register entries from hearing results for aggregation into a daily per-court PDF distributed to Youth Offending Teams'
                 metadata {
-                    language 'TypeScript'
+                    language 'JavaScript'
                     software-framework 'Node.js 20.9.0'
                 }
                 link https://github.com/hmcts/cpp-context-azure-legalaidagency 'Repository'
 
                 this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-0 'reads cached hearing results from'
-                this -> cp.case-administration-subdomain.progression-service 'adds results to court register'
+                this -> results-service 'queries hearing details on cache miss from'
+                this -> cp.reference-data-system.reference-data 'looks up NOW subscription metadata from'
+                this -> cp.case-administration-subdomain.progression-service 'submits youth court register entries to'
             }
             
             prison-court-record-result-functions = functions {
                 title 'Prison Court Record Result Functions'
-                technology 'Azure Functions'
-                summary 'Notifies prison services of court results for inmates, supporting prisoner management and release planning'
+                technology 'Azure Durable Functions'
+                description 'Triggered by hearing resulted events, one per hearing. Retrieves hearing details from Redis cache (or Results Service on cache miss), builds one prison court register fragment per defendant, and matches against distribution subscription rules from Reference Data to identify recipients. Recipients are resolved from three sources: the defendant\'s custodial establishment details (cross-referenced with prisons and custody suites from Reference Data), judicial result prompts containing prison organisation details, or static subscription configuration. Submits each defendant\'s prison court register individually to Progression for document generation and email distribution. Group proceedings are excluded.'
+                summary 'Generates per-defendant prison court registers from hearing results and submits to Progression for document generation and distribution to prisons and custody suites'
                 metadata {
-                    language 'TypeScript'
+                    language 'JavaScript'
                     software-framework 'Node.js 20.9.0'
                 }
                 link https://github.com/hmcts/cpp-context-azure-legalaidagency 'Repository'
 
                 this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-0 'reads cached hearing results from'
-                this -> cp.case-administration-subdomain.progression-service
+                this -> results-service 'queries hearing details on cache miss from'
+                this -> cp.reference-data-system.reference-data 'looks up NOW subscription rules and prison/custody suite details from'
+                this -> cp.case-administration-subdomain.progression-service 'submits per-defendant prison court registers to'
             }
 
             informant-register-result-functions = functions {
                 title 'Informant Register Result Functions'
-                technology 'Azure Functions'
-                summary 'Updates the informant register'
+                technology 'Azure Durable Functions'
+                description 'Triggered by hearing resulted events, one per hearing. Retrieves hearing details from Redis cache (or Results Service on cache miss), groups results by prosecution authority, and filters to only results available for court extracts that have not already been published for NOWs. Matches each prosecution authority\'s fragment against distribution subscription rules from Reference Data to identify recipients. Assembles informant register data with defendant details, offences, pleas, verdicts, results, and matched recipients, then submits each to the Results Service grouped by prosecution authority and date for CSV generation and distribution.'
+                summary 'Assembles informant register data grouped by prosecution authority from hearing results and submits to the Results Service for CSV distribution'
                 metadata {
-                    language 'TypeScript'
+                    language 'JavaScript'
                     software-framework 'Node.js 20.9.0'
                 }
                 link https://github.com/hmcts/cpp-context-azure-legalaidagency 'Repository'
 
                 this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-0 'reads cached hearing results from'
-                this -> results-service 'updates the informant register'
+                this -> results-service 'queries hearing details on cache miss from'
+                this -> cp.reference-data-system.reference-data 'looks up NOW subscription metadata from'
+                this -> results-service 'submits informant register entries to'
             }
 
             sjp-result-functions = functions {
                 title 'SJP Result Functions'
-                technology 'Azure Functions'
-                summary 'Handles Single Justice Procedure case results'
+                technology 'Azure Durable Functions'
+                summary 'Processes SJP hearing results to manage court orders, generate NCES tracking records, submit financial enforcement requests, store financial imposition correlation IDs, and produce informant registers'
+                description """
+Triggered by hearing resulted events for Single Justice Procedure hearings. The largest orchestrator in the Results Distribution System with a 13-step pipeline that combines court order management, NCES tracking, financial enforcement, SJP-specific financial imposition tracking, and informant register generation — logic that for non-SJP hearings is split across separate function apps.
+
+1. **NCES tracking** — For defendants with financial or reportable results, builds NCES hearing result records enriched with enforcement area (resolved from defendant postcode or court LJA via Reference Data) and organisation unit details. Submits to the Results Service for compliance tracking.
+
+2. **Financial imposition correlation** — For each defendant with financial results, sends a correlation ID to the SJP Service so that financial impositions can be linked back to the originating SJP case. This is the only SJP-specific step not shared with other result pipelines.
+
+3. **Financial enforcement** — For defendants with financial results, builds enforcement requests with imposition amounts, payment terms, collection orders, reserve terms, employer details, minor creditors, and parent/guardian details. Looks up major creditors from Reference Data. Submits to the Staging Enforcement Service with originator set to ATCM (distinguishing SJP from other pipelines which use Courts).
+
+4. **Court order management** — Filters results to those that can be subject of variation or breach. Queries existing court orders from the Application Court Orders Service, then determines the correct operation: create new orders, remove orders (for revocations, amended results with removed offences, or empty after filtering), update validity end dates, or reset validity. Groups court orders by judicial result type per defendant.
+
+5. **Informant register** — Builds informant register fragments grouped by prosecution authority with defendant details and results. Matches against NOW subscription rules from Reference Data to identify recipients. Submits to the Results Service for CSV generation and email distribution.
+
+For reshared results, only amended financial results are reprocessed for enforcement. Uses prosecution case URN from court application cases rather than application reference for SJP case identification.
+"""
                 metadata {
-                    language 'TypeScript'
+                    language 'JavaScript'
                     software-framework 'Node.js 20.9.0'
                 }
                 link https://github.com/hmcts/cpp-context-azure-legalaidagency 'Repository'
 
                 this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-0 'reads cached hearing results from'
+                this -> results-service {
+                    title 'queries hearing details, writes NCES tracking records, and submits informant registers to'
+                    description 'Cache miss fallback for hearing details. Writes NCES tracking records for defendants with financial or reportable results. Submits informant register entries grouped by prosecution authority for CSV generation and distribution.'
+                }
+                this -> cp.reference-data-system.reference-data {
+                    title 'looks up enforcement areas, organisation units, major creditors, and NOW subscriptions from'
+                    description 'Retrieves organisation units by court centre, enforcement areas by court LJA code and defendant postcode, major creditors for financial enforcement enrichment, and NOW subscription rules for informant register recipient matching'
+                }
+                this -> cp.case-administration-subdomain.case-management-system.sjp-service 'sends financial imposition correlation IDs to'
+                this -> staging-enforcement-service 'submits financial enforcement requests to'
+                this -> cp.case-administration-subdomain.application-court-orders-service 'reads existing court orders from and writes create, remove, update, and reset operations to'
+            }
+
+            subscriptions-ui = user-interface {
+                title 'Subscriptions UI'
+                technology 'Angular'
+                summary 'Allows third-party organisations to manage email notification subscriptions for court hearing events'
+                description """
+Provides an interface for creating and managing email subscriptions for court hearing events and result documents.
+
+### User roles
+
+- **Subscription Managers** can create subscriptions on behalf of others, specifying recipient email addresses, and activate or deactivate subscriptions globally
+- **Subscribers** can create subscriptions for themselves and manage their own participation in existing subscriptions
+
+### Creating a subscription
+
+A guided wizard walks users through:
+
+1. Naming the subscription
+2. Adding recipient email addresses (managers only — subscribers are the implicit recipient)
+3. Selecting one or more courts to monitor
+4. Optionally filtering by case reference, defendant, age, gender, or offence
+5. Choosing what to receive — result documents (NOWs/EDTs) and/or event notifications (plea changes, verdicts, remand status changes, trial effectiveness, attendance, pre-sentence reports)
+6. Reviewing and saving
+
+### Managing subscriptions
+
+The main screen lists all subscriptions with the ability to activate, deactivate, or delete them. Each subscription can be expanded to view its courts, filters, and content types.
+"""
+                metadata {
+                    language 'TypeScript'
+                    software-framework 'Angular'
+                }
+                style {
+                    icon tech:angular
+                }
+                link https://github.com/hmcts/cpp-ui-subscriptions 'Repository'
+
+                this -> subscriptions-service 'makes API calls to'
+            }
+
+            subscriptions-service = microservice {
+                title 'Subscriptions Service'
+                technology 'Java EE'
+                summary 'Manages email notification subscriptions for hearing events; evaluates subscription rules when results are shared and triggers notifications to subscribed third parties'
+                description """
+Allows third-party organisations (e.g. defence solicitors, probation services) to subscribe to email notifications about court hearing events at specific courts.
+
+### What it does
+
+Organisations create subscriptions through the **Subscriptions UI**, choosing which courts and event types they want to be notified about. Subscriptions can be further narrowed by defendant name, date of birth, gender, age, case reference, or offence type. Subscription definitions and subscriber email addresses are stored in the **Subscriptions Database**.
+
+When a court clerk shares hearing results, the service automatically evaluates all active subscriptions for that court and sends email notifications to subscribers whose rules match. Emails are delivered via GOV.UK Notify through the **Notification Notify** service.
+
+### Events that trigger notifications
+
+- Plea entered or changed
+- Verdict entered
+- Remand status changed (e.g. bail to custody)
+- Defendant or appellant attendance recorded
+- Trial cracked, ineffective, or vacated
+- Pre-sentence report requested
+
+### Other service interactions
+
+- Retrieves the logged-in user organisation from **Users and Groups** to scope subscription management to the correct organisation
+- Fetches hearing details from the **Hearing Service** to compare current and previous bail status for remand change detection
+- Generates document download URLs via the **Material Service** for inclusion in notification emails
+- Uses the **ID Mapper** to translate between internal and external case identifiers
+"""
+                metadata {
+                    language 'Java'
+                    software-framework 'Java EE 8'
+                }
+                link https://github.com/hmcts/cpp-context-subscriptions 'Repository'
+
+                this -> subscriptions-database
+                this -> cp.users-and-groups-system.users-and-groups 'fetches logged-in user details from'
+                this -> cp.hearing-system.hearing-service 'retrieves hearing details from'
+                this -> cp.case-management-system.material-service 'generates document download URLs using'
+                this -> cp.id-mapper-system.system-id-mapper 'maps internal and external identifiers using'
+                this -[notify]-> cp.notification-notify 'sends email notifications using'
+                this -[auth]-> cp.users-and-groups 'makes authorisation decisions using'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
+            }
+
+            subscriptions-database = datastore {
+                title 'Subscriptions Database'
+                technology 'PostgreSQL'
+                summary 'Stores subscription definitions, subscriber emails, event type filters, and court associations'
+                description """
+Stores all data needed to evaluate and deliver subscription notifications.
+
+- **Subscriptions** — name, owning organisation, and active/inactive status
+- **Subscribers** — email addresses of individuals receiving notifications for each subscription
+- **Event types** — which hearing events the subscription monitors (e.g. plea changes, verdicts, remand status)
+- **Filters** — optional narrowing criteria such as defendant name, case reference, age, gender, or offence
+- **Courts** — which court locations the subscription applies to
+"""
+                style {
+                    icon tech:postgresql
+                }
             }
 
             staging-enforcement-service = microservice {
                 title 'Staging Enforcement Service'
                 technology 'Java EE'
+                summary 'Stages financial enforcement requests, enriches with enforcement area data, exports fine accounts to Libra GoB, and provides outstanding fines queries'
+                description """
+Receives financial enforcement requests from the NOWs and SJP Result Functions and manages the full lifecycle of exporting fine accounts to Libra GoB for enforcement processing.
+
+**Documented functionality (incomplete):**
+- **Enforcement request processing** — Receives financial imposition requests, applies case-level filtering (deduplication by prosecution case reference), enriches with enforcement area details from Reference Data (by defendant postcode or court LJA), and stores in the Staging Enforcement Database. For SJP-originated cases, queries the SJP Service for account notes, defendant NI numbers, and case details.
+- **Libra GoB export** — Batches stored fine accounts into XML (CreateFineAccountsRequest format) and exports to Libra GoB via WebDAV. Uses an Activiti workflow to manage the export lifecycle: selecting requests, generating filenames, batching, sending, and tracking acknowledgements.
+- **Libra acknowledgement processing** — Retrieves acknowledgement response files from Libra GoB, records account numbers, and publishes acknowledgement events consumed by the Results Service for NCES email notification generation.
+- **Outstanding fines query** — Provides a query API for retrieving defendant outstanding fines by searching Libra GoB via SOAP, with Redis caching of responses. Used by the Hearing Service during court hearings.
+"""
                 metadata {
                     language 'Java'
                     software-framework 'Java EE 8'
@@ -161,13 +363,19 @@ model {
                 link https://github.com/hmcts/cpp-context-staging-enforcement 'Repository'
 
                 this -> staging-enforcement-database
-                this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-0 'caches enforcement SOAP responses in'
+                this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-0 'caches Libra GoB outstanding fines query responses in'
+                this -> cp.reference-data-system.reference-data 'looks up enforcement areas, organisation units, and prosecutors from'
+                this -> cp.case-administration-subdomain.case-management-system.sjp-service 'queries SJP case details, account notes, and defendant information from'
+                this -> cp.id-mapper-system.system-id-mapper 'maps export identifiers using'
+                this -> libra 'exports fine accounts to and queries outstanding fines from'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
+                this -[auth]-> cp.users-and-groups 'makes authorisation decisions using'
             }
 
             staging-enforcement-database = datastore {
                 title 'Staging Enforcement Database'
                 technology 'PostgreSQL'
-                summary 'Stores events and entities'
+                summary 'Stores financial enforcement requests, fine account data, export status, and Libra acknowledgement responses'
                 style {
                     icon tech:postgresql
                 }
@@ -187,6 +395,7 @@ model {
                     title 'stores DVLA notification payloads'
                     description 'Stores JSON payloads for DVLA driver notification PDFs (SJP D20 letters) and driver search audit report data for CSV generation'
                 }
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             staging-dvla-database = datastore {
@@ -208,6 +417,7 @@ model {
                 link https://github.com/hmcts/cpp-context-hearing-nows 'Repository'
 
                 this -> hearing-nows-database
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             hearing-nows-database = datastore {

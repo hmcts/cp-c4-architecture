@@ -41,6 +41,7 @@ model {
                     description 'Stores PDF documents generated for Online Plea and Allocation (OPA) proceedings, linked as case materials'
                 }
                 this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
 
                 // TODO @Matthew.Rich - Needs to be removed from code then updated here
                 this -> cp.document-generator 'Used for OPA (Online Plea/Allocation) which is believed to have been descoped and needs to be removed, along with File Service usage'

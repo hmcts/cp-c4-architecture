@@ -20,6 +20,7 @@ model {
                     title 'retrieves email attachments'
                     description 'Retrieves file attachments (informant register CSVs, notification PDFs) for inclusion in emails sent via GOV.UK Notify'
                 }
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
         }
 
@@ -37,6 +38,7 @@ model {
                     link https://github.com/hmcts/cpp-context-system-id-mapper 'Repository'
 
                     this -> id-mapper-database
+                    this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             id-mapper-database = datastore {
@@ -63,6 +65,7 @@ model {
                 link https://github.com/hmcts/cpp-context-system-scheduling 'Repository'
 
                 this -> scheduling-database
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             scheduling-database = datastore {
@@ -89,6 +92,7 @@ model {
                 link https://github.com/hmcts/cpp-context-notification 'Repository'
 
                 this -> notification-database
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             notification-database = datastore {
@@ -118,6 +122,7 @@ model {
                     title 'reads and writes generated documents'
                     description 'Retrieves JSON template payloads for document rendering, and stores rendered output documents (PDF, CSV, HTML) produced by Docmosis, Thymeleaf, or CSV rendering engines'
                 }
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
         }
 
@@ -155,6 +160,7 @@ model {
                 this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-5 'caches user, group and permission data in'
                 this -[mi]-> cp.management-information-system.mi-system-data-service 'sends data to'
                 this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             users-and-groups-database = datastore {
@@ -195,6 +201,7 @@ model {
 
                 this -> staging-database 'stores events in'
                 this -> users-and-groups 'updates user and group data' 'JSON/HTTPS'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             staging-database = datastore {
@@ -217,6 +224,8 @@ model {
                     software-framework 'Java EE 8'
                 }
                 link https://github.com/hmcts/cpp-context-support 'Repository'
+
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
         }
 
@@ -234,6 +243,7 @@ model {
                 link https://github.com/hmcts/cpp-context-system-announcement 'Repository'
 
                 this -> system-announcement-database
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             system-announcement-database = datastore {
@@ -266,6 +276,7 @@ model {
                 }
                 this -[mi]-> cp.management-information-system.mi-system-data-service 'sends data to'
                 this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             reference-data-database = datastore {
@@ -287,6 +298,7 @@ model {
                 link https://github.com/hmcts/cpp-context-referencedata-offences 'Repository'
 
                 this -> reference-data-offences-database
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             reference-data-offences-database = datastore {
@@ -312,6 +324,7 @@ model {
                     title 'retrieves offence data files'
                     description 'Retrieves uploaded ZIP files containing PNLD offence definition XMLs for batch validation and import into offences reference data'
                 }
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             pnld-offences-database = datastore {

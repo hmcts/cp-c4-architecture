@@ -19,6 +19,7 @@ model {
                 this -> cp.reference-data-system.reference-data 'looks up reference data from'
                 this -> libra 'forwards results to'
                 libra -> this 'creates cases'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
             staging-prosecutors-civil-database = datastore {

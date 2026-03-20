@@ -72,7 +72,7 @@ model {
                 this -> xhibit 'Sends Crown Court lists to'
                 this -[auth]-> cp.users-and-groups 'makes authorisation decisions using'
                 this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
-                this -[audit]-> cp.audit-system 'sends data to'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
                 this -[shared]-> cp.document-generator 'generates court list PDFs using'
                 this -[shared]-> cp.reference-data 'gets reference data from'
 
@@ -98,6 +98,7 @@ model {
                 this -> scsl-database
                 this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-0 'caches scheduling reference data in'
                 this -[auth]-> cp.users-and-groups 'makes authorisation decisions using'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
                 this -[shared]-> cp.reference-data 'gets reference data from'
 
                 api = component {
@@ -149,6 +150,7 @@ model {
 
                 scsl-database -> this
                 this -> cath 'Publishes court lists to'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
                 this -[shared]-> cp.reference-data 'gets reference data from'
             }
 
@@ -194,6 +196,8 @@ model {
                     software-framework 'Spring Boot'
                 }
                 link https://github.com/hmcts/cp-court-list-publishing-service 'Repository'
+
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
         }
     }

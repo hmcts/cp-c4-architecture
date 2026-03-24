@@ -24,7 +24,7 @@
     "@likec4/mcp": "latest",
     "@types/node": "^24.0.0",
     "likec4": "latest",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.0",
     "vitest": "^4.0.0"
   },
   "stackblitz": {

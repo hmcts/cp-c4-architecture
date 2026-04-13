@@ -15,7 +15,7 @@ This is the **Crime Common Platform** architecture model, using [LikeC4](https:/
 - `npm run generate:relationships-csv` — Generate CSV of all relationships
 - `npm run generate:product-components-csv` — Generate CSV of products and components grouped by subdomain
 
-Package manager is **pnpm** (v10.28.1). Node.js 20+ required.
+Package manager is **npm** (the committed lockfile is `package-lock.json` and CI runs `npm install`). Node.js 20+ required.
 
 ## Architecture & File Structure
 

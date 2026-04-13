@@ -350,11 +350,10 @@ Stores all data needed to evaluate and deliver subscription notifications.
                 description """
 Receives financial enforcement requests from the NOWs and SJP Result Functions and manages the full lifecycle of exporting fine accounts to Libra GoB for enforcement processing.
 
-**Documented functionality (incomplete):**
-- **Enforcement request processing** — Receives financial imposition requests, applies case-level filtering (deduplication by prosecution case reference), enriches with enforcement area details from Reference Data (by defendant postcode or court LJA), and stores in the Staging Enforcement Database. For SJP-originated cases, queries the SJP Service for account notes, defendant NI numbers, and case details.
-- **Libra GoB export** — Batches stored fine accounts into XML (CreateFineAccountsRequest format) and exports to Libra GoB via WebDAV. Uses an Activiti workflow to manage the export lifecycle: selecting requests, generating filenames, batching, sending, and tracking acknowledgements.
-- **Libra acknowledgement processing** — Retrieves acknowledgement response files from Libra GoB, records account numbers, and publishes acknowledgement events consumed by the Results Service for NCES email notification generation.
-- **Outstanding fines query** — Provides a query API for retrieving defendant outstanding fines by searching Libra GoB via SOAP, with Redis caching of responses. Used by the Hearing Service during court hearings.
+- **Enforcement request processing** — Receives financial imposition requests, applies case-level filtering (deduplication by prosecution case reference), enriches with enforcement area details from Reference Data (by defendant postcode or court LJA), and stores in the Staging Enforcement Database. For SJP-originated cases, queries the SJP Service for account notes, case details, sessions, employers, financial means, and defendant NI numbers. Queries the Resulting Service for case decisions.
+- **Libra GoB fine account submission** — Submits fine accounts to Libra GoB via SOAP (CXF with WS-Security, certificates from Azure Key Vault). Uses an Activiti workflow to manage the export lifecycle: selecting requests, generating filenames, batching, sending, and tracking acknowledgements.
+- **Libra file export** — Exports enforcement XML files to Libra via WebDAV (Sardine) and retrieves acknowledgement response files. Records account numbers and publishes acknowledgement events consumed by the Results Service for NCES email notification generation.
+- **Outstanding fines query** — Provides a query API for retrieving defendant outstanding fines by searching Libra GoB via SOAP, with Redis caching of responses. Used by the Hearing Service during court hearings. Supports both single-defendant and batch court-room queries.
 """
                 metadata {
                     language 'Java'
@@ -365,9 +364,17 @@ Receives financial enforcement requests from the NOWs and SJP Result Functions a
                 this -> staging-enforcement-database
                 this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-0 'caches Libra GoB outstanding fines query responses in'
                 this -> cp.reference-data-system.reference-data 'looks up enforcement areas, organisation units, and prosecutors from'
-                this -> cp.case-administration-subdomain.case-management-system.sjp-service 'queries SJP case details, account notes, and defendant information from'
+                this -> cp.case-administration-subdomain.case-management-system.sjp-service {
+                    title 'queries SJP case and defendant details from'
+                    description 'Queries cases by ID and URN, sessions, account notes, employers, financial means, and defendant NI numbers for SJP-originated cases when enriching financial enforcement requests'
+                }
+                this -> cp.case-administration-subdomain.case-management-system.sjp-service {
+                    title 'listens for SJP case decision re-submissions and set-asides from'
+                    description 'Subscribes to public.sjp.events.case-decision-resubmitted and public.sjp.application-decision-set-aside so that the enforcement request deduplication filter is reset for the affected case URN, allowing a replacement financial enforcement request for the same case to be accepted rather than dropped as a duplicate'
+                }
+                this -> cp.court-hearings-subdomain.hearing-system.resulting-service 'queries case decisions from'
                 this -> cp.id-mapper-system.system-id-mapper 'maps export identifiers using'
-                this -> libra 'exports fine accounts to and queries outstanding fines from'
+                this -> libra 'submits fine accounts to and queries outstanding fines from'
                 this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
                 this -[auth]-> cp.users-and-groups 'makes authorisation decisions using'
             }

@@ -74,7 +74,7 @@ model {
                 this -> cp.case-management-system.progression-service 'updates case progression using'
                 this -> cp.case-management-system.material-service 'manages case material using'
                 this -[notify]-> cp.notification-notify 'sends notifications using'
-                this -> cp.results-distribution-system.staging-enforcement-service 'sends and retrieves enforcement data using'
+                this -> cp.results-distribution-system.staging-enforcement-service 'queries defendant outstanding fines from'
                 this -[auth]-> cp.users-and-groups 'makes authorisation decisions using'
                 this -> cp.id-mapper-system.system-id-mapper 'looks up IDs using'
                 this -> cp.document-generation-system.document-generator 'generates documents using'

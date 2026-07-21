@@ -2,14 +2,34 @@ model {
     extend cp.case-ingestion-subdomain {
         cppi = product {
             title 'Common Platform Prosecutor Interface (CPPI)'
-            description 'Enables cases and materials to submitted to the courts by non-police prosecutors'
-
-            this -> cp.case-management-system 'sends cases to'
+            description 'The Non-Police Prosecutor (NPP) API for ingesting Crown Court, summons, charge, requisition and Single Justice Procedure prosecutions into Common Platform. CPPI is the automated route used by NPPs with their own case management systems (e.g. Transport for London, TV Licensing, DVLA, among others); NPPs without API capability use the Manual Case Create (MCC) route via the Prosecutor UI instead.'
 
             staging-prosecutors-service = microservice {
                 title 'Staging Prosecutors Service'
                 technology 'Java EE'
-                summary 'Receives and stages prosecution cases and materials for ingestion into the Common Platform'
+                summary 'The NPP API backend — accepts prosecution submissions, case materials, and status queries from Non-Police Prosecutors via the APIM Gateway, stages them event-sourced, and forwards validated submissions into the Prosecution Case File service'
+                description """
+A Java EE event-sourced service that provides the Common Platform's automated ingestion API for Non-Police Prosecutors. NPPs authenticate at the APIM Gateway, which resolves each prosecutor's certificate Organisation Unit (OU) to a system user and forwards a resolved OU/system-user context; the backend therefore receives that context on every call and always knows which NPP is submitting. A single role per NPP is supported for API access.
+
+**CPPI API (current v3; v2 still used by some NPPs pending migration):**
+- **Submit prosecutions** — accepts SJP, summons, charge and requisition prosecution submissions, covering both Crown Court and SJP cases, keyed by the NPP's CJS OU code
+- **Submit materials** — accepts uploads of case materials to attach to submitted prosecutions
+- **Check status** — lets NPPs poll for the outcome of each submission (succeeded, rejected, or succeeded with warnings)
+- **Get results** — lets NPPs retrieve case results back from Common Platform (the outbound leg of the NPP API)
+
+**Internal pipeline:**
+- **Event-sourced staging** — persists submissions as event-sourced aggregates, enriches them with reference data, and dispatches downstream commands
+- **Prosecution forwarding** — converts staged prosecutions into case-creation commands sent to the Prosecution Case File service
+- **Binary extraction** — extracts binary prosecution documents from multipart uploads and stores them via the embedded File Service library
+- **Document unbundling** — splits large evidence bundles into individual materials, orchestrated via the Job Store for long-running work
+- **Proceeds-of-Crime handling** — ingests POCA application emails (forwarded by Notification Notify from a monitored mailbox) and validates the attached POCA documents; emails the submitting prosecutor back if a document fails validation
+- **Viewstore projection** — maintains its own view of submission status, exposed via the status query API
+- **Public event publication** — raises public events as submissions are received and progress, for downstream services to consume
+
+Note: because the service accepts file uploads, its command API uses a custom interceptor chain that bypasses the standard audit interceptor; audit data is sent from the query and event-processing layers instead.
+
+Note: the API also carries a set of legacy CPS-oriented serve and material endpoints. These are historical — CPS's primary interaction with Common Platform is through SPI for police cases, not through CPPI — and are not part of the current NPP ingestion flow.
+"""
                 metadata {
                     language 'Java'
                     software-framework 'Java EE 8'
@@ -17,19 +37,45 @@ model {
                 link https://github.com/hmcts/cpp-context-staging-prosecutors 'Repository'
 
                 this -> staging-prosecutors-database
+                this -> cp.case-management-system.prosecution-case-file-service 'sends initiate prosecution commands to, and subscribes to case outcome events from'
+                this -> cp.reference-data-system.reference-data 'looks up application types and public holidays from'
+                this -> cp.id-mapper-system.system-id-mapper 'resolves NPP URNs to Common Platform case identifiers using'
+                this -[notify]-> cp.notification-notify 'sends POCA document validation-failure emails to the submitting prosecutor via'
                 this -> cp.shared-components-subdomain.file-service-system.file-service-database {
-                    title 'stores CPS prosecution documents'
-                    description 'Stores binary prosecution documents (evidence, witness statements) extracted from CPS CP20 XML case submissions'
+                    title 'stores NPP prosecution documents in'
+                    description 'Extracts and stores binary prosecution documents (evidence, witness statements) from multipart uploads via the embedded File Service library'
                 }
                 this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
+                this -[auth]-> cp.users-and-groups 'makes authorisation decisions using'
+
+                non-police-prosecutors -> this 'submits Crown Court, summons, charge, requisition and SJP prosecutions to, uploads case materials to, and retrieves case results from'
+                cp.notification-notify -> this 'forwards received POCA application emails to, for ingestion as court applications'
             }
 
             staging-prosecutors-database = datastore {
                 title 'Staging Prosecutors Database'
                 technology 'PostgreSQL'
-                summary 'Stores events and entities'
+                summary 'Stores CPPI event-sourced prosecution submissions, POCA aggregates, and the submission status viewstore'
                 style {
                     icon tech:postgresql
+                }
+            }
+
+            staging-tfl = microservice {
+                #decommissioned
+                title 'Staging TfL Service'
+                technology 'Java EE'
+                summary 'A historical Transport for London-specific CSV bulk-upload staging service. No longer deployed to production — TfL now use the CPPI v3 API for their main case submission flow. Retained in the model only to document the stale references that the Prosecutor UI still carries.'
+                description """
+A Java EE CSV bulk-upload staging service that was historically used by Transport for London to submit paired header/offences CSV files and zipped supporting documents into Common Platform, outside the per-case CPPI API flow.
+
+**⚠️ Decommissioned — not deployed to production.** TfL now use the CPPI v3 API for their main case submission flow. This element is retained in the model only because the Prosecutor UI (`cpp-ui-prosecutor`) still contains a Staging TfL Angular client (`src/app/contexts/staging-tfl/`) that calls a backend which no longer exists in production. The UI code is dangling and should be removed as part of a cleanup pass — it survived the Angular 19 upgrade (last touched 2026-01-11) rather than being dropped at that point.
+
+Downstream relationships from this service (to Prosecution Case File, File Service, audit, auth, its own database) are not modelled, because the service is not live.
+"""
+                metadata {
+                    language 'Java'
+                    software-framework 'Java EE 8'
                 }
             }
         }

@@ -106,8 +106,16 @@ specification {
         }
     }
 
-    tag deprecated {
+    tag decommissioned {
         color rgb(100 100 100)
+    }
+
+    tag flagged-for-decommissioning {
+        color rgb(235 137 25)
+    }
+
+    tag tech-debt {
+        color rgb(170 70 70)
     }
 
     relationship api-marketplace

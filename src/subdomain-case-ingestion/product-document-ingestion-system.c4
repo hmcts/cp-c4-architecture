@@ -2,12 +2,23 @@ model {
     extend cp.case-ingestion-subdomain {
         document-ingestion-system = product {
             title 'Document Ingestion System'
-            description 'Manages the ingestion of prosecution documents and bulk scanned materials into the Common Platform'
+            description 'Ingests bulk-scanned postal prosecution paperwork (plea forms, financial-means forms, MC100s) from a third-party scanning bureau, and manages the review-and-attachment lifecycle of prosecution documents awaiting attachment to Common Platform cases'
 
             staging-bulkscan-service = microservice {
                 title 'Staging Bulk Scan Service'
                 technology 'Java EE'
-                summary 'Handles bulk scanning of case documents for ingestion into the Common Platform'
+                summary 'Registers scanned document envelopes delivered from a third-party scanning bureau, tracks the follow-up lifecycle of each scan document, and auto-actions scan documents once they have been successfully attached to a case'
+                description """
+A Java EE event-sourced service that provides the Common Platform's ingestion channel for postal prosecution paperwork digitised by a third-party scanning bureau. The service is split across two deployable components: the core JEE WAR plus a separate Azure Function App that pre-processes inbound ZIP packages.
+
+- **Envelope registration** — records the arrival of a scanned document package, persisting an event-sourced aggregate that tracks each scan document through its follow-up and actioned lifecycle
+- **Form processing** — handles defendant details, pleas and financial-means updates extracted from MC100 forms and similar scanned paperwork
+- **Auto-action on document attachment** — auto-actions a scan document once its underlying document has been successfully uploaded against a case (detected via SJP and progression document events)
+- **Follow-up handling** — re-queues failed attachments or marks them for manual follow-up when notified that a material was rejected or needs follow-up
+- **Scheduled cleanup** — runs a scheduled job that deletes actioned scan documents from storage after a configurable retention period
+- **Public event publication** — publishes envelope-registered, follow-up and actioned events so downstream services (notably the Prosecution Document Queue) can react
+- **Bulk Scan Inbox Processor (Azure Function)** — a separately-deployed Azure Function App, triggered by Event Grid whenever a new ZIP package arrives in the scan inbox; it validates the payload, registers the envelope with the service, re-uploads individual PDFs (and rendered preview thumbnails) to managed storage, and calls the CPPI Staging Prosecutors Service to attach each PDF to the corresponding CPPI case
+"""
                 metadata {
                     language 'Java'
                     software-framework 'Java EE 8'
@@ -15,14 +26,21 @@ model {
                 link https://github.com/hmcts/cpp-context-staging-bulkscan 'Repository'
 
                 this -> staging-bulkscan-database
+                this -> cp.case-ingestion-subdomain.cppi.staging-prosecutors-service 'attaches scanned prosecution documents to CPPI cases via (Azure Function)'
+                this -> cp.reference-data-system.reference-data 'looks up prosecutor organisation unit details from (Azure Function)'
+                this -> cp.case-management-system.sjp-service 'raises SJP reviews and processes SJP responses using'
+                this -> cp.id-mapper-system.system-id-mapper 'resolves scan-document submission references using'
                 this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
                 this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
+                this -[auth]-> cp.users-and-groups 'makes authorisation decisions using'
+
+                bulk-scan-provider -> this 'delivers scanned prosecution document ZIP packages (into a storage inbox) to'
             }
 
             staging-bulkscan-database = datastore {
                 title 'Staging Bulk Scan Database'
                 technology 'PostgreSQL'
-                summary 'Stores events and entities'
+                summary 'Stores scan envelope aggregates, scan document state, and the follow-up queue viewstore'
                 style {
                     icon tech:postgresql
                 }
@@ -31,7 +49,19 @@ model {
             prosecution-documentqueue-service = microservice {
                 title 'Prosecution Document Queue Service'
                 technology 'Java EE'
-                summary 'Manages queuing of prosecution documents for processing'
+                summary 'Maintains a review-and-attachment queue of inbound prosecution documents from bulk scan and CPS submissions, tracks their lifecycle from arrival through attachment or rejection, and deletes expired or completed documents from storage'
+                description """
+A Java EE event-sourced service that provides a single operational queue for tracking the lifecycle of inbound prosecution documents that require review before (or after) attachment to a case.
+
+- **Queue ingestion (bulk scan)** — turns bulk-scan envelope registrations and follow-ups into queue entries
+- **Queue ingestion (CPS / progression)** — turns document-review and submission events from Prosecution Case File and Progression into queue entries
+- **Case drop handling** — deletes queued documents when the underlying case has been dropped or re-routed (filtered out to Libra, or ejected)
+- **Scheduled deletion** — periodically marks completed documents for deletion (default 30 days retention, 90 days for bulk-scan documents) and publishes deletion lifecycle events
+- **Queue query and content retrieval** — exposes query endpoints for listing queue items and retrieving document content, delegating binary retrieval to either the File Service persistence library or a material retrieval service
+- **Public event publication** — publishes document status-update, attachment, and update-failure events as queue items progress, so other services can react
+
+Note: for the document-content query, a custom audit interceptor strips binary content from audit payloads (to avoid PII and audit-payload bloat).
+"""
                 metadata {
                     language 'Java'
                     software-framework 'Java EE 8'
@@ -39,17 +69,20 @@ model {
                 link https://github.com/hmcts/cpp-context-prosecution-documentqueue 'Repository'
 
                 this -> prosecution-documentqueue-database
+                this -> cp.case-management-system.prosecution-case-file-service 'queries material metadata from, and subscribes to document review and submission events from'
+                this -> cp.id-mapper-system.system-id-mapper 'resolves case URNs to Common Platform case identifiers using'
                 this -> cp.shared-components-subdomain.file-service-system.file-service-database {
-                    title 'manages CPS document lifecycle'
-                    description 'Manages the lifecycle of CPS prosecution documents, orchestrating attachment to case materials and deletion of expired or completed documents'
+                    title 'reads inbound document content and metadata from'
+                    description 'Uses the embedded File Service persistence library to retrieve document content and metadata for items in the review queue'
                 }
                 this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
+                this -[auth]-> cp.users-and-groups 'makes authorisation decisions using'
             }
 
             prosecution-documentqueue-database = datastore {
                 title 'Prosecution Document Queue Database'
                 technology 'PostgreSQL'
-                summary 'Stores events and entities'
+                summary 'Stores the document-queue event store and the queue viewstore tracking each item through its lifecycle'
                 style {
                     icon tech:postgresql
                 }
@@ -58,11 +91,21 @@ model {
             bulkscan-ui = user-interface {
                 title 'Bulk Scan UI'
                 technology 'Angular'
-                summary 'Provides interface for bulk scanning of case documents'
+                summary 'Enables operational users to review scanned prosecution documents awaiting attachment to cases, progress them through the document queue, and resolve any that cannot be auto-attached'
+                metadata {
+                    language 'TypeScript'
+                    software-framework 'Angular'
+                }
                 style {
                     icon tech:angular
                 }
                 link https://github.com/hmcts/cpp-ui-bulkscan 'Repository'
+
+                this -> prosecution-documentqueue-service 'lists, updates and retrieves queue items from'
+                this -> staging-bulkscan-service 'retrieves scan envelope metadata and document thumbnails from'
+                this -> cp.case-management-system.progression-service 'searches for cases by URN using'
+
+                ctsc_staff -> this 'reviews and progresses scanned prosecution documents using'
             }
         }
     }

@@ -3,15 +3,17 @@ views 'Case Ingestion / SPI' {
         title '[System Context] SPI'
         include *
         where
-            not (kind is application or kind is microservice or kind is functions or kind is datastore or kind is user-interface)
+            not (kind is application or kind is microservice or kind is functions or kind is datastore or kind is user-interface or kind is component)
         include cp.case-administration-subdomain._
         include cp.court-hearings-subdomain._
+        include cp.shared-components-subdomain._
+            where kind is product
         exclude * -> *
         include * <-> cp.spi
         exclude * <-> *
-            where kind is mi
+            where kind is audit or kind is mi or kind is auth or kind is shared
 
-        style cp.case-administration-subdomain.*, cp.court-hearings-subdomain.* {
+        style cp.case-administration-subdomain.*, cp.court-hearings-subdomain.*, cp.shared-components-subdomain.* {
             color secondary
         }
     }
@@ -19,15 +21,17 @@ views 'Case Ingestion / SPI' {
     view spi-container-view of cp.spi {
         title '[Container View] SPI'
         include *
-        include cp.case-management-system
-        include cp.court-hearings-subdomain.hearing-system
+        include cp.case-administration-subdomain._
+        include cp.court-hearings-subdomain._
+        include cp.shared-components-subdomain._
+            where kind is product
         exclude * -> *
         include * <-> cp.spi._
         include cp.spi._ <-> cp.spi._
         exclude * <-> *
-            where kind is mi
+            where kind is mi or kind is auth or kind is shared
 
-        style cp.case-administration-subdomain.*, cp.court-hearings-subdomain.* {
+        style cp.case-administration-subdomain.*, cp.court-hearings-subdomain.*, cp.shared-components-subdomain.* {
             color secondary
         }
     }
@@ -38,13 +42,31 @@ views 'Case Ingestion / CPPI' {
         title '[System Context] CPPI'
         include *
         where
-            not (kind is application or kind is microservice or kind is functions or kind is datastore or kind is user-interface)
+            not (kind is application or kind is microservice or kind is functions or kind is datastore or kind is user-interface or kind is component)
         include cp.case-administration-subdomain._
         include cp.shared-components-subdomain._
+            where kind is product
         exclude * -> *
         include * <-> cp.cppi
         exclude * <-> *
-            where kind is mi
+            where kind is audit or kind is mi or kind is auth or kind is shared
+
+        style cp.case-administration-subdomain.*, cp.shared-components-subdomain.* {
+            color secondary
+        }
+    }
+
+    view cppi-container-view of cp.cppi {
+        title '[Container View] CPPI'
+        include *
+        include cp.case-administration-subdomain._
+        include cp.shared-components-subdomain._
+            where kind is product
+        exclude * -> *
+        include * <-> cp.cppi._
+        include cp.cppi._ <-> cp.cppi._
+        exclude * <-> *
+            where kind is mi or kind is auth or kind is shared
 
         style cp.case-administration-subdomain.*, cp.shared-components-subdomain.* {
             color secondary
@@ -57,11 +79,35 @@ views 'Case Ingestion / CPCI' {
         title '[System Context] CPCI'
         include *
         where
-            not (kind is application or kind is microservice or kind is functions or kind is datastore or kind is user-interface)
+            not (kind is application or kind is microservice or kind is functions or kind is datastore or kind is user-interface or kind is component)
+        include cp.case-administration-subdomain._
+        include cp.shared-components-subdomain._
+            where kind is product
         exclude * -> *
         include * <-> cp.cpci
         exclude * <-> *
-            where kind is mi
+            where kind is audit or kind is mi or kind is auth or kind is shared
+
+        style cp.case-administration-subdomain.*, cp.shared-components-subdomain.* {
+            color secondary
+        }
+    }
+
+    view cpci-container-view of cp.cpci {
+        title '[Container View] CPCI'
+        include *
+        include cp.case-administration-subdomain._
+        include cp.shared-components-subdomain._
+            where kind is product
+        exclude * -> *
+        include * <-> cp.cpci._
+        include cp.cpci._ <-> cp.cpci._
+        exclude * <-> *
+            where kind is mi or kind is auth or kind is shared
+
+        style cp.case-administration-subdomain.*, cp.shared-components-subdomain.* {
+            color secondary
+        }
     }
 }
 
@@ -70,14 +116,35 @@ views 'Case Ingestion / Document Ingestion' {
         title '[System Context] Document Ingestion System'
         include *
         where
-            not (kind is application or kind is microservice or kind is functions or kind is datastore or kind is user-interface)
+            not (kind is application or kind is microservice or kind is functions or kind is datastore or kind is user-interface or kind is component)
+        include cp.case-administration-subdomain._
+        include cp.case-ingestion-subdomain._
         include cp.shared-components-subdomain._
+            where kind is product
         exclude * -> *
         include * <-> cp.document-ingestion-system
         exclude * <-> *
-            where kind is mi
+            where kind is audit or kind is mi or kind is auth or kind is shared
 
-        style cp.shared-components-subdomain.* {
+        style cp.case-administration-subdomain.*, cp.case-ingestion-subdomain.*, cp.shared-components-subdomain.* {
+            color secondary
+        }
+    }
+
+    view document-ingestion-system-container-view of cp.document-ingestion-system {
+        title '[Container View] Document Ingestion System'
+        include *
+        include cp.case-administration-subdomain._
+        include cp.case-ingestion-subdomain._
+        include cp.shared-components-subdomain._
+            where kind is product
+        exclude * -> *
+        include * <-> cp.document-ingestion-system._
+        include cp.document-ingestion-system._ <-> cp.document-ingestion-system._
+        exclude * <-> *
+            where kind is mi or kind is auth or kind is shared
+
+        style cp.case-administration-subdomain.*, cp.case-ingestion-subdomain.*, cp.shared-components-subdomain.* {
             color secondary
         }
     }

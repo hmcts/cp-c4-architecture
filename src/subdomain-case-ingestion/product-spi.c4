@@ -2,13 +2,16 @@ model {
     extend cp.case-ingestion-subdomain {
         spi = product {
             title 'Standard Prosecutor Interface (SPI)'
-            description 'Standard Prosecutor Interface'
-            summary 'Implements the SPI interface to receive police cases'
+            description 'Ingests police cases via the Criminal Justice System Exchange (CJSE), routes them to Libra or Common Platform, and returns case results and operational interface messages back to police forces'
+            summary 'Receives police cases via CJSE and returns case results to police'
 
-            error-queue-ui = user-interface {
-                title 'Error Queue UI'
+            spi-errors-ui = user-interface {
+                title 'SPI Errors UI'
                 technology 'Angular'
-                summary 'Enables resolution of API case validation errors'
+                summary 'Enables court administrators to triage and correct police cases that failed SPI validation'
+                description """
+A feature module within the Prosecution Case File Angular UI (`cpp-ui-prosecution-casefile`) that surfaces SPI-ingested cases which failed validation during case creation, and allows court administrators to resolve the underlying errors so the cases can proceed into the case file.
+"""
                 metadata {
                     language 'TypeScript'
                     software-framework 'Angular'
@@ -16,61 +19,88 @@ model {
                 style {
                     icon tech:angular
                 }
-                this -> cp.case-management-system.prosecution-case-file-service 'makes API calls to'
+                link https://github.com/hmcts/cpp-ui-prosecution-casefile 'Repository (feature module within Prosecution Case File UI)'
+
+                this -> cp.case-management-system.prosecution-case-file-service 'queries and resolves case validation errors using'
 
                 court_admin -> this 'resolves case validation errors using'
-
             }
 
             case-filter = functions {
                 title 'Case Filter'
-                technology 'Azure Functions'
-                summary 'Case interceptor that routes to the appropriate magistrate case management system (Libra or Common Platform) based on routing rules'
+                technology 'Azure Functions (Java)'
+                summary 'Intercepts police cases from CJSE and routes each case to Libra or to Common Platform based on filter-in rules, existing-case checks, and case history'
+                description """
+An Azure Function App that sits in front of Libra and acts as the routing decision point for inbound police case submissions.
+
+- **Filter rules evaluation** — loads filter-in rules from configuration storage and applies business rules to each inbound case to decide whether it is routed to Libra or to Common Platform
+- **Existing case detection** — queries the Prosecution Case File service to detect whether a case with the same reference already exists on Common Platform, and re-routes accordingly
+- **Prosecutor resolution** — queries Reference Data to resolve the prosecutor Organisation Unit code for the case URN
+- **State tracking** — tracks which case URNs have been filtered or ejected from the platform
+- **Material relay** — relays case material and notifications to the Crown Prosecution Service
+- **Filtered-out notification** — when a case is filtered out to Libra, notifies the Staging SPI Service so Common Platform records the case as ejected and downstream services can react (the case itself is relayed on to Libra by the APIM front door)
+"""
                 metadata {
                     language 'Java'
                     software-framework 'Azure Functions'
                 }
-                link https://github.com/hmcts/cpp-context-staging-prosecutors-spi 'Repository'
+                link https://github.com/hmcts/cpp-context-staging-prosecutors-spi 'Repository (stagingprosecutors-azure-functions module)'
 
-                this -> libra 'forwards cases to'
-                this -> staging-spi-service 'forwards cases to'
-                cjse -> this 'sends police cases to'
-                this -> filter-routing-configuiration
+                this -> libra 'forwards filtered-out cases to'
+                this -> staging-spi-service 'forwards filtered-in police cases to'
+                this -> cp.case-management-system.prosecution-case-file-service 'checks for existing cases on Common Platform using'
+                this -> cp.reference-data-system.reference-data 'resolves prosecutor organisation unit codes from'
+                this -> cps 'relays case material and notifications to'
+                this -> filter-routing-configuration 'loads filter-in rules and tracks ejected and filtered cases in'
+                cjse -> this 'sends police case submissions to'
             }
 
             staging-spi-service = microservice {
-                title 'Staging SPI'
+                title 'Staging SPI Service'
                 technology 'Java EE'
-                summary 'Implements the SPI interface to enable receiving police cases and sending case results to police'
+                summary 'Implements the SPI protocol for police case ingestion, orchestrates CJSE SOAP exchanges, and returns case results and operational interface messages back to police forces'
+                description """
+An event-sourced Java EE service that acts as the Common Platform endpoint for the police SPI interface. Accepts filtered-in cases from the Case Filter, forwards them into the Prosecution Case File service, and manages the outbound flow of case results and operational interface (OI) messages back to police via the Criminal Justice System Exchange (CJSE).
+
+- **Case ingestion** — receives filtered-in police cases forwarded from the Case Filter through its SPI SOAP gateway, persists them event-sourced, checks existing case state in Prosecution Case File, and forwards them on for case creation
+- **CJSE integration** — integrates with the CJSE SOAP interface to send OI messages and case results back to police, with a timer-driven process managing retry and delay orchestration
+- **Results return** — receives generated police case results from the Results Service and publishes them to CJSE for delivery to police forces
+- **Case lifecycle handling** — detects when a case is unsupported or has been ejected, so that it is reported back to the originating police force
+- **Filtered-case notification** — raises a public event when a case is filtered out to Libra, so other services (e.g. MI, the prosecution document queue) can react to or drop the ejected case
+- **Persistence** — maintains its own event store and viewstore, tracking OI request history and outbound case-result history
+
+Note: because the service accepts file uploads, its command API uses a custom interceptor chain that bypasses the standard auth and audit interceptors; audit data is sent from the query and event-processing layers instead.
+"""
                 metadata {
                     language 'Java'
                     software-framework 'Java EE 8'
                 }
                 link https://github.com/hmcts/cpp-context-staging-prosecutors-spi 'Repository'
 
-                this -> cp.case-management-system.prosecution-case-file-service 'sends cases to'
                 this -> staging-spi-database
+                this -> cp.case-management-system.prosecution-case-file-service 'forwards police cases to, and queries case state from'
+                this -> cp.reference-data-system.reference-data 'looks up reference data from'
+                this -> cjse 'sends operational interface messages and case results to'
                 this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
                 this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
-                cp.results-distribution-system.results-service -> this 'sends results to police using'
-                this -> cjse 'sends case results to police'
+                cp.results-distribution-system.results-service -> this 'sends police case results for delivery using'
             }
 
             staging-spi-database = datastore {
                 title 'Staging SPI Database'
                 technology 'PostgreSQL'
-                summary 'Stores events and entities'
+                summary 'Stores SPI event-sourced aggregates, outbound operational interface message history, and case result history'
                 style {
                     icon tech:postgresql
                 }
             }
 
-            filter-routing-configuiration = datastore {
+            filter-routing-configuration = datastore {
                 title 'Filter Routing Configuration'
-                technology 'PostgreSQL'
-                summary 'Stores filter criteria configuration'
+                technology 'Azure Storage (File Share + Table)'
+                summary 'Stores case filter-in rules (CSV on File Share) and tracks ejected and filtered case URNs (Table Storage)'
                 style {
-                    icon tech:postgresql
+                    icon tech:azure
                 }
             }
         }

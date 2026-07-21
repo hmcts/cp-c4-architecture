@@ -1,5 +1,5 @@
 model {
-    libra = external-system "Libra" "Heritage magistrates case management system"
+    libra = external-system "Libra" "Heritage magistrates case management system (operated by CGI). Receives filtered police cases for prosecution from the Case Filter and manages fine accounts on its Gob (Government of Britain) financial enforcement side. A future Enforcement Integration project (CCT-1222, currently in design/planning) plans to add an inbound flow from Libra-Gob into the Common Platform Civil Interface for civil enforcement case auto-listing"
     xhibit = external-system "Xhibit" "Maintains court schedules for Crown Courts"
     rota = external-system "Rota" "Prepares sitting pattern for Magistrates Courts"
     cath = external-system "Court and Tribunal Hearings (CaTH)" "Publishing platform for lists, outcomes and judgements"
@@ -7,9 +7,15 @@ model {
     hmpps = external-system "HMPPS" ""
     laa = external-system "Legal Aid Agency" ""
     cjse = external-system "Criminal Justice System Exchange" "Routes and forwards police cases to HMCTS"
+    cps = external-system "Crown Prosecution Service (CPS)" "Prosecutes police-originated cases (submitted by police forces via CJSE/SPI). Some Non-Police Prosecutors route their prosecutions via CPS, in which case CPS replicates the NPP OU code when submitting to Common Platform"
+    non-police-prosecutors = external-system "Non-Police Prosecutors (NPPs)" "Accredited non-police prosecuting authorities that submit prosecutions directly to Common Platform, authenticated at the APIM Gateway, which maps their certificate's Organisation Unit (OU) to a system user before the request reaches Common Platform. Covers two distinct audiences: criminal-case NPPs using CPPI (live users include e.g. Transport for London, TV Licensing and DVLA, among others); and non-police civil prosecuting authorities using CPCI (local authorities, regulatory bodies, and similar bodies prosecuting civil cases with non-criminal offence codes)"
     crime-idam = external-system "Crime IDAM" ""
     dlrm-migration-platform = external-system "DLRM Migration Platform" "Platform for undertaking legacy system migrations"
     sdp = external-system "Strategic Data Platform (SDP)" "MOJ data platform for operational reports and statistics"
     track-a-case = external-system "Track a Case" "Allows citizens to access details of a case, currently in Private Beta"
     vep = external-system "Video Enabled Policing (VEP)" "Receives hearing results from Common Platform for police forces"
+    bulk-scan-provider = external-system "Bulk Scan Provider" "Third-party scanning bureau that digitises postal prosecution paperwork (MC100 plea forms, financial-means forms, and similar scanned documents) and delivers the scanned output as ZIP packages into an Azure Blob Storage inbox container owned by Common Platform, where an Event Grid trigger hands them off to the Bulk Scan Service pipeline. The specific provider organisation is not yet confirmed with the product team"
+    poca-applicant = external-system "POCA Applicant" "External party that emails Proceeds of Crime Act (POCA) application documents (as Word .docx attachments) into a monitored mailbox that Notification Notify polls. The originating organisation is not currently identified"
+
+    poca-applicant -> cp.notification-notify 'emails POCA application documents to (a monitored mailbox)'
 }

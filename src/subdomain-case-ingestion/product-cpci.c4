@@ -2,12 +2,37 @@ model {
     extend cp.case-ingestion-subdomain {
         cpci = product {
             title 'Common Platform Civil Interface (CPCI)'
-            description 'Enables civil cases to be submitted to the courts'
+            description 'The civil-case ingestion path for Common Platform — used for cases flagged `isCivil=true` that carry non-criminal offence codes rather than criminal offences. Currently accepts civil charge and summons prosecutions from non-police civil prosecuting authorities (local authorities, regulatory bodies, and similar) via APIM, keyed by CJS Organisation Unit code. Complementary to CPPI (which handles criminal Non-Police Prosecutor cases), not a replacement for it. A future Enforcement Integration project (CCT-1222) plans to add a dedicated enforcement submission flow for Libra-Gob — this is currently in design/planning and not yet implemented.'
 
             staging-prosecutors-civil = microservice {
                 title 'Staging Prosecutors Civil'
                 technology 'Java EE'
-                summary 'Receives and stages civil prosecution cases for ingestion into the Common Platform'
+                summary 'Ingests civil charge and summons prosecution submissions from non-police civil prosecuting authorities via APIM, stages them event-sourced, forwards them into the Prosecution Case File service as civil cases, and exposes a submission status query API'
+                description """
+A Java EE event-sourced CQRS service that provides Common Platform's civil-case ingestion channel. Accepts JSON submissions via Azure API Management authenticated per-prosecutor by CJS Organisation Unit code, and routes each submission into the Prosecution Case File service as either a single civil prosecution or a bulk (group) civil prosecution.
+
+Civil cases on Common Platform are distinguished by the `isCivil=true` flag and carry non-criminal offence codes rather than criminal offence codes. They are prosecuted through the same magistrates' court process.
+
+**Ingestion channels:**
+- Accepts civil charge and summons prosecution submissions via APIM, keyed by a 7-character `prosecutingAuthority` CJS Organisation Unit code; APIM resolves the per-prosecutor system-user context from the inbound OU code before the request reaches the service
+- Exposes a status query so submitters can poll for the outcome of each submission
+
+**Single civil cases:**
+- Behave like any other case on Common Platform, differing in that they carry non-criminal offence codes
+
+**Bulk (group) civil cases:**
+- API submission only
+- A group of cases (a single defendant each) grouped under one "master defendant" (the rest are group members), sharing a single set of hearing details
+
+**Internal pipeline:**
+- **Event-sourced staging** — persists each submission as an event-sourced aggregate; an event processor converts accepted submissions into single civil or bulk (group) case-creation commands sent to the Prosecution Case File service, with the civil channel and `isCivil` flag set
+- **Case ID resolution** — resolves the civil prosecutor case reference to a Common Platform case identifier via the System ID Mapper
+- **Outcome subscription** — subscribes to Prosecution Case File events to track each submission's status (accepted, rejected, or accepted with warnings)
+- **Viewstore** — maintains a thin submission-status view, surfaced via the status query API
+- **Public event publication** — raises a public event when a charge prosecution is accepted, for downstream services to consume
+
+Note: the planned Enforcement Integration (CCT-1222) will add a dedicated civil enforcement submission flow — carrying hearing details for auto-listing and an inbound submission path from Libra-Gob. This is currently in design/planning and is not part of the live implementation.
+"""
                 metadata {
                     language 'Java'
                     software-framework 'Java EE 8'
@@ -15,13 +40,18 @@ model {
                 link https://github.com/hmcts/cpp-context-staging-prosecutors-civil 'Repository'
 
                 this -> staging-prosecutors-civil-database
+                this -> cp.case-management-system.prosecution-case-file-service 'sends civil single and group case-creation commands to, and subscribes to submission outcome events from'
+                this -> cp.id-mapper-system.system-id-mapper 'resolves civil prosecutor URNs to Common Platform case identifiers using'
                 this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
+                this -[auth]-> cp.users-and-groups 'makes authorisation decisions using'
+
+                non-police-prosecutors -> this 'submits civil charge and summons prosecutions to'
             }
 
             staging-prosecutors-civil-database = datastore {
                 title 'Staging Prosecutors Civil Database'
                 technology 'PostgreSQL'
-                summary 'Stores events and entities'
+                summary 'Stores civil prosecution submission aggregates and the thin submission status viewstore'
                 style {
                     icon tech:postgresql
                 }

@@ -54,7 +54,21 @@ model {
             prosecutor-ui = user-interface {
                 title 'Prosecutor UI'
                 technology 'Angular'
-                summary 'Provides ?'
+                summary 'The Manual Case Create (MCC) and SJP case management interface for Non-Police Prosecutors — used by NPPs that do not have a case management system capable of integrating with the CPPI API, and by prosecutors of all types for ongoing SJP case management'
+                description """
+An Angular single-page application used by Non-Police Prosecutors to create prosecutions manually and to manage their Single Justice Procedure caseload in Common Platform. This is the **Manual Case Create (MCC) route**, the alternative to the automated CPPI API route.
+
+Live MCC users include central-government and regulatory bodies (e.g. Companies House, Cleveland Fire Authority) and a growing set of local authorities.
+
+Authentication is per-user via the IdAM platform (one username and password per NPP staff member), distinct from the API route's certificate-based OU mapping.
+
+- **Manual SJP case creation** — creates a new SJP prosecution by posting an `initiate-sjp-prosecution` command directly to the Prosecution Case File service
+- **SJP case management** — search SJP cases, view case details with document metadata, review pleaded-not-guilty cases, list cases missing SJP notices, manage defendant details updates, set dates-to-avoid, request offence withdrawals, review defendant online pleas, and view case notes
+- **Reference data lookups** — retrieves initiation types, summons codes, offender codes, ethnicities, custody statuses, vehicle codes, offence date codes, alcohol-level methods, country-nationality, police forces, bail statuses, and verdict types; can also create non-standard prosecutors
+- **Offence type search** — searches the Reference Data Offences service for offence definitions by keyword and offence date (typically cross-referenced against PNLD offence codes)
+- **SJP resulted-case reporting** — retrieves SJP resulted-case counts and case-decision exports (JSON and CSV) from the MI Report Data service
+- **Stale Staging TfL references** — the codebase still contains a `staging-tfl.service.ts` Angular client that targets a decommissioned backend (`/stagingtfl-query-api/*`, `/stagingtfl-command-api/*`). These calls are dangling and should be removed as part of a cleanup pass now that TfL have moved onto the CPPI v3 API
+"""
                 metadata {
                     language 'TypeScript'
                     software-framework 'Angular'
@@ -64,7 +78,12 @@ model {
                 }
                 link https://github.com/hmcts/cpp-ui-prosecutor 'Repository'
 
-                this -> progression-service "makes API calls to"
+                this -> sjp-service 'searches, reviews, and updates SJP cases using'
+                this -> prosecution-case-file-service 'creates manual SJP prosecutions using'
+                this -> cp.reference-data-system.reference-data 'looks up reference data and manages non-standard prosecutors using'
+                this -> cp.reference-data-system.reference-data-offences 'searches for offence definitions using'
+                this -> cp.management-information-system.mi-report-data-service 'retrieves SJP resulted-case counts and exports from'
+                this -> cp.case-ingestion-subdomain.cppi.staging-tfl 'contains stale Angular client code calling (the Staging TfL backend is decommissioned — UI code needs cleanup)'
             }
 
             progression-service = microservice {

@@ -5,9 +5,15 @@ model {
             title 'Notify System'
             summary 'Provides email and letter sending services to the rest of the common platform'
             notification-notify = microservice {
+                    #tech-debt
                     title 'Notification Notify'
                     technology 'Java EE'
-                    summary 'Acts an an intermediary between common platform services and GOV.UK Notify and Office 365 services for sending emails and letters'
+                    summary 'Acts as an intermediary between common platform services and GOV.UK Notify and Office 365 services for sending emails and letters'
+                    description """
+Besides its generic outbound role, this service also acts as an inbound email adapter for one specific domain: it polls a monitored mailbox, harvests Proceeds of Crime Act (POCA) application documents, and forwards them to the CPPI Staging Prosecutors Service for ingestion as court applications.
+
+⚠️ **Architectural anomaly / tech debt** — this POCA-specific handling is hard-coded inside what is otherwise a domain-agnostic notification service. The domain-specific responsibility would be better placed in a domain service (or exposed as a generic inbound-email capability) rather than embedded in Notification Notify. Flagged for future revisit.
+"""
                     metadata {
                         language 'Java'
                         software-framework 'Java EE 8'

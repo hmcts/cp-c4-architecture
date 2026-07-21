@@ -3,20 +3,11 @@ model {
         scheduling-and-listing-system = product {
             title 'Scheduling and Listing System'
             summary 'Allows management of court schedules, booking of hearings and the publication of listings'
-        
-            listing_officer -> scheduling-and-listing-system "Manages court schedule and allocates hearings using"
-            court_clerk -> scheduling-and-listing-system "Runs court room logistic on hearing day"
-            legal_advisor -> scheduling-and-listing-system "Manage hearings in court and advise magistrates"
-            court_admin -> scheduling-and-listing-system "Maintain and manages court diary using"
-
-            scheduling-and-listing-system -> xhibit "Sends Crown Court lists to"
-            scheduling-and-listing-system -> cath "Publish court lists to"
-            
 
             listing-ui = user-interface {
                 title 'Listing UI'
                 technology 'Angular'
-                summary 'Provides functionality for managing coute listings'
+                summary 'Provides functionality for allocating hearings, managing court calendars, and publishing court lists'
                 metadata {
                     language 'TypeScript'
                     software-framework 'Angular'
@@ -25,12 +16,24 @@ model {
                     icon tech:angular
                 }
                 link https://github.com/hmcts/cpp-ui-listing 'Repository'
-                this -> listing-service 'makes API calls to'
+                this -> listing-service 'allocates hearings and requests court list publication using' {
+                    technology 'JSON/HTTPS'
+                }
+                this -> court-list-publishing-service 'publishes and downloads court lists using' {
+                    technology 'JSON/HTTPS'
+                }
+                this -> cp.case-management-system.progression-service 'retrieves court list data and case notes from' {
+                    technology 'JSON/HTTPS'
+                }
+                this -> cp.hearing-system.hearing-service 'marks hearings as duplicates using' {
+                    technology 'JSON/HTTPS'
+                }
+                this -[notify]-> cp.notification-notify 'emails judiciary and listing officers about allocation changes using'
 
-                listing_officer -> this 'Allocates hearings using'
-                legal_advisor -> this 'Manages hearings in court and advises magistrates'
-                court_admin -> this 'Maintains and manages court diary using'
-                court_clerk -> this 'Runs court room logistics on hearing day using'
+                listing_officer -> this 'allocates hearings using'
+                legal_advisor -> this 'manages hearings in court and advises magistrates'
+                court_admin -> this 'maintains and manages court diary using'
+                court_clerk -> this 'runs court room logistics on hearing day using'
 
             }
 
@@ -47,11 +50,12 @@ model {
                 }
                 link https://github.com/hmcts/cpp-ui-courtscheduler 'Repository'
 
-                this -> api 'makes API calls to' {
+                this -> api 'manages court schedules and judicial itineraries using' {
                     technology 'JSON/HTTPS'
                 }
+                this -[shared]-> cp.reference-data 'maintains judiciary specialisms in'
 
-                listing_officer -> this 'Manages court schedule using'
+                listing_officer -> this 'manages court schedule using'
 
             }
 
@@ -66,10 +70,17 @@ model {
 
                 link https://github.com/hmcts/cpp-context-listing 'Repository'
 
-                this -> listing-database
-                
+                this -> listing-database 'stores events and hearing entities in'
+                this -> cp.case-management-system.progression-service 'retrieves prosecution case data from' {
+                    technology 'JSON/HTTPS'
+                }
+                this -> cp.advocate-portal.defence-service 'looks up cases by person or organisation defendant using' {
+                    technology 'JSON/HTTPS'
+                }
 
-                this -> xhibit 'Sends Crown Court lists to'
+                this -> xhibit 'sends Crown Court lists to' {
+                    technology 'XML over WebDAV via Xhibit Gateway'
+                }
                 this -[auth]-> cp.users-and-groups 'makes authorisation decisions using'
                 this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
                 this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
@@ -115,7 +126,7 @@ model {
                     technology 'Java Component'
                     summary 'API for Rota file processing'
 
-                    rota -> this "Sends court schedules to"
+                    rota -> this "sends court schedules to"
                     this -> common-service
                     cp.system-scheduling -[shared]-> this 'triggers overnight Rota file processing'
                 }
@@ -140,7 +151,7 @@ model {
             staging-pub-hub-service = microservice {
                 title 'Staging Pub Hub'
                 technology 'Java EE'
-                summary 'Publishes court listings'
+                summary 'Publishes magistrates standard lists, Crown Court live case status, and SJP public and press lists to CaTH; being partially superseded by the Court List Publishing Service'
                 metadata {
                     language 'Java'
                     software-framework 'Java EE 8'
@@ -148,10 +159,14 @@ model {
 
                 link https://github.com/hmcts/cpp-context-staging-pubhub 'Repository'
 
-                scsl-database -> this
-                this -> cath 'Publishes court lists to'
+                cp.case-management-system.progression-service -> this 'sends enriched standard court lists to'
+                cp.case-management-system.sjp-service -> this 'publishes SJP public and press list events to'
+                cp.hearing-system.hearing-service -> this 'publishes Crown Court live case status events to'
+                this -> cath 'publishes court lists to' {
+                    technology 'JSON/HTTPS via APIM Publishing Hub'
+                }
                 this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
-                this -[shared]-> cp.reference-data 'gets reference data from'
+                this -[shared]-> cp.reference-data 'looks up courtroom reference data from'
             }
 
             listing-database = datastore {
@@ -190,14 +205,45 @@ model {
             court-list-publishing-service = microservice {
                 title 'Court List Publishing Service'
                 technology 'Spring Boot'
-                summary 'Publishes court lists'
+                summary 'Publishes magistrates court lists to CaTH and generates court list PDF and Word documents; progressively replacing the Staging Pub Hub publication routes (an SJP list endpoint exists but is not yet called by SJP)'
                 metadata {
                     language 'Java'
                     software-framework 'Spring Boot'
                 }
                 link https://github.com/hmcts/cp-court-list-publishing-service 'Repository'
 
+                this -> cath 'publishes court lists to' {
+                    technology 'JSON/HTTPS via APIM Publishing Hub'
+                }
+                this -> listing-service 'retrieves court list payloads from' {
+                    technology 'JSON/HTTPS'
+                }
+                this -> cp.case-management-system.progression-service 'retrieves enriched court list data from' {
+                    technology 'JSON/HTTPS'
+                }
+                this -> court-list-publishing-database 'records publication status in'
+                this -> court-list-publishing-blob-storage 'stores CaTH payloads and generated court list documents in'
+                this -[shared]-> cp.reference-data 'looks up courtroom and enforcement area reference data from'
+                this -[shared]-> cp.document-generator 'renders court list PDF and Word documents using'
                 this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
+            }
+
+            court-list-publishing-database = datastore {
+                title 'Court List Publishing Database'
+                technology 'PostgreSQL'
+                summary 'Stores court list publication status'
+                style {
+                    icon tech:postgresql
+                }
+            }
+
+            court-list-publishing-blob-storage = datastore {
+                title 'Court List Publishing Blob Storage'
+                technology 'Azure Blob Storage'
+                summary 'Stores CaTH JSON payloads and generated court list PDFs'
+                style {
+                    icon azure:storage-accounts
+                }
             }
         }
     }

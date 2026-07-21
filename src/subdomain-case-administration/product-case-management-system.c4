@@ -4,8 +4,6 @@ model {
             title 'Case Management System'
             description 'Manages cases'
 
-            this -> cp.scheduling-and-listing-system 'requests listings for hearings using'
-
 
             prosecution-casefile-ui = user-interface {
                 title 'Prosection Case File UI'
@@ -111,6 +109,7 @@ Authentication is per-user via the IdAM platform (one username and password per 
                 this -[mi]-> cp.management-information-system.mi-system-data-service 'sends data to'
                 this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
                 this -> application-court-orders-service 'retrieves active court orders by defendant for prosecution case data from'
+                this -> cp.scheduling-and-listing-system.listing-service 'requests court hearings to be listed by and queries hearing data from'
                 this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }
 
@@ -348,6 +347,7 @@ Authentication is per-user via the IdAM platform (one username and password per 
                 link https://github.com/hmcts/cpp-context-correspondence 'Repository'
 
                 this -> correspondence-database
+                this -> cp.scheduling-and-listing-system.listing-service 'queries hearing data from'
                 this -[mi]-> cp.management-information-system.mi-report-data-service 'sends data to'
                 this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
             }

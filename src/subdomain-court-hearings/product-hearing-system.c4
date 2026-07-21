@@ -84,6 +84,9 @@ model {
 
                 // Product-level relationship moved to container (section 7.4)
                 this -> cp.scheduling-and-listing-system.listing-service 'publishes hearing changes to'
+                this -> cp.scheduling-and-listing-system.court-scheduler-service.api 'creates provisional courtroom bookings using' {
+                    technology 'JSON/HTTPS'
+                }
             }
 
             resulting-service = microservice {

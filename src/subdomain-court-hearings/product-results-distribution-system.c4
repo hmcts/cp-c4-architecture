@@ -40,6 +40,10 @@ Manages hearing results and coordinates their distribution to criminal justice p
                 this -> informant-register-result-functions 'sends results to'
                 this -> sjp-result-functions 'sends results to'
                 this -> cp.case-management-system.progression-service 'looks up group case member defendants from'
+                this -> cp.case-management-system.progression-service {
+                    title 'enriches resulted hearings with court application results from'
+                    description 'Court application outcomes (e.g. appeals, breaches) may have been finalised at an earlier hearing and are retained only by Progression; the Results Service adds them to the resulted hearing so downstream distribution and registers reflect the full set of results'
+                }
                 this -[notify]-> cp.notification-notify 'sends informant register CSV emails to prosecution authorities via'
                 this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
 

@@ -157,21 +157,33 @@ Shows the product's internal containers with relationships between them and to e
 view my-product-container-view of cp.my-product {
     title '[Container View] My Product'
     include *
-    include cp.other-subdomain._                    // upstream subdomains with relationships
-    include cp.shared-components-subdomain._
-        where kind is product
+    include cp.my-subdomain          // the root's own subdomain frame — must be explicit, see below
     exclude * -> *
-    include * <-> cp.my-product._
+
+    // Partners at product level (typed — no element enumeration)
+    include element.kind = product <-> cp.my-product._
+    include element.kind = shared-component <-> cp.my-product._
+    include element.kind = external-system <-> cp.my-product._
+    include element.kind = actor <-> cp.my-product._
     include cp.my-product._ <-> cp.my-product._    // IMPORTANT: shows internal relationships
     exclude * <-> *
-        where kind is mi or kind is auth or kind is shared
+        where kind is audit or kind is mi or kind is auth or kind is shared or kind is ui-link
+
+    style cp.my-subdomain-sibling-product, cp.other-subdomain.* {
+        color secondary
+    }
 }
 ```
 
+When styling partners `color secondary`, target the partner *products* only (`cp.other-subdomain.*`, or the sibling product by name) — never the subdomain frames themselves, which must keep their own palette colour from `_spec.c4`.
+
 **Key rules for container views:**
 - The `include product._ <-> product._` line is essential — without it, internal relationships between containers (e.g. UI → microservice) will not appear
-- Include upstream subdomains so their products show as context around the containers
 - Apply the same cross-cutting exclusion logic as context views (don't exclude the system's own kind)
+- Exclude `[ui-link]` relationships (browser navigation between UIs) — they are entry-point context, not container-level integration
+- **Partner granularity convention: product level.** In both context and container views, outside partners appear as *products* (or shared-components / external systems / actors) — never as their leaf services. The typed relationship includes above achieve this without enumerating elements: `element.kind = product <-> product._` matches relationships of the products' *descendants* too, rolling every edge up to the product box. Service-level partner detail belongs in *component* views only.
+- **How LikeC4 draws frames** (needed to reason about these views): a node appears only if some predicate includes it, and it nests under its *closest included ancestor*, skipping un-included levels. `include *` and relationship wildcards auto-add each partner at its outermost group **unless that group is an ancestor of the view root** — those are skipped by the inclusion policy (not a renderer limitation). So other-subdomain products get their subdomain frame for free, while the root's own subdomain frame must be included explicitly (`include cp.my-subdomain`) — do this in every container view so all partner products render symmetrically inside subdomain frames.
+- Older views (Advocate Portal, Work Management, Case Management) still include specific leaf services from other products; migrate them to the typed product-level pattern when touching them
 
 ## Relationship Conventions
 
@@ -201,6 +213,7 @@ Defined in `_spec.c4`. Use these for specific shared component integrations:
 | `[auth]` | `cp.users-and-groups` | `makes authorisation decisions using` |
 | `[audit]` | `cp.audit-system.audit-message-broker` | `sends data to` |
 | `[notify]` | `cp.notification-notify` | `sends notifications using` |
+| `[ui-link]` | another `user-interface` | `opens ... in` — browser navigation between UIs (a hyperlink/tab, not an API call). Exclude from container views (`kind is ui-link`); keep in context views to show entry points |
 | `[mi]` | MI system services | `sends data to` |
 
 ### JEE/Wildfly framework interceptors
@@ -219,7 +232,9 @@ Always add these when defining a Java EE microservice.
 - Some services override the command API interceptor chain for file uploads (e.g. Progression, Staging Prosecutors) — they omit audit on commands but still send via query/event APIs. These should still get the `[audit]` relationship.
 - The `system-id-mapper` sends audit data, but it's filtered out during Fabric Lakehouse ingestion as it's not useful for forensic audit.
 
-**Spring Boot microservices** do NOT automatically get audit. They can optionally use the `cp-audit-filter` library (check `build.gradle` for the dependency). Only add `[audit]` if the service uses this library. Spring Boot services also do NOT get the `[auth]` relationship to Users & Groups — they handle auth differently.
+**Spring Boot microservices** do NOT automatically get audit or auth — both depend on optional libraries, so check `build.gradle`:
+- Add `[audit]` if the service uses the `cp-audit-filter` / `cp-audit-filter-springboot` library.
+- Add `[auth]` if the service uses the `cp-auth-rules-filter` library. Its `HttpAuthzFilter` fetches the logged-in user's groups and permissions from the Users & Groups query API (`authz.http.identity-url-template` in config points at `/usersgroups-query-api/.../logged-in-user/permissions`) and evaluates Drools rules (`src/main/resources/acl/*.drl`) against them per request — functionally equivalent to the JEE access-control interceptor. A Spring Boot service using neither library gets neither relationship.
 
 ### Granularity rules
 

@@ -1,0 +1,70 @@
+model {
+    extend cp.case-administration-subdomain {
+        case-document-knowledge-system = product {
+            title 'Case Document Knowledge'
+            description 'Provides AI-generated answers to a catalogue of preset questions about case documents (IDPC material), with source citations, for cases listed at upcoming hearings'
+
+            intelligence-ui = user-interface {
+                title 'AI Intelligence UI'
+                technology 'Angular'
+                summary 'Lets users view AI-generated answers to preset questions about the documents of a case, with citations linking back to the source documents'
+                description 'Reached via the permission-gated "AI search" tab on the Case At A Glance screen in the Prosecution Case File UI. Presents the preset query catalogue for the case, shows the generated answers with their citations, and opens cited source documents via download links. Conversations are held per-user in browser session storage.'
+                metadata {
+                    language 'TypeScript'
+                    software-framework 'Angular'
+                }
+                style {
+                    icon tech:angular
+                }
+                link https://github.com/hmcts/cpp-ui-ai-intelligence 'Repository'
+
+                cp.prosecution-casefile-ui -[ui-link]-> this 'opens the AI search tab for a case in'
+                this -> case-document-knowledge-service 'retrieves preset case queries, AI answers, and source document links from'
+                this -> cp.progression-service 'retrieves prosecution case details from'
+            }
+
+            case-document-knowledge-service = microservice {
+                title 'Case Document Knowledge Service'
+                technology 'Spring Boot'
+                summary 'Discovers cases listed at upcoming hearings, sources their IDPC case documents into the AI RAG Service, generates answers to preset queries, and serves the answers with citations'
+                description """
+Maintains a versioned catalogue of preset queries (case-level and defendant-level) and orchestrates the pipeline that answers them for each eligible case.
+
+1. **Discovery** — Accepts ingestion requests for a court centre, room, and hearing date. An intraday scheduler (every 10 minutes on weekday daytimes) re-runs the current day's requests to pick up late-arriving IDPCs, schedule changes, and late list additions. For each request it retrieves the hearings for the courtroom from the Hearing Service and identifies the prosecution cases and defendants to process.
+
+2. **Ingestion** — Checks case eligibility and IDPC availability in Progression, obtains a time-limited material download URL for each IDPC document, requests an upload location from the AI RAG Service, and copies the PDF from Progression storage to that location. Tracks each document and polls the RAG ingestion status until ingestion completes.
+
+3. **Answer generation** — Once a case's documents are ingested, submits each catalogue query to the AI RAG Service, polls for the generated answers, and stores them with their citations per case and per defendant.
+
+4. **Serving** — Exposes query catalogue, answer, ingestion status, and document APIs to the AI Intelligence UI. Source document links are resolved back to Progression material download URLs.
+                """
+                metadata {
+                    language 'Java'
+                    software-framework 'Spring Boot'
+                }
+                style {
+                    icon tech:spring
+                }
+                link https://github.com/hmcts/cp-case-document-knowledge-service 'Repository'
+
+                this -> case-document-knowledge-database
+                this -> cp.hearing-service 'retrieves hearing summaries for courtrooms on a hearing date from'
+                this -> cp.progression-service 'searches IDPC court documents, checks case eligibility, and obtains material download URLs from'
+                this -> ai-rag-service 'submits case documents for ingestion, tracks ingestion status, and requests grounded answers with citations from' {
+                    technology 'JSON/HTTPS via APIM Gateway'
+                }
+                this -[auth]-> cp.users-and-groups 'makes authorisation decisions using'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
+            }
+
+            case-document-knowledge-database = datastore {
+                title 'Case Document Knowledge Database'
+                technology 'PostgreSQL'
+                summary 'Stores the preset query catalogue, generated case and defendant answers, tracked case documents, ingestion status, and scheduled ingestion requests'
+                style {
+                    icon tech:postgresql
+                }
+            }
+        }
+    }
+}

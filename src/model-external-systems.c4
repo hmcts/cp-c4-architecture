@@ -16,6 +16,23 @@ model {
     vep = external-system "Video Enabled Policing (VEP)" "Receives hearing results from Common Platform for police forces"
     bulk-scan-provider = external-system "Bulk Scan Provider" "Third-party scanning bureau that digitises postal prosecution paperwork (MC100 plea forms, financial-means forms, and similar scanned documents) and delivers the scanned output as ZIP packages into an Azure Blob Storage inbox container owned by Common Platform, where an Event Grid trigger hands them off to the Bulk Scan Service pipeline. The specific provider organisation is not yet confirmed with the product team"
     poca-applicant = external-system "POCA Applicant" "External party that emails Proceeds of Crime Act (POCA) application documents (as Word .docx attachments) into a monitored mailbox that Notification Notify polls. The originating organisation is not currently identified"
+    ai-rag-service = external-system {
+        title 'AI RAG Service'
+        summary 'Ingests documents and answers questions about them with grounded, cited AI-generated responses. Intended to be shared by multiple HMCTS platforms, not just Common Platform'
+        description """
+Serverless (Azure Functions) Retrieval-Augmented Generation service.
+
+- **Document ingestion** — callers request a time-limited upload URL per document and upload files directly to its storage; ingestion then extracts text with Azure Document Intelligence, chunks it, generates embeddings with Azure OpenAI, and stores them in an Azure AI Search vector index. Callers can poll ingestion status per document.
+- **Answer generation** — answers user queries synchronously or asynchronously (request/poll) by retrieving relevant chunks and generating grounded, cited responses with Azure OpenAI, scoring each answer for groundedness.
+
+Consumed by Common Platform via the APIM Gateway.
+        """
+        metadata {
+            language 'Java'
+            software-framework 'Azure Functions'
+        }
+        link https://github.com/hmcts/cp-ai-rag-service 'Repository'
+    }
 
     poca-applicant -> cp.notification-notify 'emails POCA application documents to (a monitored mailbox)'
 }

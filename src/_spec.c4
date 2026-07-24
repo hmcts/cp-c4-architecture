@@ -125,6 +125,11 @@ specification {
     relationship notify
     relationship shared
 
+    relationship ui-link {
+        notation "UI navigation link"
+        line dotted
+    }
+
     relationship solid {
         line solid
     }

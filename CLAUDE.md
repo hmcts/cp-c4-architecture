@@ -23,7 +23,7 @@ Package manager is **npm** (the committed lockfile is `package-lock.json` and CI
 
 All architecture is defined in `.c4` files using LikeC4 DSL:
 
-- **`_spec.c4`** — Element/relationship specification (kinds, styles, tags, colors). Defines element types: `actor`, `platform`, `subdomain`, `product`, `shared-component`, `system`, `external-system`, `application`, `microservice`, `functions`, `component`, `service`, `user-interface`, `datastore`, `db-table`. Also defines relationship kinds: `audit`, `auth`, `mi`, `shared`, `solid`, `many-to-many`.
+- **`_spec.c4`** — Element/relationship specification (kinds, styles, tags, colors). Defines element types: `actor`, `platform`, `subdomain`, `product`, `shared-component`, `system`, `external-system`, `application`, `microservice`, `functions`, `component`, `service`, `user-interface`, `datastore`, `db-table`. Also defines relationship kinds: `audit`, `auth`, `mi`, `shared`, `solid`, `many-to-many`, `ui-link`.
 - **`model.c4`** — Root `cp` system element definition
 - **`model.people.c4`** — Actor definitions (defendants, judges, court staff, etc.)
 - **`model.views.c4`** — Top-level views (system landscape, subdomains overview)

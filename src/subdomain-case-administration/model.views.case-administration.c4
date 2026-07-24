@@ -75,6 +75,46 @@ views 'Case Administration / Work Management System' {
     }
 }
 
+views 'Case Administration / Case Document Knowledge' {
+
+    view case-document-knowledge-system-context of cp.case-document-knowledge-system {
+        title '[System Context] Case Document Knowledge'
+        include *
+        where
+            not (kind is application or kind is microservice or kind is functions or kind is datastore or kind is user-interface or kind is component)
+        include cp.case-administration-subdomain._
+        include cp.court-hearings-subdomain._
+        exclude * -> *
+        include * <-> cp.case-document-knowledge-system
+        exclude * <-> *
+            where kind is audit or kind is mi or kind is auth or kind is shared
+
+        style cp.court-hearings-subdomain.* {
+            color secondary
+        }
+    }
+
+    view case-document-knowledge-system-container-view of cp.case-document-knowledge-system {
+        title '[Container View] Case Document Knowledge'
+        include *
+        include cp.case-administration-subdomain
+        exclude * -> *
+
+        // Partners at product level (typed, no enumeration)
+        include element.kind = product <-> cp.case-document-knowledge-system._
+        include element.kind = shared-component <-> cp.case-document-knowledge-system._
+        include element.kind = external-system <-> cp.case-document-knowledge-system._
+        include element.kind = actor <-> cp.case-document-knowledge-system._
+        include cp.case-document-knowledge-system._ <-> cp.case-document-knowledge-system._
+        exclude * <-> *
+            where kind is audit or kind is mi or kind is auth or kind is shared or kind is ui-link
+
+        style cp.case-management-system, cp.court-hearings-subdomain.* {
+            color secondary
+        }
+    }
+}
+
 views 'Case Administration / Advocate Portal' {
 
     view advocate-portal-system-context of cp.advocate-portal {

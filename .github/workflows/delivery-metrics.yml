@@ -1,0 +1,92 @@
+# Monthly delivery metrics per product area: cycle time, change failure rate,
+# defect escape rate. See scripts/README.md.
+name: Delivery Metrics
+
+on:
+  schedule:
+    # 06:00 UTC on the 1st, reporting the calendar month just gone.
+    - cron: '0 6 1 * *'
+  workflow_dispatch:
+    inputs:
+      month:
+        description: 'Month to report, YYYY-MM (blank = the month just gone). Re-running a month replaces its rows.'
+        required: false
+        type: string
+
+# contents: write is only exercised by the commit step, which is itself gated on
+# the PUBLISH_METRICS repository variable — see below.
+permissions:
+  contents: write
+
+concurrency:
+  group: delivery-metrics
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup node
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Collect metrics
+        env:
+          # Every repo in the model is public, so the default token can read
+          # their pull requests. Swap in a fine-grained PAT if that changes.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Optional. Absent secrets simply leave the GitHub proxies in place.
+          AZDO_ORG: ${{ secrets.AZDO_ORG }}
+          AZDO_PROJECT: ${{ secrets.AZDO_PROJECT }}
+          AZURE_DEVOPS_EXT_PAT: ${{ secrets.AZURE_DEVOPS_EXT_PAT }}
+          JIRA_URL: ${{ secrets.JIRA_URL }}
+          JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+        run: |
+          MONTH_ARG="--last-month"
+          if [ -n "${{ inputs.month }}" ]; then
+            MONTH_ARG="--month ${{ inputs.month }}"
+          fi
+          python3 scripts/delivery_metrics.py $MONTH_ARG \
+            --history metrics/delivery-metrics.json \
+            | tee metrics/latest-report.txt
+
+      - name: Upload metrics
+        uses: actions/upload-artifact@v4
+        with:
+          name: delivery-metrics
+          path: |
+            metrics/delivery-metrics.json
+            metrics/delivery-metrics.csv
+            metrics/latest-report.txt
+          retention-days: 90
+
+      # Commits the cumulative history back to main so Grafana can read it over
+      # HTTP. This repository is PUBLIC — turning this on publishes per-team
+      # delivery metrics publicly. Off unless the PUBLISH_METRICS repository
+      # variable is set to 'true' (Settings → Secrets and variables → Actions →
+      # Variables).
+      - name: Commit history
+        if: vars.PUBLISH_METRICS == 'true'
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add metrics/delivery-metrics.json metrics/delivery-metrics.csv
+          if git diff --staged --quiet; then
+            echo 'No metric changes to commit'
+          else
+            git commit -m "Delivery metrics: $(date -u +%Y-%m)"
+            git push
+          fi

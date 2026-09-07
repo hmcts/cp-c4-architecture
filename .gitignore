@@ -7,3 +7,9 @@ product-components.csv
 react/
 .claude/*.local.*
 .DS_Store
+
+# delivery metrics API cache
+.metrics-cache/
+scripts/jira-teams.json
+repo-teams.json
+data.json

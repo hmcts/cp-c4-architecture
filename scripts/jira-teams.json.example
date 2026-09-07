@@ -1,0 +1,21 @@
+{
+  "_comment": [
+    "Optional. Without this file the script infers each team's Jira projects from",
+    "the work-item keys in their merged PR titles (validated against the projects",
+    "your credentials can see). Write this file when that inference is too broad,",
+    "e.g. when several teams share one project and are separated by component.",
+    "Keys are C4 product ids -- run `--list-repos` to see them.",
+    "'jql' scopes the team's issues; 'escaped' identifies the ones that reached",
+    "production; 'bugTypes' overrides the default issue-type clause."
+  ],
+  "products": {
+    "hearing-system": {
+      "jql": "project in (CHD, RV) AND component in (\"Hearing\", \"Resulting\")",
+      "escaped": "labels in (escaped-defect, production-defect) OR \"Found In Environment\" in (Production, Live)"
+    },
+    "scheduling-and-listing-system": {
+      "jql": "project in (SPRDT, LPT)",
+      "bugTypes": "issuetype in (Bug, Defect, Incident)"
+    }
+  }
+}

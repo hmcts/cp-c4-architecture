@@ -18,7 +18,8 @@
     "generate:relationships-csv": "likec4 gen relationships-csv && open ./relationships.csv",
     "generate:product-components-csv": "likec4 gen product-components-csv && open ./product-components.csv",
     "generate:react": "likec4 generate react -o ./react/likec4-views.mjs",
-    "export:png": "likec4 export png -o ./png"
+    "export:png": "likec4 export png -o ./png",
+    "generate:repo-teams": "likec4 gen repo-teams-json"
   },
   "devDependencies": {
     "@likec4/mcp": "latest",

@@ -36,6 +36,78 @@ export default defineConfig({
       })
     },
     /**
+     * Generates JSON mapping every GitHub repository link in the model to the
+     * product (or shared component), subdomain and product area that owns it.
+     * Consumed by scripts/delivery_metrics.py.
+     */
+    'repo-teams-json': async ({ likec4model, ctx }) => {
+      // A repo's owning "product" is the nearest ancestor of either kind.
+      const productKinds = ['product', 'shared-component']
+
+      // The seven product areas the programme reports against, keyed by subdomain id.
+      // There is deliberately no per-product override: an area is a subdomain, and
+      // a single product promoted to one (cpp-ui-home was, as "Common Platform User
+      // Interface") reports a five-ticket area beside a hundred-ticket one.
+      const areaOfSubdomain: Record<string, string> = {
+        'case-administration-subdomain': 'Case Administration',
+        'case-ingestion-subdomain': 'Case Ingestion',
+        'court-hearings-subdomain': 'Court Hearing',
+        'dlrm-subdomain': 'DLRM',
+        'opami-subdomain': 'Management Information System',
+        'scheduling-and-listing-subdomain': 'Scheduling & Listing System',
+        'shared-components-subdomain': 'Platform Engineering',
+      }
+
+      const rows = [] as any[]
+      for (const element of likec4model.elements()) {
+        const raw = (element as any).$element ?? {}
+        const links = (raw.links ?? (element as any).links ?? []) as any[]
+        const repos = links
+          .map(l => /github\.com\/([^/\s]+)\/([A-Za-z0-9._-]+)/.exec(String(l.url ?? l)))
+          .filter(Boolean)
+          .map(m => ({ owner: m![1], repo: m![2] }))
+        if (repos.length === 0) continue
+
+        // Walk up to the owning product/shared-component and its subdomain.
+        const ancestors = [element, ...Array.from(element.ancestors() as any)]
+        const product = ancestors.find((a: any) => productKinds.includes(a.kind))
+        const subdomain = ancestors.find((a: any) => a.kind === 'subdomain')
+        if (!product || !subdomain) continue
+
+        const productId = String(product.id).split('.').pop()!
+        const subdomainId = String(subdomain.id).split('.').pop()!
+        for (const { owner, repo } of repos) {
+          rows.push({
+            owner,
+            repo,
+            component: element.title,
+            componentKind: element.kind,
+            product: productId,
+            productTitle: product.title,
+            productKind: product.kind,
+            subdomain: subdomainId,
+            subdomainTitle: subdomain.title,
+            area: areaOfSubdomain[subdomainId] ?? subdomain.title,
+          })
+        }
+      }
+
+      if (rows.length === 0) {
+        return ctx.abort('No repository links found in the model')
+      }
+
+      rows.sort((a, b) =>
+        a.area.localeCompare(b.area) ||
+        a.productTitle.localeCompare(b.productTitle) ||
+        a.repo.localeCompare(b.repo))
+
+      await ctx.write({
+        path: 'repo-teams.json',
+        content: JSON.stringify({ generatedFrom: 'likec4 model', repos: rows }, null, 2) + '\n'
+      })
+    },
+
+    /**
      * Generates CSV file with containers grouped by product
      */
     'product-components-csv': async ({ likec4model, ctx }) => {

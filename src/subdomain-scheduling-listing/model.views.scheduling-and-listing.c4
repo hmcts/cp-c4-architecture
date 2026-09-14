@@ -43,9 +43,4 @@ views 'Scheduling and Listing / Scheduling and Listing System' {
             *
     }
 
-    view staging-pub-hub-service-component-view of cp.scheduling-and-listing-system.staging-pub-hub-service {
-        title '[Component View] Staging Pub Hub'
-        include
-            *
-    }
 }

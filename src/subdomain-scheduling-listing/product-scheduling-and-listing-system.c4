@@ -148,27 +148,6 @@ model {
                 }
             }
 
-            staging-pub-hub-service = microservice {
-                title 'Staging Pub Hub'
-                technology 'Java EE'
-                summary 'Publishes magistrates standard lists, Crown Court live case status, and SJP public and press lists to CaTH; being partially superseded by the Court List Publishing Service'
-                metadata {
-                    language 'Java'
-                    software-framework 'Java EE 8'
-                }
-
-                link https://github.com/hmcts/cpp-context-staging-pubhub 'Repository'
-
-                cp.case-management-system.progression-service -> this 'sends enriched standard court lists to'
-                cp.case-management-system.sjp-service -> this 'publishes SJP public and press list events to'
-                cp.hearing-system.hearing-service -> this 'publishes Crown Court live case status events to'
-                this -> cath 'publishes court lists to' {
-                    technology 'JSON/HTTPS via APIM Publishing Hub'
-                }
-                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
-                this -[shared]-> cp.reference-data 'looks up courtroom reference data from'
-            }
-
             listing-database = datastore {
                 title 'Listing Database'
                 technology 'PostgreSQL'
@@ -205,7 +184,7 @@ model {
             court-list-publishing-service = microservice {
                 title 'Court List Publishing Service'
                 technology 'Spring Boot'
-                summary 'Publishes magistrates court lists to CaTH and generates court list PDF and Word documents; progressively replacing the Staging Pub Hub publication routes (an SJP list endpoint exists but is not yet called by SJP)'
+                summary 'Publishes magistrates court lists to CaTH and generates court list PDF and Word documents (an SJP list endpoint exists but is not yet called by SJP)'
                 metadata {
                     language 'Java'
                     software-framework 'Spring Boot'

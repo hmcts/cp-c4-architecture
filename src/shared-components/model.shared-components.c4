@@ -179,43 +179,28 @@ Besides its generic outbound role, this service also acts as an inbound email ad
             }
 
             idam-events-consumer = microservice {
-                title 'IDAM Events Consumer'
-                technology 'Dropwizard'
-                summary 'Passes events from IDAM to the Staging service'
+                title 'IDAM Integration Service'
+                technology 'Spring Boot'
+                summary 'Consumes IDAM account and organisation lifecycle events and applies user and group changes to the Users and Groups service'
+                description """
+Replacement for the previous IDAM integration pipeline, consolidating two services into one: the original Dropwizard IDAM Events Consumer and the IDAM subsystem of the Java EE Staging service.
+
+Consumes 14 IDAM account and organisation lifecycle event types, transforms the 7 actionable ones into Users and Groups commands, and audit-logs receipt of the rest. Only `account-enrolment-changed` events for CPP-enrolled users are processed.
+
+Supports two inbound transports via a configuration switch: the current default consumes from Crime IDAM's ActiveMQ Artemis queue and buffers events through an internal staging topic; the target mode consumes directly from an Azure Service Bus queue. Stateless — the event-sourced Staging Database is not carried over.
+"""
                 metadata {
                     language 'Java'
-                    software-framework 'Dropwizard'
+                    software-framework 'Spring Boot'
                 }
-                style {
-                    icon ../../icons/dropwizard.svg
+                link https://github.com/hmcts/cpp-mbd-idam-integration 'Repository'
+
+                crime-idam -> this 'sends user and group changes to' {
+                    technology 'JMS (Artemis) / Azure Service Bus'
                 }
-                link https://github.com/hmcts/cpp-context-idam-events-consumer 'Repository'
-
-                crime-idam -> this "sends user and group changes to"
-                this -> staging "sends user and group changes to" "JSON/HTTPS"
-            }
-
-            staging = microservice {
-                title 'Staging'
-                technology 'Java EE'
-                summary 'Receives IDAM events via the IDAM Events Consumer and updates the Users and Groups service'
-                metadata {
-                    language 'Java'
-                    software-framework 'Java EE 8'
-                }
-                link https://github.com/hmcts/cpp-context-staging 'Repository'
-
-                this -> staging-database 'stores events in'
-                this -> users-and-groups 'updates user and group data' 'JSON/HTTPS'
-                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
-            }
-
-            staging-database = datastore {
-                title 'Staging Database'
-                technology 'PostgreSQL'
-                summary 'Stores events'
-                style {
-                    icon tech:postgresql
+                this -> users-and-groups 'updates user and group data' {
+                    technology 'JSON/HTTPS'
+                    description 'Sends set-user-details, delete-user, deregister-user, reregister-user, create-organisation-with-details and update-organisation-with-details commands to the Users and Groups command API as a system user'
                 }
             }
         }

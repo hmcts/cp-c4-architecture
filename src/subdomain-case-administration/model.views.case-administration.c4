@@ -29,7 +29,7 @@ views 'Case Administration / Case Management System' {
         include cp.case-management-system._ <-> cp.case-management-system._
         include cp.court-hearings-subdomain.hearing-system.*
         exclude * <-> *
-            where kind is mi
+            where kind is audit or kind is mi or kind is auth or kind is shared or kind is ui-link
 
 
         style cp.case-administration-subdomain.*, cp.court-hearings-subdomain.* {

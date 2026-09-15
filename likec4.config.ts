@@ -3,6 +3,11 @@ import { defineConfig } from 'likec4/config'
 export default defineConfig({
   name: 'common-platform',
   title: 'Common Platform',
+  // Redirect the site homepage to the 'index' view (Subdomains and Products)
+  // instead of showing the view-grid dashboard
+  landingPage: {
+    redirect: true
+  },
   exclude: [
     'node_modules/**'
   ],

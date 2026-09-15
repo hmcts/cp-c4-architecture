@@ -1,6 +1,6 @@
 views 'System Landscape' {
 
-    view index {
+    view system-landscape {
         title 'Common Platform'
         include *
 
@@ -9,7 +9,8 @@ views 'System Landscape' {
         }
     }
 
-    view common-platform-subdomains of cp {
+    // Named 'index' so the landingPage redirect in likec4.config.ts lands here
+    view index of cp {
         title 'Subdomains and Products'
         include
             cp,

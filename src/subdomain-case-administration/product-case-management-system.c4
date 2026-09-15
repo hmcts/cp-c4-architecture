@@ -384,7 +384,6 @@ Authentication is per-user via the IdAM platform (one username and password per 
                 }
                 link https://github.com/hmcts/service-cp-crime-prosecution-case-details 'Repository'
 
-                track-a-case -[api-marketplace]-> this 'gets prosecution case details'
                 this -[api-marketplace]-> case-urn-mapper 'resolves case URN to case ID using'
                 this -> progression-service 'fetches prosecution case data from'
             }

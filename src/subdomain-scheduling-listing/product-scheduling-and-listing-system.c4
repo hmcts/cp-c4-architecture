@@ -50,7 +50,7 @@ model {
                 }
                 link https://github.com/hmcts/cpp-ui-courtscheduler 'Repository'
 
-                this -> api 'manages court schedules and judicial itineraries using' {
+                this -> court-scheduler-service 'manages court schedules and judicial itineraries using' {
                     technology 'JSON/HTTPS'
                 }
                 this -[shared]-> cp.reference-data 'maintains judiciary specialisms in'
@@ -91,17 +91,17 @@ model {
                     title 'Command API'
                     technology 'Java'
 
-                    this -> court-scheduler-service.api 'books and vacates hearings using'
+                    this -> court-scheduler-service 'books and vacates hearings using'
                 }
             }
 
             court-scheduler-service = microservice {
                 title 'Court Scheduler Service'
-                technology 'Java EE'
-                summary 'Manages court schedules'
+                technology 'Spring Boot'
+                summary 'Manages court schedules, hearing slots, provisional courtroom bookings and judicial itineraries; processes Rota sitting pattern files; serves MI extracts of court schedules, judiciary and allocated listings. In-place migration of the legacy WildFly service to Spring Boot 4 / Java 25'
                 metadata {
                     language 'Java'
-                    software-framework 'Java EE 8'
+                    software-framework 'Spring Boot'
                 }
 
                 link https://github.com/hmcts/cpp-context-listing-courtscheduler 'Repository'
@@ -111,41 +111,8 @@ model {
                 this -[auth]-> cp.users-and-groups 'makes authorisation decisions using'
                 this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
                 this -[shared]-> cp.reference-data 'gets reference data from'
-
-                api = component {
-                    title 'Court Scheduler API'
-                    technology 'Java Component'
-                    summary 'REST API for other services in the system'
-
-                    this -> rota-file-processor
-                    this -> common-service
-                }
-
-                rota-file-processor = component {
-                    title 'Rota File Processor'
-                    technology 'Java Component'
-                    summary 'API for Rota file processing'
-
-                    rota -> this "sends court schedules to"
-                    this -> common-service
-                    cp.system-scheduling -[shared]-> this 'triggers overnight Rota file processing'
-                }
-
-                common-service = component {
-                    title 'Common Service'
-                    technology 'Java Component'
-                    summary 'Business logic'
-
-                    this -> view-store-persistance-service
-                }
-
-                view-store-persistance-service = component {
-                    title 'View Store Persistance Service'
-                    technology 'Java Component'
-                    summary 'CRUD Repository'
-
-                    this -> scsl-database
-                }
+                rota -> this 'sends court schedules to'
+                cp.system-scheduling -[shared]-> this 'triggers overnight Rota file processing'
             }
 
             listing-database = datastore {
@@ -176,7 +143,8 @@ model {
                 }
                 link https://github.com/hmcts/service-cp-crime-scheduleandlist-courtschedule 'Repository'
 
-                track-a-case -[api-marketplace]-> this 'gets court schedule'
+                prison-court-register -[api-marketplace]-> this 'gets court schedule'
+                case-readiness -[api-marketplace]-> this 'gets court schedule'
                 this -[api-marketplace]-> cp.case-urn-mapper 'resolves case URN to case ID using'
                 this -> listing-service 'fetches hearing data from'
             }

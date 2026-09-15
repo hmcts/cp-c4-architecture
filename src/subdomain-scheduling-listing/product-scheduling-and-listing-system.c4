@@ -103,6 +103,9 @@ model {
                     language 'Java'
                     software-framework 'Spring Boot'
                 }
+                style {
+                    icon tech:spring-icon
+                }
 
                 link https://github.com/hmcts/cpp-context-listing-courtscheduler 'Repository'
 

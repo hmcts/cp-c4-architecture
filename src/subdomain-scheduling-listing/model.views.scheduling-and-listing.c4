@@ -31,8 +31,8 @@ views 'Scheduling and Listing / Scheduling and Listing System' {
             where kind is mi
     }
 
-    view court-schedule-service-component-view of cp.scheduling-and-listing-system.court-schedule-service {
-        title '[Component View] Court Schedule Service'
+    view court-scheduler-service-component-view of cp.scheduling-and-listing-system.court-scheduler-service {
+        title '[Component View] Court Scheduler Service'
         include
             *
     }

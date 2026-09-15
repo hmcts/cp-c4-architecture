@@ -57,7 +57,7 @@ model {
                 this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-1 'caches reference data in'
                 this -> mi-extract-blob-storage 'uploads MI extract CSV files to'
                 this -> mi-live-report-blob-storage 'uploads Warrant and CFIX Excel reports to'
-                this -> cp.scheduling-and-listing-system.court-schedule-service 'queries court schedule, judiciary and allocated listings data from'
+                this -> cp.scheduling-and-listing-system.court-scheduler-service 'queries court schedule, judiciary and allocated listings data from'
                 this -[notify]-> cp.notification-notify 'sends NCES extract emails via'
                 this -[shared]-> cp.reference-data 'fetches reference data for MI extracts from'
                 this -[shared]-> cp.reference-data-offences 'fetches offence reference data for MI extracts from'

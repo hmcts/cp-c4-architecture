@@ -134,7 +134,7 @@ model {
             }
 
             court-schedule-service = microservice {
-                title 'Court Schedule Service'
+                title 'Court Schedule AMP Service'
                 technology 'Spring Boot'
                 summary 'Provides court schedule data for a given case URN via the API Marketplace'
                 metadata {

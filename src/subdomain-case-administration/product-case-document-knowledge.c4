@@ -43,7 +43,7 @@ Maintains a versioned catalogue of preset queries (case-level and defendant-leve
                     software-framework 'Spring Boot'
                 }
                 style {
-                    icon tech:spring
+                    icon tech:spring-icon
                 }
                 link https://github.com/hmcts/cp-case-document-knowledge-service 'Repository'
 

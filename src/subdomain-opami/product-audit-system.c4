@@ -63,6 +63,9 @@ model {
                     language 'Java'
                     software-framework 'Spring Boot'
                 }
+                style {
+                    icon tech:spring-icon
+                }
                 link https://github.com/hmcts/cp-audit-reports-service-v2 'Repository'
 
                 this -> fabric-data-pipeline 'triggers report generation via' {

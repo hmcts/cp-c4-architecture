@@ -193,6 +193,9 @@ Supports two inbound transports via a configuration switch: the current default 
                     language 'Java'
                     software-framework 'Spring Boot'
                 }
+                style {
+                    icon tech:spring-icon
+                }
                 link https://github.com/hmcts/cpp-mbd-idam-integration 'Repository'
 
                 crime-idam -> this 'sends user and group changes to' {
@@ -334,6 +337,9 @@ Supports two inbound transports via a configuration switch: the current default 
                 metadata {
                     language 'Java'
                     software-framework 'Spring Boot'
+                }
+                style {
+                    icon tech:spring-icon
                 }
                 link https://github.com/hmcts/service-cp-refdata-courthearing-courthouses 'Repository'
 

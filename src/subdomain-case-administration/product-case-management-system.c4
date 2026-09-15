@@ -369,6 +369,9 @@ Authentication is per-user via the IdAM platform (one username and password per 
                     language 'Java'
                     software-framework 'Spring Boot'
                 }
+                style {
+                    icon tech:spring-icon
+                }
                 link https://github.com/hmcts/service-cp-caseadmin-case-urn-mapper 'Repository'
 
                 this -> cp.system-id-mapper 'resolves identifiers using'
@@ -381,6 +384,9 @@ Authentication is per-user via the IdAM platform (one username and password per 
                 metadata {
                     language 'Java'
                     software-framework 'Spring Boot'
+                }
+                style {
+                    icon tech:spring-icon
                 }
                 link https://github.com/hmcts/service-cp-crime-prosecution-case-details 'Repository'
 
@@ -395,6 +401,9 @@ Authentication is per-user via the IdAM platform (one username and password per 
                 metadata {
                     language 'Java'
                     software-framework 'Spring Boot'
+                }
+                style {
+                    icon tech:spring-icon
                 }
                 link https://github.com/hmcts/cpp-context-material-id-mapper 'Repository'
             }

@@ -141,6 +141,9 @@ model {
                     language 'Java'
                     software-framework 'Spring Boot'
                 }
+                style {
+                    icon tech:spring-icon
+                }
                 link https://github.com/hmcts/service-cp-crime-scheduleandlist-courtschedule 'Repository'
 
                 prison-court-register -[api-marketplace]-> this 'gets court schedule'
@@ -156,6 +159,9 @@ model {
                 metadata {
                     language 'Java'
                     software-framework 'Spring Boot'
+                }
+                style {
+                    icon tech:spring-icon
                 }
                 link https://github.com/hmcts/cp-court-list-publishing-service 'Repository'
 

@@ -54,7 +54,7 @@ Tests use Vitest and the generated TypeScript model (`test/likec4-model.ts`, git
 
 ### CI/CD
 
-GitHub Actions (`.github/workflows/pages.yml`) runs validation then builds and deploys to GitHub Pages. Also auto-redeploys when LikeC4 releases a new version.
+GitHub Actions (`.github/workflows/pages.yml`) runs validation then builds and deploys to GitHub Pages. The LikeC4 version used by CI comes from `package-lock.json` (upgrades arrive as Renovate PRs); the build job installs Playwright's chromium and graphviz on the runner for PNG export.
 
 ## Conventions for .c4 Files
 

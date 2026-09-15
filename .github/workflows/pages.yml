@@ -43,34 +43,46 @@ jobs:
         run: npm run test
 
   # Build job
+  #
+  # Runs likec4 from this repo's lockfile (npm ci) rather than the likec4/actions
+  # docker image: the image ships Playwright browsers matching its own bundled
+  # likec4, so pinning a different likec4 version there breaks PNG export.
+  # With the lockfile as the single version source, Renovate PRs control upgrades.
   build-pages:
     runs-on: ubuntu-latest
     needs: validate
     steps:
       - name: Checkout
-        uses: actions/checkout@v7     
+        uses: actions/checkout@v7
 
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v6
-        
+
+      - name: Setup node
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        # resolves to the playwright version likec4 pins in the lockfile,
+        # so the browsers always match
+        run: npx playwright install --with-deps chromium
+
+      - name: Install Graphviz
+        run: sudo apt-get update && sudo apt-get install -y graphviz
+
       - name: Build
-        uses: likec4/actions@v1
-        with:
-          action: build
-          output: dist
-          # required if you don't set a custom domain for the repository
-          # https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages#types-of-github-pages-sites
-          base: ${{ steps.pages.outputs.base_path }}
-          # pinned to match package.json — bump via Renovate PR so layout changes are reviewed before deploy
-          likec4-version: 1.59.3
-      - name: export diagrams
-        uses: likec4/actions@v1
-        with:
-          likec4-version: 1.59.3
-          export: png
-          output: dist/images
-          use-dot-bin: 'true'
+        # base path required if you don't set a custom domain for the repository
+        # https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages#types-of-github-pages-sites
+        run: npx likec4 build -o dist --base "${{ steps.pages.outputs.base_path }}"
+
+      - name: Export diagrams
+        run: npx likec4 export png -o dist/images --use-dot
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
         with:

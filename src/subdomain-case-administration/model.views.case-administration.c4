@@ -20,6 +20,7 @@ views 'Case Administration / Case Management System' {
 
     view case-management-system-container-view of cp.case-management-system {
         title '[Container View] Case Management System'
+        autoLayout LeftRight
         include *
         include cp.spi
         include cp.hearing-system

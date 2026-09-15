@@ -38,7 +38,7 @@ views 'Scheduling and Listing / Scheduling and Listing System' {
     }
 
     view court-schedule-service-component-view of cp.scheduling-and-listing-system.court-schedule-service {
-        title '[Component View] Court Schedule Service'
+        title '[Component View] Court Schedule AMP Service'
         include
             *
     }

@@ -185,6 +185,47 @@ When styling partners `color secondary`, target the partner *products* only (`cp
 - **How LikeC4 draws frames** (needed to reason about these views): a node appears only if some predicate includes it, and it nests under its *closest included ancestor*, skipping un-included levels. `include *` and relationship wildcards auto-add each partner at its outermost group **unless that group is an ancestor of the view root** — those are skipped by the inclusion policy (not a renderer limitation). So other-subdomain products get their subdomain frame for free, while the root's own subdomain frame must be included explicitly (`include cp.my-subdomain`) — do this in every container view so all partner products render symmetrically inside subdomain frames.
 - Older views (Advocate Portal, Work Management, Case Management) still include specific leaf services from other products; migrate them to the typed product-level pattern when touching them
 
+**Component view:**
+
+Decomposes one microservice into `component` children derived from its source code (packages/classes: controllers, schedulers, task pipelines, clients, storage adapters). Partners appear at *container* level — one level deeper than the container view — framed by their owning products. Reference example: `case-document-knowledge-service-component-view`.
+
+```
+view my-service-component-view of cp.my-product.my-service {
+    title '[Component View] My Service'
+    include *
+    include cp.my-product                   // own product frame around the service, sibling UIs, and datastores
+
+    // Partners at container level, framed by their products
+    include cp.other-product                // partner product frame (auto-added only if include * rolled a partner up to it)
+    include cp.other-product.their-service  // the partner container itself
+    include cp.users-and-groups-system      // frames for the cross-cutting partners
+    include cp.audit-system
+    exclude cp.other-subdomain              // remove partner nodes that include * auto-added at subdomain level
+    exclude cp.shared-components-subdomain  // ditto for the cross-cutting partners' subdomains
+    exclude cp.opami-subdomain
+    exclude cp.other-product.their-service <-> cp.third-product.other-partner   // drop partner-to-partner edges — noise
+    exclude * <-> *
+        where kind is audit or kind is mi or kind is auth or kind is shared or kind is ui-link
+
+    // Re-include this service's own cross-cutting relationships (partners' cross-cutting edges stay hidden)
+    include cp.my-product.my-service <-> cp.users-and-groups
+    include cp.my-product.my-service <-> cp.audit-system.audit-message-broker
+
+    style cp.other-product.*, cp.users-and-groups-system.*, cp.audit-system.* {
+        color secondary
+    }
+}
+```
+
+**Key rules for component views:**
+- **Model the components first, from source.** Every `component` must have a `technology` property (validated by tests). Give each a `summary` of its responsibility.
+- **Decompose the microservice's relationships onto its components** and remove the duplicated microservice-level `this ->` relationships — edges still roll up correctly in container and context views (LikeC4 resolves each relationship endpoint to the most specific *visible* node, so a component→service edge renders as microservice→product where only those are shown). This includes `[auth]`/`[audit]`: attach them to the component that owns the inbound HTTP path (usually the REST API/controllers component), since the auth and audit servlet filters intercept inbound requests in front of the controllers — verify in the service's config which paths the filters cover (`authz.http` / `audit.http` sections).
+- Retarget inbound relationships to the right component too (e.g. UI → the service's `rest-api` component, not the microservice).
+- `include *` on a component view brings in the root's components, their internal edges, and directly-related elements — but partners arrive rolled up to their outermost group (subdomain or product). Exclude those rolled-up nodes and include the leaf containers plus their product frames explicitly.
+- **Cross-cutting relationships ARE shown on component views** (unlike context/container views) — the service's own `[auth]`/`[audit]` edges render from the component that owns the inbound HTTP path (see above). Predicate order makes this selective: the blanket `exclude * <-> * where kind is audit or ...` removes ALL cross-cutting edges (including the visible partners' own audit/auth noise), then later `include my-service <-> partner` lines re-add only this service's edges — later predicates override earlier ones, and referencing the *service* in the re-include still matches its components' edges (FqnRef endpoints match the element or any descendant, resolving to the deepest visible node).
+- Partner containers get `color secondary` (via `cp.other-product.*`); product frames keep their palette colour, same rule as container views.
+- Sibling containers of the same product (UI, datastore) are not partners — leave them their natural colour.
+
 ## Relationship Conventions
 
 ### Title format

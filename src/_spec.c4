@@ -110,7 +110,7 @@ specification {
         color rgb(100 100 100)
     }
 
-    tag flagged-for-decommissioning {
+    tag flagged-for-deprecation {
         color rgb(235 137 25)
     }
 

@@ -363,7 +363,7 @@ Authentication is per-user via the IdAM platform (one username and password per 
 
             case-urn-mapper = microservice {
                 #tech-debt
-                #flagged-for-decommissioning
+                #flagged-for-deprecation
                 title 'Case URN Mapper'
                 technology 'Spring Boot'
                 summary 'Translates case URNs to internal case IDs via the API Marketplace'
@@ -382,7 +382,7 @@ Authentication is per-user via the IdAM platform (one username and password per 
 
             prosecution-case-details-service = microservice {
                 #tech-debt
-                #flagged-for-decommissioning
+                #flagged-for-deprecation
                 title 'Prosecution Case Details Service'
                 technology 'Spring Boot'
                 summary 'Provides simplified prosecution case status and reporting restrictions via the API Marketplace'

@@ -138,7 +138,7 @@ model {
 
             court-schedule-service = microservice {
                 #tech-debt
-                #flagged-for-decommissioning
+                #flagged-for-deprecation
                 title 'Court Schedule AMP Service'
                 technology 'Spring Boot'
                 summary 'Provides court schedule data for a given case URN via the API Marketplace'

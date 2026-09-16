@@ -332,7 +332,7 @@ Supports two inbound transports via a configuration switch: the current default 
 
             courthouses-service = microservice {
                 #tech-debt
-                #flagged-for-decommissioning
+                #flagged-for-deprecation
                 title 'Courthouses Service'
                 technology 'Spring Boot'
                 summary 'Provides courthouse and courtroom information via the API Marketplace'

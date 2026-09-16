@@ -398,6 +398,7 @@ Authentication is per-user via the IdAM platform (one username and password per 
 
                 this -[api-marketplace]-> case-urn-mapper 'resolves case URN to case ID using'
                 this -> progression-service 'fetches prosecution case data from'
+                track-a-case -[api-marketplace]-> this 'got prosecution case details (decommissioned)'
             }
 
             material-id-mapper-service = microservice {

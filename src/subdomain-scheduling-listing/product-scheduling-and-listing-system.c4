@@ -154,6 +154,7 @@ model {
 
                 prison-court-register -[api-marketplace]-> this 'gets court schedule'
                 case-readiness -[api-marketplace]-> this 'gets court schedule'
+                track-a-case -[api-marketplace]-> this 'got court schedules (decommissioned)'
                 this -[api-marketplace]-> cp.case-urn-mapper 'resolves case URN to case ID using'
                 this -> listing-service 'fetches hearing data from'
             }

@@ -331,9 +331,12 @@ Supports two inbound transports via a configuration switch: the current default 
             }
 
             courthouses-service = microservice {
+                #tech-debt
+                #flagged-for-decommissioning
                 title 'Courthouses Service'
                 technology 'Spring Boot'
                 summary 'Provides courthouse and courtroom information via the API Marketplace'
+                description 'A standalone API Marketplace façade — a pattern no more instances of should be built. Its endpoints should be consumed into another service rather than left as a façade, though not necessarily into the service it currently queries.'
                 metadata {
                     language 'Java'
                     software-framework 'Spring Boot'

@@ -12,6 +12,17 @@ model {
     crime-idam = external-system "Crime IDAM" ""
     dlrm-migration-platform = external-system "DLRM Migration Platform" "Platform for undertaking legacy system migrations"
     sdp = external-system "Strategic Data Platform (SDP)" "MOJ data platform for operational reports and statistics"
+    hmpps-court-data-ingestion = external-system {
+        title 'HMPPS Court Data Ingestion API'
+        summary 'HMPPS service that ingests court data from Common Platform and matches it to prisoners, making it available to HMPPS prison services'
+        description 'Consumes Common Platform data through the API Marketplace: subscribes to hearing result document notifications (HRDS), and pulls court schedules, courthouse reference data, structured Prison Court Register data, and defendant details. Matches ingested data to prisoners using HMPPS Core Person Record and Prisoner Search. HRDS callbacks are received on an AWS API Gateway endpoint whose Lambda verifies an HMAC-SHA256 signature over the request body (X-Signature header, shared secret) before relaying the notification onto an SQS queue that the service consumes'
+        link https://github.com/ministryofjustice/hmpps-court-data-ingestion-api 'Repository'
+    }
+    case-readiness = external-system {
+        title 'Crime Case Readiness (CCR)'
+        summary 'HMCTS Crown Court case preparation application that turns a user-supplied case bundle and URN into a reviewed set of parties, legal directions, tasks, deadlines and notification schedules'
+        description 'Cases are created by users uploading PDFs against a URN; AI-assisted analysis proposes parties and direction changes for user review. On demand, enriches an existing case with its latest listing by querying the court schedule for the case URN via the API Marketplace — its only external case-data source'
+        link https://github.com/hmcts/crime-case-readiness 'Repository'
     prison-court-register = external-system "Prison Court Register (PCR)" ""
     case-readiness = external-system "Case Readiness (CR)" ""
     track-a-case = external-system {

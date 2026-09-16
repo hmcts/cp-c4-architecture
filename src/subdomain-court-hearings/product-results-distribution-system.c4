@@ -189,6 +189,75 @@ For complex hearings, intermediate payloads between orchestrator steps are store
                 this -> cp.case-administration-subdomain.progression-service 'submits per-defendant prison court registers to'
             }
 
+            pcr-service = microservice {
+                title 'Prison Court Register Service'
+                technology 'Spring Boot'
+                summary 'Exposes structured Prison Court Register (PCR) source data to API Marketplace subscribers — a pull-based read channel alongside the PDF/email distribution pipeline, not a replacement for it'
+                description """
+Builds one PCR record per defendant per hearing from resulted-hearing data, mirroring the decision logic of the Prison Court Record Result Functions (group-proceedings skip, per-defendant fan-out, `publishedForNows` eligibility filter) and preserving structured data the PDF pipeline flattens away — judicial result prompts, post-hearing custody status, and result classification flags from Reference Data result definitions.
+
+Triggered per resulted hearing via a service-owned Service Bus queue (`pcr.hearing-resulted`). Retrieves the hearing's results from the Redis cache first, falling back to the Results Service query API on cache expiry. Stores immutable PCR version rows keyed by a source-propagated version id, purged after a 30-day retention window, and serves them through a versioned query API addressed by case URN, hearing and defendant.
+"""
+                metadata {
+                    language 'Java'
+                    software-framework 'Spring Boot'
+                }
+                style {
+                    icon tech:spring-icon
+                }
+                link https://github.com/hmcts/service-cp-crime-results-pcr 'Repository'
+
+                results-service -> this 'notifies of resulted hearings via' {
+                    technology 'Azure Event Grid routed to a Service Bus queue'
+                }
+                this -> cp.shared-components-subdomain.redis-cache-system.redis-cache.redis-db-0 'reads cached hearing results from'
+                this -> results-service 'queries hearing details on cache miss from'
+                this -> cp.reference-data-system.reference-data 'looks up result definitions from'
+                this -> pcr-database 'stores immutable PCR version rows in'
+                hmpps-court-data-ingestion -[api-marketplace]-> this 'retrieves structured PCR data from'
+            }
+
+            pcr-database = datastore {
+                title 'PCR Database'
+                technology 'PostgreSQL'
+                summary 'Stores immutable Prison Court Register version rows, normalised per defendant per hearing, with a 30-day retention window'
+                style {
+                    icon tech:postgresql
+                }
+            }
+
+            document-subscription-service = microservice {
+                title 'Hearing Results Document Subscription Service (HRDS)'
+                technology 'Spring Boot'
+                summary 'Manages API Marketplace subscriber registrations for hearing result documents and delivers document notifications to subscriber callback URLs'
+                description 'Processes Prison Court Register and NOWs document events from Progression and Hearing NOWs, waits for the documents to become available in the Material Service, maps them, and notifies registered subscribers via their callback URLs. Inbound and outbound processing can run asynchronously over Azure Service Bus. Purges document records after a 30-day retention window'
+                metadata {
+                    language 'Java'
+                    software-framework 'Spring Boot'
+                }
+                style {
+                    icon tech:spring-icon
+                }
+                link https://github.com/hmcts/service-cp-crime-hearing-results-document-subscription 'Repository'
+
+                cp.case-management-system.progression-service -> this 'notifies of generated Prison Court Register and NOWs documents'
+                hearing-nows-service -> this 'notifies of generated NOWs documents'
+                this -> cp.case-management-system.material-service 'fetches result documents from'
+                this -> document-subscription-database 'stores subscriber registrations and document records in'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
+                hmpps-court-data-ingestion -[api-marketplace]-> this 'manages hearing result document subscriptions using'
+                this -> hmpps-court-data-ingestion 'delivers hearing result document notifications to (subscriber callback URL)'
+            }
+
+            document-subscription-database = datastore {
+                title 'Document Subscription Database'
+                technology 'PostgreSQL'
+                summary 'Stores subscriber registrations and hearing result document records'
+                style {
+                    icon tech:postgresql
+                }
+            }
+
             informant-register-result-functions = functions {
                 title 'Informant Register Result Functions'
                 technology 'Azure Durable Functions'

@@ -154,6 +154,9 @@ model {
 
                 hmpps-court-data-ingestion -[api-marketplace]-> this 'gets court schedules for ingestion into prison services'
                 case-readiness -[api-marketplace]-> this 'gets the latest listing for a case URN'
+                prison-court-register -[api-marketplace]-> this 'gets court schedule'
+                case-readiness -[api-marketplace]-> this 'gets court schedule'
+                track-a-case -[api-marketplace]-> this 'got court schedules (decommissioned)'
                 this -[api-marketplace]-> cp.case-urn-mapper 'resolves case URN to case ID using'
                 this -> listing-service 'fetches hearing data from'
             }

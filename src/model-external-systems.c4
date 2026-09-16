@@ -14,6 +14,13 @@ model {
     sdp = external-system "Strategic Data Platform (SDP)" "MOJ data platform for operational reports and statistics"
     prison-court-register = external-system "Prison Court Register (PCR)" ""
     case-readiness = external-system "Case Readiness (CR)" ""
+    track-a-case = external-system {
+        #decommissioned
+        title 'Track a Case'
+        summary 'Citizen-facing service for tracking the progress of a court case, formerly in Private Beta. Switched off and no longer live'
+        description '⚠️ Decommissioned — this service has been switched off and is no longer live. It consumed court schedules, courthouse data, and prosecution case details through the API Marketplace during its Private Beta; the relationships are retained to document that historical usage'
+        link https://github.com/ministryofjustice/track-my-case 'Repository'
+    }
     vep = external-system "Video Enabled Policing (VEP)" "Receives hearing results from Common Platform for police forces"
     bulk-scan-provider = external-system "Bulk Scan Provider" "Third-party scanning bureau that digitises postal prosecution paperwork (MC100 plea forms, financial-means forms, and similar scanned documents) and delivers the scanned output as ZIP packages into an Azure Blob Storage inbox container owned by Common Platform, where an Event Grid trigger hands them off to the Bulk Scan Service pipeline. The specific provider organisation is not yet confirmed with the product team"
     poca-applicant = external-system "POCA Applicant" "External party that emails Proceeds of Crime Act (POCA) application documents (as Word .docx attachments) into a monitored mailbox that Notification Notify polls. The originating organisation is not currently identified"

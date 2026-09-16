@@ -347,6 +347,7 @@ Supports two inbound transports via a configuration switch: the current default 
                 link https://github.com/hmcts/service-cp-refdata-courthearing-courthouses 'Repository'
 
                 this -> reference-data 'fetches courthouse data from'
+                hmpps-court-data-ingestion -[api-marketplace]-> this 'looks up courthouse and courtroom details using'
             }
         }
 

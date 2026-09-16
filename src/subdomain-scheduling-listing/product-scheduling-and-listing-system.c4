@@ -152,8 +152,8 @@ model {
                 }
                 link https://github.com/hmcts/service-cp-crime-scheduleandlist-courtschedule 'Repository'
 
-                prison-court-register -[api-marketplace]-> this 'gets court schedule'
-                case-readiness -[api-marketplace]-> this 'gets court schedule'
+                hmpps-court-data-ingestion -[api-marketplace]-> this 'gets court schedules for ingestion into prison services'
+                case-readiness -[api-marketplace]-> this 'gets the latest listing for a case URN'
                 this -[api-marketplace]-> cp.case-urn-mapper 'resolves case URN to case ID using'
                 this -> listing-service 'fetches hearing data from'
             }

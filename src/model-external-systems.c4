@@ -15,7 +15,7 @@ model {
     hmpps-court-data-ingestion = external-system {
         title 'HMPPS Court Data Ingestion API'
         summary 'HMPPS service that ingests court data from Common Platform and matches it to prisoners, making it available to HMPPS prison services'
-        description 'Consumes Common Platform data through the API Marketplace: subscribes to hearing result document notifications (HRDS), and pulls court schedules, courthouse reference data, structured Prison Court Register data, and defendant details. Matches ingested data to prisoners using HMPPS Core Person Record and Prisoner Search'
+        description 'Consumes Common Platform data through the API Marketplace: subscribes to hearing result document notifications (HRDS), and pulls court schedules, courthouse reference data, structured Prison Court Register data, and defendant details. Matches ingested data to prisoners using HMPPS Core Person Record and Prisoner Search. HRDS callbacks are received on an AWS API Gateway endpoint whose Lambda verifies an HMAC-SHA256 signature over the request body (X-Signature header, shared secret) before relaying the notification onto an SQS queue that the service consumes'
         link https://github.com/ministryofjustice/hmpps-court-data-ingestion-api 'Repository'
     }
     case-readiness = external-system {

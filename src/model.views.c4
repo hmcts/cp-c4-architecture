@@ -53,4 +53,13 @@ views 'System Landscape' {
             opacity 0%
         }
     }
+
+    view shared-components-landscape of cp.shared-components-subdomain {
+        title 'Shared Components'
+        include
+            cp.shared-components-subdomain,
+            cp.shared-components-subdomain.*
+                where kind is shared-component or kind is product
+        exclude * <-> *
+    }
 }

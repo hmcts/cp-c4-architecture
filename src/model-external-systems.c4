@@ -23,8 +23,7 @@ model {
         summary 'HMCTS Crown Court case preparation application that turns a user-supplied case bundle and URN into a reviewed set of parties, legal directions, tasks, deadlines and notification schedules'
         description 'Cases are created by users uploading PDFs against a URN; AI-assisted analysis proposes parties and direction changes for user review. On demand, enriches an existing case with its latest listing by querying the court schedule for the case URN via the API Marketplace — its only external case-data source'
         link https://github.com/hmcts/crime-case-readiness 'Repository'
-    prison-court-register = external-system "Prison Court Register (PCR)" ""
-    case-readiness = external-system "Case Readiness (CR)" ""
+    }
     track-a-case = external-system {
         #decommissioned
         title 'Track a Case'

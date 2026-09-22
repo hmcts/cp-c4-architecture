@@ -209,6 +209,21 @@ views 'Shared Components / Support' {
         exclude * -> *
         include * <-> cp.support-system
     }
+
+    view support-system-container-view of cp.support-system {
+        title '[Container View] Support System'
+        include *
+        include cp.shared-components-subdomain
+        exclude * -> *
+
+        include element.kind = product <-> cp.support-system._
+        include element.kind = shared-component <-> cp.support-system._
+        include element.kind = external-system <-> cp.support-system._
+        include element.kind = actor <-> cp.support-system._
+        include cp.support-system._ <-> cp.support-system._
+        exclude * <-> *
+            where kind is audit or kind is mi or kind is auth or kind is shared or kind is ui-link
+    }
 }
 
 views 'Shared Components / System Announcement' {

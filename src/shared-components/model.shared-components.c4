@@ -209,17 +209,34 @@ Supports two inbound transports via a configuration switch: the current default 
         }
 
         support-system = shared-component {
+            #flagged-for-deprecation
             title 'Support System'
+            summary 'Captured user feedback ratings and comments from the Online Plea journey; no longer used'
+            description 'Online Plea now collects feedback through SmartSurvey, so nothing sends feedback here any more. The system is a candidate for deprecation and decommissioning.'
             support = microservice {
+                #flagged-for-deprecation
                 title 'Support'
                 technology 'Java EE'
+                summary 'Records user feedback (a 1-5 rating with an optional comment, referring page and case) and lets system users retrieve it by date range or case'
                 metadata {
                     language 'Java'
                     software-framework 'Java EE 8'
                 }
                 link https://github.com/hmcts/cpp-context-support 'Repository'
 
+                this -> support-database
+                this -[auth]-> cp.users-and-groups 'makes authorisation decisions using'
                 this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
+            }
+
+            support-database = datastore {
+                #flagged-for-deprecation
+                title 'Support Database'
+                technology 'PostgreSQL'
+                summary 'Stores feedback events and the feedback view store'
+                style {
+                    icon tech:postgresql
+                }
             }
         }
 

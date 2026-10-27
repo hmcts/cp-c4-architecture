@@ -4,6 +4,35 @@ model {
             title 'Results Distribution System'
             description 'Distributes hearing results to criminal justice partners and manages email notification subscriptions for third-party organisations monitoring court events'
 
+            results-ui = user-interface {
+                title 'Results UI'
+                technology 'Angular'
+                summary 'Lets criminal justice partner staff and court staff browse shared hearing results and download the court documents (NOWs) issued for a defendant'
+                description """
+Read-only viewer for hearing results that have been shared.
+
+- **Available hearing results**: lists hearings with shared results since a chosen date
+- **Hearing results**: for one defendant in one hearing, shows defendant and hearing details, the judicial results per case and the NOW document variants, with links to download the generated PDFs
+
+Access is limited to Prison, Probation, Police, Victims & Witness Care, Youth Offending Service and Legal Aid Agency admin users, Court Clerks and Court Associates.
+"""
+                metadata {
+                    language 'TypeScript'
+                    software-framework 'Angular'
+                }
+                style {
+                    icon tech:angular
+                }
+                link https://github.com/hmcts/cpp-ui-results 'Repository'
+
+                court_clerk -> this 'views shared hearing results using'
+
+                this -> results-service 'retrieves hearing results summaries and defendant result details from'
+                this -> cp.case-management-system.progression-service 'lists and downloads a defendant\'s court documents (NOWs) from'
+                this -> cp.reference-data-system.reference-data 'looks up organisation units from'
+                this -[auth]-> cp.users-and-groups 'validates user permissions using'
+            }
+
             results-service = microservice {
                 title 'Results Service'
                 technology 'Java EE'

@@ -61,6 +61,30 @@ model {
                 //cp.correspondence-service -> this 'Creates & Updates Tasks'
             }
 
+            box-work-management-service = microservice {
+                title 'Box Work Management Service'
+                technology 'Java EE'
+                summary 'Event processor that tracks court applications referred to boxwork through an embedded Camunda workflow, from referral until the box hearing is resulted'
+                description """
+Runs a single Camunda process (`boxworkApplication`) on an embedded process engine; it has no command or query API.
+
+1. **Referral**: when Progression publishes `public.progression.boxwork-application-referred` for a box hearing, starts one process instance per court application (keyed by application ID)
+2. **Create Boxwork task**: a service task that currently only logs; it creates no user task
+3. **Wait for result**: the process waits until Hearing publishes `public.events.hearing.hearing-resulted` for the box hearing, then completes and publishes `public.boxwork-application-completed`
+
+No service has been found that subscribes to `public.boxwork-application-completed`.
+"""
+                metadata {
+                    language 'Java'
+                    software-framework 'Java EE 8'
+                }
+                link https://github.com/hmcts/cpp-context-boxworkmanagement 'Repository'
+                this -> camunda-database 'stores boxwork process instances in'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
+                cp.case-management-system.progression-service -> this 'refers court applications for box hearings to'
+                cp.hearing-system.hearing-service -> this 'notifies box hearing results to'
+            }
+
             camunda = application {
                 title 'Camunda'
                 technology 'Camunda'

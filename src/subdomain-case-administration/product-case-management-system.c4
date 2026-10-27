@@ -223,18 +223,6 @@ Authentication is per-user via the IdAM platform (one username and password per 
                 }
             }
 
-            box-work-management-service = microservice {
-                title 'Box Work Management Service'
-                technology 'Java EE'
-                summary 'Camunda-based service that manages boxwork tasks and workflows'
-                metadata {
-                    language 'Java'
-                    software-framework 'Java EE 8'
-                }
-                link https://github.com/hmcts/cpp-context-boxworkmanagement 'Repository'
-                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
-            }
-
             unified-search-query-service = microservice {
                 title 'Unified Search Query Service'
                 technology 'Java EE'

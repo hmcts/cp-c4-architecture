@@ -38,7 +38,7 @@ model {
             case-management-ui = user-interface {
                 title 'Case Management UI'
                 technology 'Angular'
-                summary 'Provides ?'
+                summary 'Provides additional case management activities, such as BPM and PET forms. Is a sub-component of Case at a Glance (PCF-UI)'
                 metadata {
                     language 'TypeScript'
                     software-framework 'Angular'
@@ -47,6 +47,8 @@ model {
                     icon tech:angular
                 }
                 link https://github.com/hmcts/cpp-ui-case-management 'Repository'
+
+                this -> progression-service "makes API calls to"
             }
 
             prosecutor-ui = user-interface {
@@ -344,6 +346,35 @@ Authentication is per-user via the IdAM platform (one username and password per 
                 title 'Correspondence Database'
                 technology 'PostgreSQL'
                 summary 'Stores events and entities'
+                style {
+                    icon tech:postgresql
+                }
+            }
+
+            case-management-service = microservice {
+                title 'Case Management Service'
+                technology 'Spring Boot'
+                summary 'Performs case management activities, initially for bulk (group) civil case management'
+                description 'Initially created for CAD-1051 (managing bulk civil cases), performs case administration/management activities that can separated from progression service. Includes an Open API spec: https://github.com/hmcts/api-cp-crime-caseadmin-case-management'
+                metadata {
+                    language 'Java'
+                    software-framework 'Spring Boot'
+                }
+                style {
+                    icon tech:spring-icon
+                }
+                link https://github.com/hmcts/service-cp-crime-caseadmin-case-management 'Repository'
+
+                this -> cp.case-management-database
+                this -> progression-service 'Orchestrates and retrieves group case member details'
+                this -> cp.reference-data-system.reference-data 'looks up reference data for prosecutors and court house information'
+                this -[audit]-> cp.audit-system.audit-message-broker 'sends data to'
+            }
+
+            case-management-database = datastore {
+                title 'Case Management Database'
+                technology 'PostgreSQL'
+                summary 'Stores case entities (not CQRS)'
                 style {
                     icon tech:postgresql
                 }
